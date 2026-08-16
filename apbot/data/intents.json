@@ -1,0 +1,758 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "Hi",
+        "Hey",
+        "Hello",
+        "Greetings",
+        "Good day",
+        "Good morning",
+        "Good evening",
+        "Yo",
+        "Hey there",
+        "Hi bot",
+        "Hey sable",
+        "Is anyone there?",
+        "What's up"
+      ],
+      "responses": [
+        "Hello! I am ApBot, SABLE's AI shopping assistant. How can I elevate your experience today?",
+        "Hi there! Welcome to SABLE. What can I help you find today?",
+        "Good day! How can I help you discover luxury pieces, check your bag, or track your order?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "Bye",
+        "Goodbye",
+        "See you later",
+        "Catch you later",
+        "Bye bye",
+        "See ya",
+        "Have a good day",
+        "Talk to you later",
+        "I'm leaving",
+        "Farewell"
+      ],
+      "responses": [
+        "Goodbye! Thank you for visiting SABLE. Have a wonderful day.",
+        "Farewell! Feel free to return whenever you need styling assistance.",
+        "Bye for now! Enjoy your day."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "Thanks",
+        "Thank you",
+        "Awesome thanks",
+        "That's helpful",
+        "Cool thanks",
+        "Thx",
+        "Thank u",
+        "Much appreciated",
+        "Great thanks",
+        "Thank you so much"
+      ],
+      "responses": [
+        "My pleasure! Let me know if you need anything else.",
+        "Happy to assist! Enjoy your SABLE experience.",
+        "Anytime! I'm here whenever you need styling or order updates."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "casual_conversation",
+      "patterns": [
+        "How are you",
+        "How are you doing",
+        "How's it going",
+        "You good",
+        "How are things"
+      ],
+      "responses": [
+        "I'm doing wonderfully, thank you! Ready to help you discover SABLE's luxury collections.",
+        "I'm doing great and ready to assist you! What SABLE pieces can I help you find today?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "confirmation",
+      "patterns": [
+        "Okay",
+        "Ok",
+        "Nice",
+        "Cool",
+        "Got it",
+        "Sounds good",
+        "Perfect",
+        "That's perfect",
+        "Fine",
+        "Alright",
+        "Sure",
+        "Understood",
+        "Great"
+      ],
+      "responses": [
+        "Glad to hear! Let me know if you'd like to explore more items, check your bag, or track an order.",
+        "Understood! I'm here if you need anything else from SABLE.",
+        "Perfect. Feel free to ask if you need help with sizing, orders, or recommendations."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "unsupported_request",
+      "patterns": [
+        "Tell me something unrelated",
+        "Who is the president of France?",
+        "Do you sell electronics?",
+        "What is the weather today?",
+        "Write a story",
+        "Tell me a joke",
+        "What is 2+2",
+        "Who won the game",
+        "Can you code",
+        "What is your favorite movie",
+        "Who created you",
+        "Tell me a recipe"
+      ],
+      "responses": [
+        "I'm here to help with SABLE shopping and orders, so I can't help with that. But I'd be happy to help you find something from our luxury fashion collection.",
+        "My focus is exclusively on SABLE fashion, recommendations, and order management. Let me know if you'd like to explore our collection!"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "indecisive_shopping",
+      "patterns": [
+        "I want something nice",
+        "I'm not sure what I want",
+        "I don't know what to buy",
+        "Inspire me",
+        "What should I get"
+      ],
+      "responses": [
+        "No problem at all! You can explore our latest luxury arrivals, look through our Outerwear collection, or ask for an AI size recommendation.",
+        "I can help guide you! Would you like to view our new arrivals or browse categories like Outerwear or Knitwear?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "cancel",
+      "patterns": [
+        "Never mind",
+        "Cancel",
+        "Forget it",
+        "Nevermind",
+        "Nothing"
+      ],
+      "responses": [
+        "No problem at all. Let me know whenever you'd like to explore SABLE's collection.",
+        "Understood. I'm here whenever you need assistance."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "ambiguous_request",
+      "patterns": [
+        "Show me that one",
+        "I want that one",
+        "Tell me about that one",
+        "Add that one",
+        "That one"
+      ],
+      "responses": [
+        "Sure — which one do you mean?",
+        "I'd be glad to help! Which specific item are you referring to?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "bot_identity",
+      "patterns": [
+        "Who are you",
+        "What are you",
+        "Are you human",
+        "Are you a bot",
+        "What is your name"
+      ],
+      "responses": [
+        "I am ApBot, SABLE's AI shopping assistant, designed to help you discover luxury items and manage your orders.",
+        "You can call me ApBot. I'm an AI assistant for SABLE."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "help",
+      "patterns": [
+        "Can you help me?",
+        "I need help",
+        "Help",
+        "What can you do?",
+        "How can you assist me"
+      ],
+      "responses": [
+        "I can help you explore SABLE collections, recommend sizes, build 3-piece outfits, manage your bag & wishlist, process checkout, or track your orders. What would you like to do?",
+        "I'm here to assist you with shopping, checking your cart, and tracking orders. Just ask!"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "product_search",
+      "patterns": [
+        "Show me jackets",
+        "I'm looking for a black jacket",
+        "Find me a jacket under £200",
+        "Search for t-shirts",
+        "Do you have any trousers?",
+        "I want to buy a hoodie",
+        "Show me some knitwear",
+        "What products do you have?",
+        "I need a black jacket under £200"
+      ],
+      "responses": [
+        "Let me find those for you.",
+        "Here are some items that match your search.",
+        "I've found some products you might like."
+      ],
+      "context_set": "product_search"
+    },
+    {
+      "tag": "product_information",
+      "patterns": [
+        "Tell me more about this",
+        "What is the material?",
+        "Product details",
+        "Is this pure cotton?"
+      ],
+      "responses": [
+        "Here are the details for the product.",
+        "Let me bring up the product information."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "product_price",
+      "patterns": [
+        "How much does this cost?",
+        "What is the price?",
+        "How much is it?"
+      ],
+      "responses": [
+        "The price is listed below.",
+        "Here is the pricing information."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "product_availability",
+      "patterns": [
+        "Is this in stock?",
+        "Do you have this available?",
+        "Is it sold out?"
+      ],
+      "responses": [
+        "Let me check the stock for you."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "similar_products",
+      "patterns": [
+        "Show me something similar",
+        "What else is like this?",
+        "Show me related products",
+        "Similar items"
+      ],
+      "responses": [
+        "Here are some similar products you might enjoy.",
+        "I found these related items for you."
+      ],
+      "context_set": "similar_products"
+    },
+    {
+      "tag": "offers",
+      "patterns": [
+        "Are there any discounts?",
+        "Do you have sales?",
+        "Show me offers"
+      ],
+      "responses": [
+        "Currently, we offer standard pricing on all our luxury items. Sign up for our newsletter to stay updated on exclusive events."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "add_to_cart",
+      "patterns": [
+        "Add this to my bag",
+        "Add to cart",
+        "Put this in my cart",
+        "I want to buy this",
+        "Add the first one to my bag"
+      ],
+      "responses": [
+        "I'll add that to your bag.",
+        "Adding to your cart now."
+      ],
+      "context_set": "cart_action"
+    },
+    {
+      "tag": "remove_from_cart",
+      "patterns": [
+        "Remove this from my bag",
+        "Take it out of my cart",
+        "Remove the jacket"
+      ],
+      "responses": [
+        "I've removed that from your bag."
+      ],
+      "context_set": "cart_action"
+    },
+    {
+      "tag": "view_cart",
+      "patterns": [
+        "What's in my bag?",
+        "Show me my cart",
+        "How much is my cart?",
+        "View bag",
+        "Check my cart"
+      ],
+      "responses": [
+        "Here is what you currently have in your bag.",
+        "Let's take a look at your cart."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "checkout",
+      "patterns": [
+        "Take me to checkout",
+        "Proceed to checkout",
+        "I'm ready to pay",
+        "Checkout now"
+      ],
+      "responses": [
+        "Opening checkout for you.",
+        "Let's get you ready for checkout."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "order_tracking",
+      "patterns": [
+        "Where is my order?",
+        "Track my order",
+        "What's the status of my order?",
+        "Track SBL-12345",
+        "When will my package arrive?"
+      ],
+      "responses": [
+        "Let me check the status of your order.",
+        "I'm pulling up your tracking information."
+      ],
+      "context_set": "tracking"
+    },
+    {
+      "tag": "previous_orders",
+      "patterns": [
+        "What's my latest order?",
+        "Show me my orders",
+        "What did I order previously?",
+        "My order history"
+      ],
+      "responses": [
+        "Here are your recent orders.",
+        "Let me fetch your order history."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "faq",
+      "patterns": [
+        "What is your return policy?",
+        "Do you ship internationally?",
+        "How long does shipping take?"
+      ],
+      "responses": [
+        "We offer a 14-day return policy for unused items. Standard shipping takes 3-5 business days. We currently ship domestically."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "contact_support",
+      "patterns": [
+        "I want to speak to a human",
+        "Contact support",
+        "How can I contact you?",
+        "Customer service"
+      ],
+      "responses": [
+        "You can reach our customer support team via email at support@sable.com or call us at 0800 123 4567."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "product_recommendation",
+      "patterns": [
+        "What do you recommend?",
+        "Can you recommend something?",
+        "Give me alternatives",
+        "Show me another option"
+      ],
+      "responses": [
+        "I can certainly recommend some items for you."
+      ],
+      "context_set": "product_search"
+    },
+    {
+      "tag": "category_search",
+      "patterns": [
+        "Show me categories",
+        "What kind of products do you sell?",
+        "Shop by category"
+      ],
+      "responses": [
+        "We have categories like Outerwear, Essentials, Knitwear, and more."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "update_cart",
+      "patterns": [
+        "Increase the quantity",
+        "Make it two",
+        "Add another one",
+        "Decrease the quantity",
+        "Update my bag"
+      ],
+      "responses": [
+        "I will update the quantity for you."
+      ],
+      "context_set": "cart_action"
+    },
+    {
+      "tag": "wishlist_add",
+      "patterns": [
+        "Add this to my wishlist",
+        "Save this for later",
+        "I want to save this",
+        "Wishlist this"
+      ],
+      "responses": [
+        "I will add that to your wishlist."
+      ],
+      "context_set": "wishlist_action"
+    },
+    {
+      "tag": "wishlist_remove",
+      "patterns": [
+        "Remove this from my wishlist",
+        "Take it off my wishlist",
+        "Unsave this"
+      ],
+      "responses": [
+        "I have removed it from your wishlist."
+      ],
+      "context_set": "wishlist_action"
+    },
+    {
+      "tag": "view_wishlist",
+      "patterns": [
+        "Show my wishlist",
+        "What's in my wishlist?",
+        "View wishlist",
+        "Saved items"
+      ],
+      "responses": [
+        "Here are your saved items."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "checkout_help",
+      "patterns": [
+        "I need help with checkout",
+        "How do I check out?",
+        "Checkout is not working"
+      ],
+      "responses": [
+        "I can help you complete your checkout process. Just let me know what you need."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "payment_help",
+      "patterns": [
+        "How do I pay?",
+        "What payment methods do you accept?",
+        "Payment is failing"
+      ],
+      "responses": [
+        "We accept major credit and debit cards."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "delivery_address",
+      "patterns": [
+        "How do I add my address?",
+        "Change delivery address",
+        "Where do you deliver?"
+      ],
+      "responses": [
+        "You can manage your delivery address during checkout."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "order_status",
+      "patterns": [
+        "Show my order status",
+        "Is my order shipped?",
+        "Order update"
+      ],
+      "responses": [
+        "Let me check the status of your order."
+      ],
+      "context_set": "tracking"
+    },
+    {
+      "tag": "delivery_date",
+      "patterns": [
+        "When will my order arrive?",
+        "What is the delivery date?",
+        "When is it coming?"
+      ],
+      "responses": [
+        "Let me check your estimated delivery date."
+      ],
+      "context_set": "tracking"
+    },
+    {
+      "tag": "order_details",
+      "patterns": [
+        "Show me my order details",
+        "What did I order?",
+        "Order specifics"
+      ],
+      "responses": [
+        "Here are the details for that order."
+      ],
+      "context_set": "tracking"
+    },
+    {
+      "tag": "complaint",
+      "patterns": [
+        "I want to make a complaint",
+        "I am not happy",
+        "This is terrible",
+        "Terrible service"
+      ],
+      "responses": [
+        "I am sorry to hear that. Please let me connect you with our support team to resolve this."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "return_product",
+      "patterns": [
+        "How do I return a product?",
+        "I want to return this",
+        "Refund policy"
+      ],
+      "responses": [
+        "You can return items within 14 days of receipt. Would you like me to guide you through the process?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "unknown",
+      "patterns": [
+        "asdfghjkl",
+        "bla bla bla",
+        "xyz"
+      ],
+      "responses": [
+        "I'm sorry, I don't have that information right now. I can help with SABLE products, orders, your bag, or checkout."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "go_home",
+      "patterns": [
+        "Go home",
+        "Take me home",
+        "Navigate to home",
+        "Open home page"
+      ],
+      "responses": [
+        "Taking you to the home page."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "open_shop",
+      "patterns": [
+        "Open the shop",
+        "Take me to the shop",
+        "Show the shop",
+        "Go to store",
+        "Browse shop"
+      ],
+      "responses": [
+        "Opening the shop for you."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "open_category",
+      "patterns": [
+        "Take me to Outerwear",
+        "Show me Knitwear",
+        "Open Tailoring",
+        "Open Archive",
+        "Go to category",
+        "Show category"
+      ],
+      "responses": [
+        "Opening that category for you."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "open_product",
+      "patterns": [
+        "Open this product",
+        "Show me the details",
+        "Take me to this product",
+        "View this item"
+      ],
+      "responses": [
+        "Opening the product details."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "open_search",
+      "patterns": [
+        "Take me to search",
+        "Open search",
+        "I want to search"
+      ],
+      "responses": [
+        "Opening search for you."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "open_cart",
+      "patterns": [
+        "Open my bag",
+        "Show my bag",
+        "Open my cart",
+        "Take me to my bag"
+      ],
+      "responses": [
+        "Opening your bag."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "open_wishlist",
+      "patterns": [
+        "Open my wishlist",
+        "Show my wishlist",
+        "Take me to my wishlist",
+        "View wishlist"
+      ],
+      "responses": [
+        "Opening your wishlist."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "open_profile",
+      "patterns": [
+        "Open my profile",
+        "Take me to my profile",
+        "Show my account",
+        "View account settings"
+      ],
+      "responses": [
+        "Opening your profile."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "open_checkout",
+      "patterns": [
+        "Open checkout",
+        "Take me to checkout",
+        "Go to checkout"
+      ],
+      "responses": [
+        "Opening checkout."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "open_tracking",
+      "patterns": [
+        "Open order tracking",
+        "Open the tracking page",
+        "Go to tracking",
+        "Show tracking page"
+      ],
+      "responses": [
+        "Opening the order tracking page."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "login",
+      "patterns": [
+        "Login",
+        "Sign in",
+        "Log me in",
+        "I want to login",
+        "Authenticate"
+      ],
+      "responses": [
+        "Opening the login page."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "logout",
+      "patterns": [
+        "Logout",
+        "Sign me out",
+        "I want to log out",
+        "Sign out",
+        "Log me out"
+      ],
+      "responses": [
+        "Logging you out securely."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "account_status",
+      "patterns": [
+        "Am I logged in?",
+        "Check my account status",
+        "What is my login status?"
+      ],
+      "responses": [
+        "Checking your authentication status."
+      ],
+      "context_set": ""
+    }
+  ]
+}
