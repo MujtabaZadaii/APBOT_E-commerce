@@ -322,6 +322,7 @@ export default function App() {
         onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenTracking={() => handleOpenTrackingPage(null)}
         onOpenOrders={() => setIsOrdersOpen(true)}
+        onGoHome={handleBackToHome}
       />
       {selectedProductId ? (
         <ProductDetail 

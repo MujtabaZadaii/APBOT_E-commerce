@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Menu, X, Search, ShoppingBag, User, Heart, Package, ChevronRight, Sparkles, LogOut, SlidersHorizontal } from 'lucide-react';
 import ProfileDropdown from './ProfileDropdown';
 
 export default function Navbar({
@@ -12,14 +13,15 @@ export default function Navbar({
   onOpenProfile,
   onOpenWishlist,
   onOpenTracking,
-  onOpenOrders
+  onOpenOrders,
+  onGoHome
 }) {
   const [isCompressed, setIsCompressed] = useState(false);
   const [bagPulse, setBagPulse] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const prevBagCount = useRef(bagCount);
 
   useEffect(() => {
-    let lastScroll = 0;
     const handleScroll = () => {
       const currentScroll = window.scrollY;
       if (currentScroll > 50) {
@@ -27,12 +29,23 @@ export default function Navbar({
       } else {
         setIsCompressed(false);
       }
-      lastScroll = currentScroll;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
 
   // Micro-interaction when bag count changes
   useEffect(() => {
@@ -44,64 +57,279 @@ export default function Navbar({
     }
   }, [bagCount]);
 
+  const handleHomeClick = (e) => {
+    e.preventDefault();
+    setIsMobileMenuOpen(false);
+    if (onGoHome) onGoHome();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleAnchorClick = (e, targetId) => {
     e.preventDefault();
-    const el = document.querySelector(targetId);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    setIsMobileMenuOpen(false);
+    
+    if (onGoHome) onGoHome();
+
+    setTimeout(() => {
+      const el = document.querySelector(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
-    <nav className={`sable-nav ${isCompressed ? 'compressed' : ''}`}>
-      <div className="wrap bar">
-        <ul>
-          <li><a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>Outerwear</a></li>
-          <li><a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>Knitwear</a></li>
-          <li><a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>Tailoring</a></li>
-          <li><a href="#shop" onClick={(e) => handleAnchorClick(e, '#shop')}>Archive</a></li>
-        </ul>
+    <>
+      <nav className={`sable-nav ${isCompressed ? 'compressed' : ''}`}>
+        <div className="wrap bar">
+          {/* Desktop Left Links */}
+          <ul className="desktop-links">
+            <li><a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>Outerwear</a></li>
+            <li><a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>Knitwear</a></li>
+            <li><a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>Tailoring</a></li>
+            <li><a href="#shop" onClick={(e) => handleAnchorClick(e, '#shop')}>Archive</a></li>
+            <li><a href="#atelier" onClick={(e) => handleAnchorClick(e, '#atelier')}>Atelier</a></li>
+          </ul>
 
-        <div className="mk">SABLE</div>
-
-        <div className="util">
-          <span onClick={onOpenSearch} style={{ cursor: 'pointer' }}>
-            Search
-          </span>
-          
-          {currentUser ? (
-            <ProfileDropdown
-              currentUser={currentUser}
-              favCount={favCount}
-              onOpenProfile={onOpenProfile}
-              onOpenWishlist={onOpenWishlist}
-              onOpenTracking={onOpenTracking}
-              onOpenOrders={onOpenOrders}
-              onSignOut={onSignOut}
-            />
-          ) : (
-            <span
-              onClick={onOpenAuth}
-              style={{ cursor: 'pointer' }}
+          {/* Mobile Hamburger Trigger */}
+          <div className="mobile-menu-trigger">
+            <button 
+              type="button"
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="mobile-toggle-btn"
+              aria-label="Open mobile menu"
             >
-              Account
-            </span>
-          )}
+              <Menu size={22} />
+              <span className="mobile-menu-label">MENU</span>
+            </button>
+          </div>
 
-          <a
-            href="#shop"
-            onClick={(e) => {
-              e.preventDefault();
-              onOpenCart();
-            }}
+          {/* SABLE Logo - Takes User to Home */}
+          <div 
+            className="mk brand-logo" 
+            onClick={handleHomeClick}
             style={{ cursor: 'pointer' }}
-            className={`bag-link ${bagPulse ? 'pulse' : ''}`}
+            title="SABLE Home"
           >
-            Bag (<b id="bagn" style={{ display: 'inline-block', transition: 'transform 0.25s ease' }}>{bagCount}</b>)
-          </a>
+            SABLE
+          </div>
+
+          {/* Utility Controls */}
+          <div className="util">
+            <span 
+              onClick={onOpenSearch} 
+              style={{ cursor: 'pointer' }} 
+              className="nav-util-item desktop-search"
+            >
+              Search
+            </span>
+
+            <span
+              onClick={onOpenSearch}
+              style={{ cursor: 'pointer' }}
+              className="mobile-search-btn"
+              aria-label="Search"
+            >
+              <Search size={18} />
+            </span>
+            
+            {currentUser ? (
+              <ProfileDropdown
+                currentUser={currentUser}
+                favCount={favCount}
+                onOpenProfile={onOpenProfile}
+                onOpenWishlist={onOpenWishlist}
+                onOpenTracking={onOpenTracking}
+                onOpenOrders={onOpenOrders}
+                onSignOut={onSignOut}
+              />
+            ) : (
+              <span
+                onClick={onOpenAuth}
+                style={{ cursor: 'pointer' }}
+                className="nav-util-item desktop-account"
+              >
+                Account
+              </span>
+            )}
+
+            <a
+              href="#shop"
+              onClick={(e) => {
+                e.preventDefault();
+                onOpenCart();
+              }}
+              style={{ cursor: 'pointer' }}
+              className={`bag-link ${bagPulse ? 'pulse' : ''}`}
+            >
+              Bag (<b id="bagn" style={{ display: 'inline-block', transition: 'transform 0.25s ease' }}>{bagCount}</b>)
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      {/* Advanced Mobile Navigation Overlay Drawer */}
+      <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
+        <div 
+          className="mobile-nav-backdrop" 
+          onClick={() => setIsMobileMenuOpen(false)} 
+        />
+        
+        <div className="mobile-nav-content">
+          {/* Drawer Header */}
+          <div className="mobile-nav-header">
+            <span className="mobile-nav-logo" onClick={handleHomeClick}>SABLE</span>
+            <button 
+              type="button" 
+              className="mobile-nav-close"
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          {/* Main Navigation Categories */}
+          <div className="mobile-nav-body">
+            <div className="mobile-nav-section">
+              <span className="mobile-nav-subtitle">COLLECTIONS</span>
+              <ul className="mobile-nav-links">
+                <li>
+                  <a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>
+                    <span>Outerwear</span>
+                    <ChevronRight size={16} />
+                  </a>
+                </li>
+                <li>
+                  <a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>
+                    <span>Knitwear</span>
+                    <ChevronRight size={16} />
+                  </a>
+                </li>
+                <li>
+                  <a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>
+                    <span>Tailoring</span>
+                    <ChevronRight size={16} />
+                  </a>
+                </li>
+                <li>
+                  <a href="#shop" onClick={(e) => handleAnchorClick(e, '#shop')}>
+                    <span>Full Collection / Archive</span>
+                    <ChevronRight size={16} />
+                  </a>
+                </li>
+                <li>
+                  <a href="#atelier" onClick={(e) => handleAnchorClick(e, '#atelier')}>
+                    <span>The Atelier</span>
+                    <ChevronRight size={16} />
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Quick Actions & Account */}
+            <div className="mobile-nav-section">
+              <span className="mobile-nav-subtitle">CLIENT SERVICES</span>
+              <div className="mobile-action-grid">
+                <button 
+                  type="button"
+                  className="mobile-action-card"
+                  onClick={() => { setIsMobileMenuOpen(false); onOpenSearch(); }}
+                >
+                  <Search size={18} />
+                  <span>Search Catalog</span>
+                </button>
+
+                <button 
+                  type="button"
+                  className="mobile-action-card"
+                  onClick={() => { setIsMobileMenuOpen(false); onOpenCart(); }}
+                >
+                  <ShoppingBag size={18} />
+                  <span>Bag ({bagCount})</span>
+                </button>
+
+                <button 
+                  type="button"
+                  className="mobile-action-card"
+                  onClick={() => { setIsMobileMenuOpen(false); onOpenWishlist(); }}
+                >
+                  <Heart size={18} />
+                  <span>Wishlist ({favCount})</span>
+                </button>
+
+                <button 
+                  type="button"
+                  className="mobile-action-card"
+                  onClick={() => { setIsMobileMenuOpen(false); onOpenTracking(); }}
+                >
+                  <Package size={18} />
+                  <span>Order Tracking</span>
+                </button>
+              </div>
+
+              {/* User Account / Authentication */}
+              <div className="mobile-user-section">
+                {currentUser ? (
+                  <div className="mobile-user-box">
+                    <div className="mobile-user-info">
+                      <div className="mobile-user-avatar">
+                        {currentUser.name ? currentUser.name[0].toUpperCase() : 'U'}
+                      </div>
+                      <div>
+                        <div className="mobile-user-name">{currentUser.name || 'SABLE Member'}</div>
+                        <div className="mobile-user-email">{currentUser.email}</div>
+                      </div>
+                    </div>
+                    <div className="mobile-user-actions">
+                      <button 
+                        type="button" 
+                        onClick={() => { setIsMobileMenuOpen(false); onOpenProfile(); }}
+                        className="mobile-user-btn"
+                      >
+                        Profile Settings
+                      </button>
+                      <button 
+                        type="button" 
+                        onClick={() => { setIsMobileMenuOpen(false); onOpenOrders(); }}
+                        className="mobile-user-btn"
+                      >
+                        My Orders
+                      </button>
+                      <button 
+                        type="button" 
+                        onClick={() => { setIsMobileMenuOpen(false); onSignOut(); }}
+                        className="mobile-user-btn logout"
+                      >
+                        <LogOut size={14} />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button 
+                    type="button" 
+                    className="mobile-auth-btn"
+                    onClick={() => { setIsMobileMenuOpen(false); onOpenAuth(); }}
+                  >
+                    <User size={18} />
+                    <span>Sign In / Register</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Drawer Footer */}
+          <div className="mobile-nav-footer">
+            <div className="mobile-nav-badge">
+              <Sparkles size={14} color="#C5A059" />
+              <span>SABLE HAUTE COUTURE • LONDON</span>
+            </div>
+            <div className="mobile-nav-currency">GBP (£) | UNITED KINGDOM</div>
+          </div>
         </div>
       </div>
-    </nav>
+    </>
   );
 }
-
