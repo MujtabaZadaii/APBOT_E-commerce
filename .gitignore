@@ -1,6 +1,16 @@
+# Environment & Sensitive DB Credentials
+.env
+.env.*
+*.env
+server/.env
+
+# Netlify & Build Metadata
+.netlify/
+
 # Dependencies
 node_modules/
 client/node_modules/
+server/node_modules/
 
 # Python Virtual Environment & Cache
 venv/
@@ -8,15 +18,8 @@ apbot/venv/
 __pycache__/
 *.pyc
 
-# Production Builds
+# Production Builds & Temp Logs
 client/dist/
 client/dist-ssr/
-
-# IDE / System
-.vscode/
-.idea/
-.DS_Store
 *.log
-
-# Temp files
 scratch/
