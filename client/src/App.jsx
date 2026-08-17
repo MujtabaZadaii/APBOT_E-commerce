@@ -65,6 +65,30 @@ export default function App() {
     });
   };
 
+  const handleOpenProductsPage = () => {
+    if (currentView === 'home' && !selectedProductId) {
+      const el = document.querySelector('#shop');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      transitionTo(() => {
+        setCurrentView('home');
+        setSelectedProductId(null);
+      }, '#shop');
+    }
+  };
+
+  const handleOpenFaqPage = () => {
+    if (currentView === 'home' && !selectedProductId) {
+      const el = document.querySelector('#faq');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      transitionTo(() => {
+        setCurrentView('home');
+        setSelectedProductId(null);
+      }, '#faq');
+    }
+  };
+
 
 
   const [favs, setFavs] = useState(() => {
@@ -351,7 +375,9 @@ export default function App() {
         onOpenTracking={() => handleOpenTrackingPage(null)}
         onOpenOrders={() => setIsOrdersOpen(true)}
         onGoHome={handleBackToHome}
+        onOpenProducts={handleOpenProductsPage}
         onOpenAbout={handleOpenAboutPage}
+        onOpenFaq={handleOpenFaqPage}
         onOpenContact={handleOpenContactPage}
       />
       {currentView === 'about' ? (

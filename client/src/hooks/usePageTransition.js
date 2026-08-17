@@ -4,13 +4,18 @@ import { gsap } from 'gsap';
 export function usePageTransition() {
   const isTransitioningRef = useRef(false);
 
-  const transitionTo = useCallback((onSwitchView) => {
+  const transitionTo = useCallback((onSwitchView, targetSelector) => {
     if (isTransitioningRef.current) return;
     const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (isReduced) {
       onSwitchView();
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      if (targetSelector) {
+        const el = document.querySelector(targetSelector);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
       return;
     }
 
@@ -35,24 +40,38 @@ export function usePageTransition() {
           overlay.parentNode.removeChild(overlay);
         }
         isTransitioningRef.current = false;
+        
+        if (targetSelector) {
+          setTimeout(() => {
+            const el = document.querySelector(targetSelector);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth' });
+              if (window.lenis) {
+                window.lenis.scrollTo(el, { duration: 1.2 });
+              }
+            }
+          }, 50);
+        }
       }
     });
 
     tl.to(overlay, {
       clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-      duration: 0.35,
+      duration: 0.3,
       ease: 'power3.inOut',
       onComplete: () => {
         onSwitchView();
-        window.scrollTo({ top: 0, behavior: 'instant' });
-        if (window.lenis) {
-          window.lenis.scrollTo(0, { immediate: true });
+        if (!targetSelector) {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+          if (window.lenis) {
+            window.lenis.scrollTo(0, { immediate: true });
+          }
         }
       }
     })
     .to(overlay, {
       clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
-      duration: 0.35,
+      duration: 0.3,
       ease: 'power3.inOut',
       delay: 0.05
     });

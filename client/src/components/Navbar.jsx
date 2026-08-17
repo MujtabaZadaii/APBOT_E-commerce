@@ -86,7 +86,19 @@ export default function Navbar({
         <div className="wrap bar">
           {/* Desktop Left Links */}
           <ul className="desktop-links">
-            <li><a href="#shop" onClick={(e) => handleAnchorClick(e, '#shop')}>PRODUCTS</a></li>
+            <li><a href="#home" onClick={handleHomeClick}>HOME</a></li>
+            <li>
+              <a 
+                href="#shop" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onOpenProducts) onOpenProducts();
+                  else handleAnchorClick(e, '#shop');
+                }}
+              >
+                PRODUCTS
+              </a>
+            </li>
             <li>
               <a 
                 href="#about" 
@@ -98,7 +110,18 @@ export default function Navbar({
                 ABOUT
               </a>
             </li>
-            <li><a href="#faq" onClick={(e) => handleAnchorClick(e, '#faq')}>FAQ</a></li>
+            <li>
+              <a 
+                href="#faq" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onOpenFaq) onOpenFaq();
+                  else handleAnchorClick(e, '#faq');
+                }}
+              >
+                FAQ
+              </a>
+            </li>
             <li>
               <a 
                 href="#contact" 
@@ -216,7 +239,21 @@ export default function Navbar({
               <span className="mobile-nav-subtitle">NAVIGATION</span>
               <ul className="mobile-nav-links">
                 <li>
-                  <a href="#shop" onClick={(e) => handleAnchorClick(e, '#shop')}>
+                  <a href="#home" onClick={handleHomeClick}>
+                    <span>HOME</span>
+                    <ChevronRight size={16} />
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#shop" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMobileMenuOpen(false);
+                      if (onOpenProducts) onOpenProducts();
+                      else handleAnchorClick(e, '#shop');
+                    }}
+                  >
                     <span>PRODUCTS</span>
                     <ChevronRight size={16} />
                   </a>
@@ -235,7 +272,15 @@ export default function Navbar({
                   </a>
                 </li>
                 <li>
-                  <a href="#faq" onClick={(e) => handleAnchorClick(e, '#faq')}>
+                  <a 
+                    href="#faq" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMobileMenuOpen(false);
+                      if (onOpenFaq) onOpenFaq();
+                      else handleAnchorClick(e, '#faq');
+                    }}
+                  >
                     <span>FAQ</span>
                     <ChevronRight size={16} />
                   </a>
