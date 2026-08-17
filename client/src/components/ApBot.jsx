@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
-import { MessageSquare, X, Send, Package, RefreshCw, Minus, Mic, Plus, MapPin, Calendar, Truck, Bot, Volume2, VolumeX, Camera } from 'lucide-react';
+import { MessageSquare, X, Send, Package, RefreshCw, Minus, Mic, Plus, MapPin, Calendar, Truck, Bot, Volume2, VolumeX, Camera, ShoppingBag, Sparkles, Shirt, Scissors, Layers, Ruler, Tag, Headphones } from 'lucide-react';
 const INITIAL_MESSAGES = [
   {
     role: 'assistant',
-    content: 'I am ApBot, SABLE\'s AI shopping assistant. How can I elevate your experience today?'
+    content: "Welcome to SABLE Haute Couture. I am ApBot, your 24/7 personal AI Concierge. How may I assist you with our luxury collection, order tracking, sizing, or checkout today?"
   }
 ];
 const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onOpenCart, onOpenCheckout, onOpenTracking, onOrderPlaced, favs = {}, onToggleFav, onOpenWishlist, onOpenAuth, onSignOut, onOpenProfile, onNavigate, onOpenSearch }) => {
@@ -689,10 +689,34 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           )}
           <div ref={messagesEndRef} />
         </div>
-        <div className="apbot-quick-actions">
-          <button onClick={() => setInput('What\'s in my bag?')}>View Bag</button>
-          <button onClick={() => setInput('Track my order')}>Track Order</button>
-          <button onClick={() => setInput('Show me new arrivals')}>New Arrivals</button>
+        <div className="apbot-quick-actions" style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '8px 12px', scrollbarWidth: 'none' }}>
+          <button type="button" onClick={() => sendMessage("What's in my bag?")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <ShoppingBag size={13} /> View Bag
+          </button>
+          <button type="button" onClick={() => sendMessage("Track my order")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Package size={13} /> Track Order
+          </button>
+          <button type="button" onClick={() => sendMessage("Show me new arrivals")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Sparkles size={13} /> New Arrivals
+          </button>
+          <button type="button" onClick={() => sendMessage("Show me outerwear jackets")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Shirt size={13} /> Outerwear
+          </button>
+          <button type="button" onClick={() => sendMessage("Show me tailoring collection")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Scissors size={13} /> Tailoring
+          </button>
+          <button type="button" onClick={() => sendMessage("Show me knitwear sweaters")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Layers size={13} /> Knitwear
+          </button>
+          <button type="button" onClick={() => sendMessage("Help me find my size")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Ruler size={13} /> Size Guide
+          </button>
+          <button type="button" onClick={() => sendMessage("Give me a VIP discount code")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Tag size={13} /> VIP Perk
+          </button>
+          <button type="button" onClick={() => sendMessage("How can I contact customer support?")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Headphones size={13} /> Contact Us
+          </button>
         </div>
         <form onSubmit={handleSend} className="apbot-input-area">
           <div className="apbot-input-box">
