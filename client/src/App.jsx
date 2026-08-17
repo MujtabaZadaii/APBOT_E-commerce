@@ -446,7 +446,7 @@ export default function App() {
           />
           <Lookbook />
           <Cloth />
-          <FaqSection />
+          <FaqSection onOpenContact={handleOpenContactPage} />
           <Atelier />
           <Signup />
         </>
