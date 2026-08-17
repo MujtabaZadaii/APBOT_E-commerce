@@ -144,7 +144,7 @@ router.post('/message', async (req, res) => {
                     activeIntent = 'view_cart';
                 } else if (lowerMsg.includes('track') || lowerMsg.includes('delivery')) {
                     activeIntent = 'order_tracking';
-                } else if (lowerMsg.includes('show') || lowerMsg.includes('find') || lowerMsg.includes('search') || lowerMsg.includes('outerwear') || lowerMsg.includes('knitwear') || lowerMsg.includes('tailoring')) {
+                } else if (lowerMsg.includes('show') || lowerMsg.includes('find') || lowerMsg.includes('search') || lowerMsg.includes('outerwear') || lowerMsg.includes('knitwear') || lowerMsg.includes('tailoring') || lowerMsg.includes('jacket') || lowerMsg.includes('jaket') || lowerMsg.includes('dikhao') || lowerMsg.includes('dikao') || lowerMsg.includes('batao') || lowerMsg.includes('btao') || lowerMsg.includes('chahiye')) {
                     activeIntent = 'product_search';
                 }
             }
