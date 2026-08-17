@@ -144,7 +144,7 @@ router.post('/message', async (req, res) => {
                     activeIntent = 'view_cart';
                 } else if (lowerMsg.includes('track') || lowerMsg.includes('delivery')) {
                     activeIntent = 'order_tracking';
-                } else if (lowerMsg.includes('show') || lowerMsg.includes('find') || lowerMsg.includes('search') || lowerMsg.includes('outerwear') || lowerMsg.includes('knitwear') || lowerMsg.includes('tailoring') || lowerMsg.includes('jacket') || lowerMsg.includes('jaket') || lowerMsg.includes('dikhao') || lowerMsg.includes('dikao') || lowerMsg.includes('batao') || lowerMsg.includes('btao') || lowerMsg.includes('chahiye')) {
+                } else if (lowerMsg.includes('show') || lowerMsg.includes('find') || lowerMsg.includes('search') || lowerMsg.includes('outerwear') || lowerMsg.includes('knitwear') || lowerMsg.includes('tailoring') || lowerMsg.includes('jacket') || lowerMsg.includes('jaket') || lowerMsg.includes('dikhao') || lowerMsg.includes('dikao') || lowerMsg.includes('batao') || lowerMsg.includes('btao') || lowerMsg.includes('chahiye') || lowerMsg.includes('all') || lowerMsg.includes('sare') || lowerMsg.includes('sab') || lowerMsg.includes('products') || lowerMsg.includes('items')) {
                     activeIntent = 'product_search';
                 }
             }
@@ -186,30 +186,36 @@ router.post('/message', async (req, res) => {
                     if (context?.lastCategory) dbQuery.ct = context.lastCategory;
                     responseData.message = "Here are some gorgeous pieces I recommend for you.";
                 } else {
-                    const stopWords = ['new', 'arrivals', 'arrival', 'latest', 'show', 'me', 'only', 'under', 'less', 'than', 'more', 'over', 'price', 'the', 'a', 'an', 'some', 'any', 'please', 'just', 'add', 'it', 'to', 'my', 'bag', 'cart', 'buy', 'purchase', 'want', 'looking', 'for', 'can', 'you', 'find', 'like', 'ones', 'one', 'item', 'items', 'piece', 'pieces', 'thing', 'things', 'stuff', 'everything', 'all'];
-                    const colorWords = ['black', 'white', 'grey', 'gray', 'blue', 'red', 'green', 'brown', 'navy', 'ivory', 'beige', 'charcoal', 'onyx', 'obsidian', 'khaki'];
+                    const isAllRequest = lowerMsg.includes('all') || lowerMsg.includes('everything') || lowerMsg.includes('sare') || lowerMsg.includes('sab') || lowerMsg.includes('catalog') || lowerMsg.includes('collection') || lowerMsg.trim() === 'products' || lowerMsg.trim() === 'items';
                     
-                    searchKeywords = lowerMsg
-                        .replace(/£?\d+/g, '')
-                        .split(/[\s,.]+/)
-                        .filter(w => w.length > 2 && !stopWords.includes(w) && !colorWords.includes(w));
-                    
-                    const synonymMap = {
-                        'outwheres': 'outerwear', 'jacket': 'outerwear', 'jackets': 'outerwear', 'coat': 'outerwear', 'coats': 'outerwear', 'overshirt': 'outerwear',
-                        'shirt': 'essentials', 'shirts': 'essentials', 'tee': 'essentials', 'tshirt': 'essentials',
-                        'sweater': 'knitwear', 'sweaters': 'knitwear', 'jumper': 'knitwear', 'cardigan': 'knitwear', 'knit': 'knitwear', 'knitwear': 'knitwear',
-                        'trouser': 'trousers', 'trousers': 'trousers', 'pants': 'trousers', 'slacks': 'trousers'
-                    };
-                    
-                    // Only reuse previous category keywords if explicitly requested (e.g. "more of those")
-                    const isExplicitCarryover = lowerMsg.includes('same') || lowerMsg.includes('similar') || lowerMsg.includes('more of');
-                    if (isExplicitCarryover && context?.lastSearchKeywords) {
-                        searchKeywords = context.lastSearchKeywords;
-                    } else if (searchKeywords.length > 0) {
-                        responseData.context.lastSearchKeywords = searchKeywords;
-                    }
+                    if (isAllRequest) {
+                        searchKeywords = [];
+                        responseData.message = "Here is our full collection of SABLE products:";
+                    } else {
+                        const stopWords = ['new', 'arrivals', 'arrival', 'latest', 'show', 'me', 'only', 'under', 'less', 'than', 'more', 'over', 'price', 'the', 'a', 'an', 'some', 'any', 'please', 'just', 'add', 'it', 'to', 'my', 'bag', 'cart', 'buy', 'purchase', 'want', 'looking', 'for', 'can', 'you', 'find', 'like', 'ones', 'one', 'item', 'items', 'piece', 'pieces', 'thing', 'things', 'stuff', 'everything', 'all'];
+                        const colorWords = ['black', 'white', 'grey', 'gray', 'blue', 'red', 'green', 'brown', 'navy', 'ivory', 'beige', 'charcoal', 'onyx', 'obsidian', 'khaki'];
+                        
+                        searchKeywords = lowerMsg
+                            .replace(/£?\d+/g, '')
+                            .split(/[\s,.]+/)
+                            .filter(w => w.length > 2 && !stopWords.includes(w) && !colorWords.includes(w));
+                        
+                        const synonymMap = {
+                            'outwheres': 'outerwear', 'jacket': 'outerwear', 'jackets': 'outerwear', 'coat': 'outerwear', 'coats': 'outerwear', 'overshirt': 'outerwear',
+                            'shirt': 'essentials', 'shirts': 'essentials', 'tee': 'essentials', 'tshirt': 'essentials',
+                            'sweater': 'knitwear', 'sweaters': 'knitwear', 'jumper': 'knitwear', 'cardigan': 'knitwear', 'knit': 'knitwear', 'knitwear': 'knitwear',
+                            'trouser': 'trousers', 'trousers': 'trousers', 'pants': 'trousers', 'slacks': 'trousers'
+                        };
+                        
+                        const isExplicitCarryover = lowerMsg.includes('same') || lowerMsg.includes('similar') || lowerMsg.includes('more of');
+                        if (isExplicitCarryover && context?.lastSearchKeywords) {
+                            searchKeywords = context.lastSearchKeywords;
+                        } else if (searchKeywords.length > 0) {
+                            responseData.context.lastSearchKeywords = searchKeywords;
+                        }
 
-                    searchKeywords = searchKeywords.map(w => synonymMap[w] || w);
+                        searchKeywords = searchKeywords.map(w => synonymMap[w] || w);
+                    }
                 }
 
                 // Construct robust $and query conditions

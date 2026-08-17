@@ -15,7 +15,6 @@ except LookupError:
 
 lemmatizer = WordNetLemmatizer()
 
-# Common Roman Urdu & English typo normalization map
 ROMAN_URDU_TYPO_MAP = {
     'btao': 'batao',
     'bataoo': 'batao',
