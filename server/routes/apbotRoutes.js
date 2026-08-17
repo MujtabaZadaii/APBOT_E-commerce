@@ -8,6 +8,26 @@ const JWT_SECRET = process.env.JWT_SECRET || 'sable_super_secret_key_123';
 
 const APBOT_API_URL = process.env.APBOT_API_URL || 'http://localhost:5001/api/apbot/predict';
 
+function getRequestedIndex(text) {
+    if (!text) return null;
+    const lower = text.toLowerCase();
+    
+    // Explicit English & Roman Urdu ordinal phrases
+    if (lower.includes('1st') || lower.includes('first') || lower.includes('pehli') || lower.includes('pehla') || lower.includes('pehle') || lower.includes('1st wali')) return 0;
+    if (lower.includes('2nd') || lower.includes('second') || lower.includes('doosri') || lower.includes('doosra') || lower.includes('dusri') || lower.includes('dusra') || lower.includes('2nd wali') || lower.includes('doosri wali')) return 1;
+    if (lower.includes('3rd') || lower.includes('third') || lower.includes('teesri') || lower.includes('teesra') || lower.includes('tisri') || lower.includes('tisra') || lower.includes('3rd wali') || lower.includes('teesri wali')) return 2;
+    if (lower.includes('4th') || lower.includes('fourth') || lower.includes('chauthi') || lower.includes('chautha') || lower.includes('4th wali')) return 3;
+    if (lower.includes('5th') || lower.includes('fifth') || lower.includes('paanchvi') || lower.includes('paanchva') || lower.includes('5th wali')) return 4;
+    
+    // Pattern match: "2nd", "3rd", "1st", "2 wali", "3 wali", "number 2", "no 3", "2 item"
+    const match = lower.match(/\b(?:no|number|num)?\s*([1-9])(?:st|nd|rd|th)?\s*(?:one|item|piece|product|jacket|shirt|coat|wali|wala|valey)?\b/);
+    if (match) {
+        const num = parseInt(match[1], 10);
+        if (num >= 1 && num <= 9) return num - 1;
+    }
+    return null;
+}
+
 router.post('/message', async (req, res) => {
     try {
         const { message, context } = req.body;
@@ -119,8 +139,8 @@ router.post('/message', async (req, res) => {
             // Check Wishlist FIRST before Add to Cart!
             if (lowerMsg.includes('wishlist') || lowerMsg.includes('favorite') || lowerMsg.includes('fav') || lowerMsg.includes('save')) {
                 activeIntent = 'wishlist_add';
-            } else if (lowerMsg.includes('add') || lowerMsg.includes('put') || lowerMsg.includes('buy') || lowerMsg.includes('get this') || lowerMsg.includes('take this')) {
-                if (lowerMsg.includes('cart') || lowerMsg.includes('bag') || lowerMsg.includes('this') || lowerMsg.includes('item') || lowerMsg.includes('one') || lowerMsg.includes('product') || lowerMsg.includes('jacket') || lowerMsg.includes('coat')) {
+            } else if (lowerMsg.includes('add') || lowerMsg.includes('put') || lowerMsg.includes('buy') || lowerMsg.includes('get this') || lowerMsg.includes('take this') || lowerMsg.includes('kro') || lowerMsg.includes('do')) {
+                if (lowerMsg.includes('cart') || lowerMsg.includes('bag') || lowerMsg.includes('this') || lowerMsg.includes('item') || lowerMsg.includes('one') || lowerMsg.includes('product') || lowerMsg.includes('jacket') || lowerMsg.includes('coat') || lowerMsg.includes('wali') || lowerMsg.includes('wala') || getRequestedIndex(lowerMsg) !== null) {
                     activeIntent = 'add_to_cart';
                 }
             }
@@ -417,32 +437,46 @@ router.post('/message', async (req, res) => {
 
             case 'add_to_cart':
                 let productToAdd = null;
-                const addStopWords = ['only', 'under', 'less', 'than', 'more', 'over', 'price', 'show', 'me', 'the', 'a', 'an', 'some', 'any', 'please', 'just', 'add', 'in', 'it', 'to', 'my', 'bag', 'cart', 'buy', 'purchase', 'want', 'looking', 'for', 'can', 'you', 'find', 'like', 'this', 'one', 'best'];
-                let potentialNames = lowerMsg.replace(/£?\d+/g, '').split(/[\s,.]+/).filter(w => w.length > 2 && !addStopWords.includes(w));
-                
-                if (potentialNames.length > 0) {
-                    const regexP = potentialNames.join('|');
-                    productToAdd = await Product.findOne({
-                        $or: [
-                            { nm: { $regex: regexP, $options: 'i' } },
-                            { ct: { $regex: regexP, $options: 'i' } },
-                            { desc: { $regex: regexP, $options: 'i' } }
-                        ]
-                    });
+                const requestedIndex = getRequestedIndex(lowerMsg);
+
+                // 1. Check if user specified an ordinal position (e.g. "2nd wali", "3rd jacket", "first one")
+                if (requestedIndex !== null && responseData.context.lastProducts && responseData.context.lastProducts.length > requestedIndex) {
+                    const targetId = responseData.context.lastProducts[requestedIndex];
+                    productToAdd = await Product.findById(targetId);
                 }
 
+                // 2. If no index match, search by product name/keywords
+                if (!productToAdd) {
+                    const addStopWords = ['only', 'under', 'less', 'than', 'more', 'over', 'price', 'show', 'me', 'the', 'a', 'an', 'some', 'any', 'please', 'just', 'add', 'in', 'it', 'to', 'my', 'bag', 'cart', 'buy', 'purchase', 'want', 'looking', 'for', 'can', 'you', 'find', 'like', 'this', 'one', 'best', 'wali', 'wala', 'valey', 'item', 'product', 'piece'];
+                    let potentialNames = lowerMsg.replace(/£?\d+/g, '').split(/[\s,.]+/).filter(w => w.length > 2 && !addStopWords.includes(w));
+                    
+                    if (potentialNames.length > 0) {
+                        const regexP = potentialNames.join('|');
+                        productToAdd = await Product.findOne({
+                            $or: [
+                                { nm: { $regex: regexP, $options: 'i' } },
+                                { ct: { $regex: regexP, $options: 'i' } }
+                            ]
+                        });
+                    }
+                }
+
+                // 3. Fallback to 1st product from previous search context
                 if (!productToAdd && responseData.context.lastProducts && responseData.context.lastProducts.length > 0) {
                     productToAdd = await Product.findById(responseData.context.lastProducts[0]);
                 }
 
-                if (!productToAdd) {
-                    productToAdd = await Product.findOne({});
-                }
-
                 if (productToAdd) {
                     let quantity = 1;
-                    if (lowerMsg.includes('two') || lowerMsg.includes(' 2 ')) quantity = 2;
-                    if (lowerMsg.includes('three') || lowerMsg.includes(' 3 ')) quantity = 3;
+                    
+                    // Only increase quantity if user explicitly specifies quantity/count keywords
+                    if (/\b(?:qty|quantity|count)\s*(?:of|=|:)?\s*(\d+)\b/i.test(lowerMsg)) {
+                        const qtyMatch = lowerMsg.match(/\b(?:qty|quantity)\s*(?:of|=|:)?\s*(\d+)\b/i);
+                        if (qtyMatch) quantity = Math.min(10, Math.max(1, parseInt(qtyMatch[1], 10)));
+                    } else if (/\b(\d+)\s*(?:pieces|items|copies|pairs|pkgs)\b/i.test(lowerMsg)) {
+                        const pcsMatch = lowerMsg.match(/\b(\d+)\s*(?:pieces|items|copies|pairs|pkgs)\b/i);
+                        if (pcsMatch) quantity = Math.min(10, Math.max(1, parseInt(pcsMatch[1], 10)));
+                    }
                     
                     const formattedProduct = {
                         ...productToAdd.toObject(),
@@ -452,9 +486,9 @@ router.post('/message', async (req, res) => {
 
                     responseData.actions.push('add_to_cart');
                     responseData.data = { type: 'cart_action', product: formattedProduct, quantity };
-                    responseData.message = `I've added the ${formattedProduct.name} to your bag.`;
+                    responseData.message = `I've added 1x ${formattedProduct.name} to your bag.`;
                 } else {
-                    responseData.message = "I couldn't find the product to add.";
+                    responseData.message = "I couldn't find which product to add. Please search for a product first.";
                 }
                 break;
 
