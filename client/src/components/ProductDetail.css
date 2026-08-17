@@ -42,6 +42,8 @@
 @media (min-width: 1024px) {
   .pd-top {
     flex-direction: row;
+    max-height: calc(100vh - 130px);
+    overflow: hidden;
   }
 }
 
@@ -53,7 +55,9 @@
 
 @media (min-width: 1024px) {
   .pd-gallery-area {
-    width: 48%;
+    width: 44%;
+    height: 100%;
+    max-height: calc(100vh - 130px);
     border-right: 1px solid var(--line, rgba(16,16,16,0.14));
   }
 }
@@ -62,9 +66,9 @@
   display: none;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  width: 100px;
-  padding: 16px 12px;
+  gap: 10px;
+  width: 90px;
+  padding: 12px 8px;
   border-right: 1px solid var(--line, rgba(16,16,16,0.14));
   background: #ffffff;
 }
@@ -76,8 +80,8 @@
 }
 
 .pd-thumb-btn {
-  width: 70px;
-  height: 84px;
+  width: 60px;
+  height: 72px;
   border: 1px solid transparent;
   padding: 0;
   background: none;
@@ -106,7 +110,8 @@
 
 @media (min-width: 1024px) {
   .pd-hero {
-    max-height: 68vh;
+    height: 100%;
+    max-height: calc(100vh - 130px);
     aspect-ratio: auto;
   }
 }
@@ -125,10 +130,10 @@
 
 .pd-zoom-btn {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 36px;
-  height: 36px;
+  top: 12px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   border: 1px solid rgba(0,0,0,0.2);
   display: flex;
@@ -145,25 +150,25 @@
 
 .pd-pagination {
   position: absolute;
-  bottom: 16px;
-  left: 16px;
-  font-size: 11px;
+  bottom: 12px;
+  left: 12px;
+  font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.1em;
   background: rgba(255,255,255,0.7);
   backdrop-filter: blur(10px);
-  padding: 6px 12px;
+  padding: 4px 8px;
 }
 
 .pd-arrows {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
+  bottom: 12px;
+  right: 12px;
   display: flex;
-  gap: 12px;
+  gap: 8px;
   background: rgba(255,255,255,0.7);
   backdrop-filter: blur(10px);
-  padding: 6px 12px;
+  padding: 4px 8px;
 }
 .pd-arrows button {
   background: none;
@@ -179,26 +184,27 @@
 .pd-info {
   width: 100%;
   background: #ffffff;
-  padding: 32px 24px;
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
 }
 
 @media (min-width: 1024px) {
   .pd-info {
-    width: 52%;
-    padding: 36px 48px;
-    max-height: 68vh;
+    width: 56%;
+    padding: 20px 32px;
+    height: 100%;
+    max-height: calc(100vh - 130px);
     overflow-y: auto;
   }
 }
 
 .pd-breadcrumbs {
-  font-size: 10px;
-  letter-spacing: 0.2em;
+  font-size: 9px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #666;
-  margin-bottom: 16px;
+  margin-bottom: 6px;
 }
 .pd-breadcrumbs span {
   cursor: pointer;
@@ -209,16 +215,16 @@
 }
 
 .pd-tag {
-  font-size: 10px;
-  letter-spacing: 0.2em;
+  font-size: 8px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #666;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 
 .pd-title {
-  font-size: 26px;
-  margin-bottom: 12px;
+  font-size: 20px;
+  margin-bottom: 6px;
   font-family: "Bodoni MT", "Didot", serif;
   letter-spacing: 0.02em;
   color: #1a1a1a;
@@ -228,7 +234,7 @@
 
 @media (min-width: 1024px) {
   .pd-title {
-    font-size: 30px;
+    font-size: 22px;
   }
 }
 
@@ -236,24 +242,25 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 .pd-price {
-  font-size: 20px;
+  font-size: 16px;
   color: #1a1a1a;
+  font-weight: 600;
 }
 .pd-stock {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 10px;
+  gap: 6px;
+  font-size: 8px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-weight: 500;
 }
 .pd-stock-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
 }
 .pd-stock-dot.in { background: #15803d; }
@@ -261,32 +268,32 @@
 
 .pd-desc {
   color: #4a4a4a;
-  font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 48px;
-  max-width: 90%;
+  font-size: 11px;
+  line-height: 1.4;
+  margin-bottom: 10px;
+  max-width: 98%;
 }
 
 .pd-section-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  letter-spacing: 0.2em;
+  gap: 6px;
+  font-size: 8px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 4px;
 }
 
 /* Colors */
 .pd-colors {
   display: flex;
-  gap: 12px;
-  margin-bottom: 32px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 .pd-color-btn {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 2px solid transparent;
   padding: 2px;
@@ -309,13 +316,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 4px;
 }
 .pd-size-guide {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 10px;
+  gap: 4px;
+  font-size: 8px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #666;
@@ -335,16 +342,16 @@
 .pd-sizes {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 40px;
+  gap: 5px;
+  margin-bottom: 10px;
 }
 .pd-size-btn {
-  width: 48px;
-  height: 40px;
+  width: 36px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 9px;
   border: 1px solid #e5e5e5;
   background: transparent;
   color: #1a1a1a;
@@ -364,15 +371,15 @@
 .pd-qty-row {
   display: flex;
   align-items: center;
-  gap: 24px;
-  margin-bottom: 40px;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 .pd-qty-box {
   display: flex;
   align-items: center;
   border: 1px solid #e5e5e5;
-  height: 40px;
-  width: 100px;
+  height: 32px;
+  width: 80px;
 }
 .pd-qty-box button {
   flex: 1;
@@ -388,7 +395,7 @@
 .pd-qty-box div {
   flex: 1;
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
 }
 
@@ -396,8 +403,8 @@
 .pd-actions {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 48px;
+  gap: 8px;
+  margin-bottom: 14px;
 }
 @media (min-width: 640px) {
   .pd-actions {
@@ -406,12 +413,12 @@
 }
 .pd-btn-primary, .pd-btn-secondary {
   flex: 1;
-  height: 48px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  font-size: 11px;
+  gap: 8px;
+  font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-weight: 500;
