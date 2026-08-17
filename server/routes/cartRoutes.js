@@ -1,12 +1,22 @@
 import express from 'express';
 import Cart from '../models/Cart.js';
+import { optionalToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// GET user cart by userId (email or ID)
-router.get('/:userId', async (req, res) => {
+// GET user cart by userId
+router.get('/:userId', optionalToken, async (req, res) => {
   try {
     const { userId } = req.params;
+    
+    // Security check: If authenticated, prevent User A from fetching User B's cart
+    if (req.user) {
+      const userIdentities = [req.user.id, req.user.email.toLowerCase().trim()];
+      if (!userIdentities.includes(userId.toLowerCase().trim())) {
+        return res.status(403).json({ message: 'Forbidden: Cannot access cart of another user' });
+      }
+    }
+
     let cart = await Cart.findOne({ userId });
     if (!cart) {
       cart = new Cart({ userId, items: [] });
@@ -19,9 +29,14 @@ router.get('/:userId', async (req, res) => {
 });
 
 // POST save / update user cart
-router.post('/save', async (req, res) => {
+router.post('/save', optionalToken, async (req, res) => {
   try {
-    const { userId, items } = req.body;
+    let { userId, items } = req.body;
+    
+    if (req.user) {
+      userId = req.user.email || req.user.id;
+    }
+
     if (!userId) {
       return res.status(400).json({ message: 'UserId is required' });
     }
@@ -42,9 +57,17 @@ router.post('/save', async (req, res) => {
 });
 
 // DELETE clear cart
-router.delete('/clear/:userId', async (req, res) => {
+router.delete('/clear/:userId', optionalToken, async (req, res) => {
   try {
     const { userId } = req.params;
+    
+    if (req.user) {
+      const userIdentities = [req.user.id, req.user.email.toLowerCase().trim()];
+      if (!userIdentities.includes(userId.toLowerCase().trim())) {
+        return res.status(403).json({ message: 'Forbidden: Cannot modify cart of another user' });
+      }
+    }
+
     await Cart.findOneAndUpdate({ userId }, { items: [] });
     res.json({ message: 'Cart cleared successfully' });
   } catch (err) {

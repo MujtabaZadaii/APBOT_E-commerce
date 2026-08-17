@@ -109,12 +109,9 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
   }
 
   const isFav = favs && favs[product._id];
-  const images = [product.img, product.img, product.img, product.img, product.img];
-  const colors = [
-    { name: 'BLACK', hex: '#000000' },
-    { name: 'TAN', hex: '#E6DCCF' },
-    { name: 'GREY', hex: '#DCDCDC' }
-  ];
+  const images = Array.isArray(product.images) && product.images.length > 0 
+    ? product.images 
+    : [product.img].filter(Boolean);
 
   return (
     <div ref={containerRef} className="pd-wrap">
@@ -123,40 +120,45 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
         
         {/* Left Gallery Section */}
         <div className="pd-gallery-area">
-          <div className="pd-thumbnails">
-            {images.map((img, idx) => (
-              <button 
-                key={idx} 
-                onClick={() => setActiveImageIndex(idx)}
-                className={`pd-thumb-btn ${activeImageIndex === idx ? 'active' : ''}`}
-              >
-                <img src={img} alt={`Thumbnail ${idx+1}`} />
-              </button>
-            ))}
-          </div>
+          {images.length > 1 && (
+            <div className="pd-thumbnails">
+              {images.map((img, idx) => (
+                <button 
+                  key={idx} 
+                  onClick={() => setActiveImageIndex(idx)}
+                  className={`pd-thumb-btn ${activeImageIndex === idx ? 'active' : ''}`}
+                >
+                  <img src={img} alt={`Thumbnail ${idx+1}`} />
+                </button>
+              ))}
+            </div>
+          )}
           
           <div className="pd-hero">
             <img 
               ref={mainImgRef}
-              src={images[activeImageIndex]} 
+              src={images[activeImageIndex] || product.img} 
               alt={product.nm}
             />
-
 
             <div className="pd-zoom-btn">
                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
             </div>
-            <div className="pd-pagination">
-              0{activeImageIndex + 1} &mdash; 05
-            </div>
-            <div className="pd-arrows">
-              <button onClick={() => setActiveImageIndex(i => Math.max(0, i - 1))}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-              </button>
-              <button onClick={() => setActiveImageIndex(i => Math.min(images.length - 1, i + 1))}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </button>
-            </div>
+            {images.length > 1 && (
+              <>
+                <div className="pd-pagination">
+                  0{activeImageIndex + 1} &mdash; 0{images.length}
+                </div>
+                <div className="pd-arrows">
+                  <button onClick={() => setActiveImageIndex(i => Math.max(0, i - 1))}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                  </button>
+                  <button onClick={() => setActiveImageIndex(i => Math.min(images.length - 1, i + 1))}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

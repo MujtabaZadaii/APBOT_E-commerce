@@ -41,4 +41,4 @@ def health():
 
 if __name__ == '__main__':
     # Run on 5001 so it doesn't conflict with Express on 5000
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=False)

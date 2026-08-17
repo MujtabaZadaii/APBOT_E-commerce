@@ -327,6 +327,10 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
             onOpenProfile();
             handleClose();
           }
+          if (action === 'open_orders' && onOpenOrders) {
+            onOpenOrders();
+            handleClose();
+          }
 
           if (action === 'open_cart' && onOpenCart) onOpenCart();
           if (action === 'open_checkout' && onOpenCheckout) onOpenCheckout();

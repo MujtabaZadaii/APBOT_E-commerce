@@ -560,6 +560,15 @@ router.post('/message', async (req, res) => {
                     responseData.message = "You are not currently signed in.";
                 }
                 break;
+            case 'previous_orders':
+                if (!authenticatedUser) {
+                    responseData.message = "Please sign in to view your order history.";
+                    responseData.actions.push('login');
+                } else {
+                    responseData.message = "Opening your recent orders.";
+                    responseData.actions.push('open_orders');
+                }
+                break;
 
             // NAVIGATION ACTIONS
             case 'open_shop':

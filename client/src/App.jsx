@@ -450,6 +450,7 @@ export default function App() {
         onOpenAuth={() => handleOpenAuth('login')}
         onSignOut={handleSignOut}
         onOpenProfile={() => setIsProfileOpen(true)}
+        onOpenOrders={() => setIsOrdersOpen(true)}
         onNavigate={(target, params) => {
           if (target === 'home') setSelectedProductId(null);
           else if (target === 'product' && params?.id) setSelectedProductId(params.id);

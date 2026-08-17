@@ -2,7 +2,6 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 import numpy as np
 
-# Download necessary NLTK packages on first run
 try:
     nltk.data.find('tokenizers/punkt')
 except LookupError:

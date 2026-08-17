@@ -1,1152 +1,663 @@
-# SABLE + ApBot — FINAL AI AGENT INTELLIGENCE & PRODUCT EXPERIENCE UPGRADE
+I want you to improve and finalize my EXISTING SABLE + ApBot project.
 
-The current SABLE + ApBot implementation is already functional and uses the real TensorFlow/Keras/NLTK ML pipeline.
+IMPORTANT:
+This is my existing project.
+DO NOT rebuild it.
+DO NOT create a new project.
+DO NOT replace the architecture.
+DO NOT remove working features.
+DO NOT redesign unrelated parts.
 
-DO NOT rebuild the project.
+First inspect the ENTIRE CURRENT PROJECT and understand how everything is connected.
 
-DO NOT replace the existing SABLE architecture.
+The goal is:
 
-DO NOT break existing authentication, products, search, cart, wishlist, checkout, orders, tracking, or the current ApBot functionality.
+MAKE THE EXISTING PROJECT SRS-COMPLIANT, SECURE, CONSISTENT, AND COMPETITION-READY.
 
-This task is a major intelligence, product-data, navigation, and UX upgrade.
-
-The goal is to make ApBot feel like a genuinely intelligent AI shopping agent deeply integrated into SABLE rather than a normal chatbot.
+You must work with the files and code that already exist in this workspace.
 
 ==================================================
+PHASE 1 — DEEP INSPECTION FIRST
+==================================================
 
-1. # FIRST — INSPECT EVERYTHING
+Before changing anything, inspect:
 
-Before modifying anything, inspect the complete current implementation:
-
-- React application
-- Product listing
-- Product cards
-- Existing product data
-- MongoDB Product schema
-- Product seed data
-- Product APIs
-- Authentication/session/JWT implementation
-- Cart
-- Wishlist
-- Checkout
-- Orders
-- Tracking
-- Existing navigation
-- ApBot frontend
-- ApBot backend
-- Python ML service
+- client/
+- server/
+- apbot/
+- MongoDB models
+- routes
+- React components
+- ApBot component
 - intents.json
-- conversation context/state machine
-- existing ApBot actions
+- NLP files
+- TensorFlow/Keras model
+- training script
+- notebook
+- Product Detail page
+- authentication
+- cart
+- wishlist
+- checkout
+- orders
+- tracking
+- navigation
+- README
+- documentation
+- submission files
 
-Do not assume how anything works.
-
-Understand the actual implementation first.
-
-Preserve all existing working functionality.
-
-================================================== 2. CREATE A PROPER PRODUCT DETAIL PAGE
-======================================
-
-The current SABLE storefront does not have a sufficiently complete dedicated product-detail experience.
-
-Create a premium, Awwwards-quality Product Details page that matches the existing SABLE visual identity.
-
-Suggested route:
-
-/product/:id
-
-OR use the existing routing architecture if a different pattern is already established.
-
-Do not create a generic e-commerce product page.
-
-It must feel like a natural extension of SABLE.
-
-================================================== 3. PRODUCT DETAIL PAGE CONTENT
-==============================
-
-The Product Details page should support real data from MongoDB.
-
-Include where available:
-
-- large product imagery
-- image gallery
-- product title
-- category
-- price
-- availability
-- description
-- material
-- available sizes
-- colour
-- quantity selector
-- Add to Bag
-- Add to Wishlist
-- product reference/SKU if available
-- shipping information
-- returns information if actually defined
-- related products
-- similar products
-
-Do not invent product information.
-
-If a field does not exist in the database, add the field safely and populate legitimate seed data.
-
-================================================== 4. AWWWARDS-LEVEL PRODUCT PAGE DESIGN
-=====================================
-
-The product page must match SABLE's existing luxury aesthetic.
-
-Use the existing design system:
-
-- SABLE black/ink
-- bone/ivory
-- refined typography
-- generous whitespace
-- hairline borders
-- editorial layout
-- premium imagery
-- subtle GSAP transitions
-- smooth scrolling where appropriate
-- sophisticated hover states
-- responsive layout
-
-Possible layout:
-
-LEFT:
-Large editorial image gallery
-
-RIGHT:
-Product title
-Price
-Description
-Material
-Colour
-Size selector
-Quantity
-Add to Bag
-Wishlist
-
-BELOW:
-Product information
-Shipping/returns
-Related products
-Similar products
-
-Do not turn it into a cluttered marketplace page.
-
-The page should feel like a luxury fashion editorial.
-
-================================================== 5. PRODUCT DATABASE EXPANSION
-=============================
-
-Audit the existing MongoDB Product schema.
-
-Ensure the database can represent all information required by the new Product Details page and ApBot.
-
-Where appropriate support:
-
-- title
-- slug
-- description
-- price
-- category
-- collection
-- images
-- thumbnail
-- colour
-- material
-- sizes
-- availability
-- inStock
-- SKU/reference
-- related products
-- tags
-- features
-- shipping information where applicable
+Also inspect the provided SRS.
 
 IMPORTANT:
 
-DO NOT delete the existing database.
+SRS = requirements source of truth.
+SOURCE CODE = implementation source of truth.
 
-DO NOT blindly re-seed and destroy existing products.
+Do not assume that documentation claims are correct.
 
-Perform a SAFE migration/backfill.
+Compare actual code against the SRS.
 
-Preserve existing product IDs and existing relationships.
+==================================================
+PHASE 2 — CREATE INTERNAL GAP ANALYSIS
+==================================================
 
-================================================== 6. CREATE HIGH-QUALITY PRODUCT SEED DATA
-========================================
+Before modifying code, identify:
 
-The AI cannot provide useful product information if the database contains incomplete products.
+1. SRS requirements already implemented
+2. Partially implemented requirements
+3. Missing requirements
+4. Security vulnerabilities
+5. Functional bugs
+6. Navigation issues
+7. Data inconsistencies
+8. Documentation claims that don't match code
 
-Audit every existing product.
+Do NOT immediately start changing random files.
 
-Make sure the products have meaningful:
+Understand the architecture first.
 
-- descriptions
-- materials
-- colours
-- sizes
-- categories
-- availability
-- pricing
-- images
-- tags
+==================================================
+PHASE 3 — SECURITY FIXES
+==================================================
 
-The seed data must be realistic and consistent with the existing SABLE luxury fashion catalogue.
+Fix security issues without breaking the existing authentication flow.
 
-Do not create random unrelated products.
+### PASSWORDS
 
-Keep the existing SABLE collections such as:
+If passwords are currently stored or compared as plaintext:
 
-- Outerwear
-- Knitwear
-- Tailoring
-- Archive
+Implement bcrypt/bcryptjs securely.
 
-where those collections already exist.
+Registration:
 
-================================================== 7. PRODUCT DATA MUST BECOME APBOT KNOWLEDGE
-===========================================
+password
+→ bcrypt hash
+→ database
+
+Login:
+
+password
+→ bcrypt.compare()
+→ JWT
+
+Never store plaintext passwords.
+
+Do not expose passwords anywhere.
+
+### JWT
+
+Remove insecure hardcoded fallback JWT secrets.
+
+JWT_SECRET must come from environment variables.
+
+Never expose secrets in frontend code.
+
+### USER OWNERSHIP
 
 This is extremely important.
 
-Do NOT hardcode product descriptions inside chatbot responses.
+Never trust:
 
-ApBot should retrieve product information from the REAL MongoDB product catalogue.
+- req.body.userId
+- req.body.email
+- req.query.email
+- frontend context.userId
 
-When the user asks:
+for authenticated ownership.
 
-"What is this jacket made of?"
+The authenticated user's identity must come from the verified JWT.
 
-"Tell me about this product."
+Use the JWT identity for:
+
+- profile
+- wishlist
+- cart
+- orders
+- order history
+- protected ApBot actions
+
+### ORDER SECURITY
+
+User A must NEVER be able to access User B's orders by changing:
+
+userId
+email
+order ID
+request parameters
+
+Verify ownership on the backend.
+
+### WISHLIST SECURITY
+
+User A must not be able to retrieve or modify User B's wishlist.
+
+### CART SECURITY
+
+Authenticated cart operations must belong to the authenticated user.
+
+### APBOT SECURITY
+
+ApBot must use verified authentication for protected operations.
+
+Conversation context may be used for conversational memory.
+
+BUT:
+
+conversation context must NEVER be treated as authentication.
+
+==================================================
+PHASE 4 — NAVIGATION
+==================================================
+
+Test and fix ALL ApBot navigation actions.
+
+These must work:
+
+"Go home"
+
+"Open shop"
+
+"Open Outerwear"
+
+"Open Knitwear"
+
+"Open Tailoring"
+
+"Open Archive"
+
+"Open my profile"
+
+"Open my orders"
+
+"Open my wishlist"
+
+"Open my bag"
+
+"Open checkout"
+
+"Open tracking"
+
+"Open this product"
+
+"Open product details"
+
+If the backend sends a navigation action that React does not understand, fix the integration.
+
+Do not create duplicate navigation systems.
+
+Use the existing SABLE navigation architecture.
+
+==================================================
+PHASE 5 — PRODUCT KNOWLEDGE
+==================================================
+
+ApBot must answer product questions using REAL MongoDB product data.
+
+Verify:
+
+- name
+- description
+- price
+- material
+- colour
+- sizes
+- availability
+- stock
+- tags
+- category
+
+Never invent product information.
+
+Test:
+
+"What material is this?"
 
 "What sizes are available?"
 
-"What is the price?"
-
-"Is this available?"
-
-ApBot should query the real product data.
-
-The database is the source of truth.
-
-================================================== 8. PRODUCT INFORMATION INTELLIGENCE
-===================================
-
-Support natural-language product questions:
-
-"Tell me about this."
-
-"What material is it?"
-
-"What sizes does it come in?"
-
 "How much is it?"
 
-"Is it available?"
+"Is it in stock?"
 
-"Tell me everything about this jacket."
+"Tell me about this product."
 
-"Open this product."
+==================================================
+PHASE 6 — PRODUCT DETAIL PAGE
+==================================================
 
-"Show me the details."
+Inspect the existing Product Detail page.
 
-The assistant should provide concise information and offer:
+Improve it without changing the SABLE visual identity.
 
-[View Product]
+It must display real database information.
 
-[Add to Bag]
+Do NOT create fake information when a database field is missing.
 
-[Add to Wishlist]
+If only one product image exists:
 
-================================================== 9. SIMILAR PRODUCT INTELLIGENCE
-===============================
+show one real image.
 
-Current "similar products" functionality must be significantly improved.
+Do NOT duplicate the same image five times pretending they are different gallery images.
 
-When the user says:
+Keep the page premium, editorial and Awwwards-quality.
 
-"Show me something similar."
+==================================================
+PHASE 7 — SIMILAR PRODUCTS
+==================================================
 
-"Give me alternatives."
+Improve the existing similar-product functionality.
 
-"Show me more like this."
+Do not replace the existing database.
 
-"Anything similar but cheaper?"
+Use actual product attributes.
 
-"Something like this in black."
-
-"Show me similar jackets under £200."
-
-ApBot should use the actual product attributes:
+Recommendations should consider:
 
 - category
-- collection
+- tags
 - colour
 - material
 - price
-- tags
-- product type
 - availability
 
-Do not simply search the product title using basic keywords.
+The result must be relevant.
 
-The recommendation engine should return genuinely related products.
+Examples:
 
-================================================== 10. SIMILAR PRODUCT CONTEXT
-===========================
-
-If the user is currently viewing a Product Details page and opens ApBot:
-
-ApBot should know which product is currently relevant when the frontend provides the safe product context.
-
-Example:
-
-User:
-"Show me something similar to this."
-
-ApBot:
-Uses the currently viewed product.
-
-If the user previously selected a product in chat:
-
-User:
 "Show me something similar."
 
-ApBot:
-Uses the last selected/displayed product.
+"Show me something cheaper."
 
-Do not require the user to repeat the product name unnecessarily.
+"Show me something similar in black."
 
-================================================== 11. PRODUCT → CHATBOT → PRODUCT PAGE
-====================================
+"Show me similar products under £200."
 
-Create a seamless loop:
+Never invent products.
 
-Product card in ApBot
-→ View Product
-→ Product Details page
+==================================================
+PHASE 8 — CONTEXTUAL AI
+==================================================
 
-Product Details page
-→ Open ApBot
-→ Ask about current product
+DO NOT BREAK THE EXISTING CONTEXT SYSTEM.
 
-ApBot
-→ Similar products
-→ Product cards
-→ View Product
-
-This should feel like one connected shopping experience.
-
-================================================== 12. APBOT NAVIGATION AGENT
-==========================
-
-Upgrade ApBot so it can safely control SABLE navigation.
-
-Users should be able to say:
-
-"Open the shop."
-
-"Take me to Outerwear."
-
-"Show me Knitwear."
-
-"Open Tailoring."
-
-"Open Archive."
-
-"Go home."
-
-"Open my profile."
-
-"Open my bag."
-
-"Open my wishlist."
-
-"Open checkout."
-
-"Open order tracking."
-
-"Open the tracking page."
-
-"Take me to search."
-
-"Open this product."
-
-The assistant should return structured navigation actions.
-
-Example:
-
-{
-"action": "navigate",
-"target": "/shop"
-}
-
-or use the existing routing/state architecture.
-
-Do not hardcode URLs if the application already has centralized routing.
-
-================================================== 13. AUTHENTICATION-AWARE ACTIONS
-================================
-
-ApBot must understand the user's authentication state.
-
-IMPORTANT:
-
-Do NOT send an already-authenticated user back to login unnecessarily.
-
-Example:
-
-User is logged in.
-
-User:
-"Open login."
-
-The assistant should understand that the user is already authenticated and respond appropriately, for example:
-
-"You're already signed in to your SABLE account."
-
-Then optionally offer:
-
-[Open Profile]
-
-[Sign Out]
-
-If the user explicitly wants to sign out:
-
-"Log me out."
-
-→ safely execute the existing SABLE logout mechanism.
-
-================================================== 14. LOGIN ACTION
-================
-
-If the user is NOT authenticated and asks for a protected action:
-
-"Open my orders."
-
-"Show my wishlist."
-
-"Open my profile."
-
-"Show my bag."
-
-If the requested action requires authentication:
-
-→ do NOT expose private information.
-
-→ route the user to the existing Login/Register interface.
-
-Example:
-
-"Please sign in to access your orders."
-
-[Sign In]
-
-Do not create a second login system.
-
-Use the existing SABLE authentication UI.
-
-================================================== 15. LOGOUT ACTION
-=================
-
-Support:
-
-"Logout."
-
-"Sign me out."
-
-"I want to log out."
-
-Use the existing secure logout mechanism.
-
-After logout:
-
-- clear authentication state correctly
-- clear sensitive client state where required
-- update ApBot authentication awareness
-- prevent protected actions
-- do not leave stale private information visible
-
-Do not simply navigate to another page without actually logging out.
-
-================================================== 16. LOGIN AWARENESS
-===================
-
-ApBot must always understand:
-
-- logged in
-- logged out
-
-The frontend should provide safe authentication state to the backend/action layer.
-
-Never trust a user-provided userId.
-
-Never expose another user's data.
-
-================================================== 17. CART AGENT
-==============
-
-ApBot should control the existing SABLE cart.
-
-Support:
-
-"Open my bag."
-
-"What's in my bag?"
-
-"Add this."
-
-"Add the first one."
-
-"Add two."
-
-"Remove this."
-
-"Remove the jacket."
-
-"Increase the quantity."
-
-"Decrease the quantity."
-
-"Clear my bag."
-
-Only implement destructive actions such as clearing the bag when the existing UX/security model supports it appropriately.
-
-Use the existing cart implementation.
-
-================================================== 18. CHECKOUT AGENT
-==================
-
-Support:
-
-"Take me to checkout."
-
-"Checkout."
-
-"I want to buy this."
-
-"Proceed with my order."
-
-If the user is unauthenticated and checkout requires authentication:
-
-→ route to login.
-
-If authenticated:
-
-→ open the existing checkout flow.
-
-Do not create duplicate checkout logic.
-
-================================================== 19. ORDER & TRACKING AGENT
-==========================
-
-Support:
-
-"Open tracking."
-
-"Track my order."
-
-"Where is my order?"
-
-"Track SBL-12345."
-
-"Open my latest order."
-
-"When will my order arrive?"
-
-Use the existing order/tracking backend.
-
-If the user asks:
-
-"Open the tracking page."
-
-→ navigate to the public tracking page.
-
-If the user asks:
-
-"Track my order."
-
-→ if the latest order is safely available, show the relevant status.
-
-If the user explicitly gives a tracking code:
-
-→ track that code.
-
-Never fabricate tracking information.
-
-================================================== 20. WISHLIST AGENT
-==================
-
-Support:
-
-"Open my wishlist."
-
-"Save this."
-
-"Add this to my wishlist."
-
-"Remove this from my wishlist."
-
-"Show my saved products."
-
-Use the existing SABLE wishlist/favs implementation.
-
-Respect authentication.
-
-================================================== 21. SEARCH AGENT
-================
-
-ApBot should understand:
-
-"Search for black jackets."
-
-"Find Gauge Cardigan."
-
-"Search Outerwear."
-
-"Find something under £150."
-
-"Search black knitwear."
-
-"Show me what you have."
-
-Use the real product catalogue.
-
-The user should not have to manually use the search UI when ApBot can safely perform the same operation.
-
-================================================== 22. MULTI-TURN CONTEXT
-======================
-
-Preserve and improve the existing state machine.
-
-The following MUST work:
+This exact conversation must continue working:
 
 User:
 "Show me jackets."
 
 Bot:
-Returns products.
+shows real products.
 
 User:
 "Only black."
 
 Bot:
-Filters previous result.
+filters previous products.
 
 User:
 "Under £200."
 
 Bot:
-Applies another filter.
+filters again.
 
 User:
 "Show me the first one."
 
 Bot:
-References the first product.
+understands the previous product list.
 
 User:
 "Tell me about it."
 
 Bot:
-Retrieves product details.
+returns actual product information.
 
 User:
 "Show me something similar."
 
 Bot:
-Uses that product as recommendation context.
+returns relevant products.
 
 User:
 "Add it to my bag."
 
 Bot:
-Adds the correct product.
+adds the correct product.
 
-This is the required quality level.
+Also support:
 
-================================================== 23. APBOT INTENT SYSTEM
-=======================
+"the first one"
+"the second one"
+"this"
+"that"
+"it"
+"another one"
 
-Audit and expand intents.json to cover:
+when context is clear.
 
-GENERAL:
+If context is unclear, ask a short clarification question.
 
-- greeting
-- goodbye
-- thanks
-- help
-- bot_identity
+==================================================
+PHASE 9 — CHECKOUT / TRACKING
+==================================================
 
-PRODUCT:
+Do not create duplicate checkout logic.
 
-- product_search
-- product_information
-- product_price
-- product_availability
-- product_recommendation
-- similar_products
-- category_search
-- offers
-
-NAVIGATION:
-
-- go_home
-- open_shop
-- open_category
-- open_product
-- open_search
-- open_cart
-- open_wishlist
-- open_profile
-- open_checkout
-- open_tracking
-
-AUTH:
-
-- login
-- logout
-- account_status
-
-CART:
-
-- add_to_cart
-- remove_from_cart
-- update_cart
-- view_cart
-
-WISHLIST:
-
-- wishlist_add
-- wishlist_remove
-- view_wishlist
-
-ORDER:
-
-- order_tracking
-- order_status
-- delivery_date
-- previous_orders
-- order_details
-
-SUPPORT:
-
-- faq
-- complaint
-- return_product
-- contact_support
-
-FALLBACK:
-
-- unknown
-
-Make sure the real TensorFlow/Keras model is retrained after dataset changes.
-
-Do not use MockPredictor.
-
-================================================== 24. STRUCTURED ACTION SYSTEM
-============================
-
-ApBot responses should distinguish between:
-
-TEXT RESPONSE
-
-PRODUCT RESULTS
-
-PRODUCT DETAIL
-
-NAVIGATION ACTION
-
-CART ACTION
-
-WISHLIST ACTION
-
-AUTH ACTION
-
-CHECKOUT ACTION
-
-ORDER/TRACKING ACTION
-
-Example:
-
-{
-"message": "Here are some black jackets under £200.",
-"type": "products",
-"products": [...]
-}
-
-Navigation:
-
-{
-"message": "Opening your bag.",
-"type": "action",
-"action": "open_cart"
-}
-
-Logout:
-
-{
-"message": "Signing you out.",
-"type": "action",
-"action": "logout"
-}
-
-Product:
-
-{
-"message": "Here are the details.",
-"type": "product_detail",
-"product": {...}
-}
-
-Use the existing frontend architecture wherever possible.
-
-================================================== 25. DO NOT LET AI DIRECTLY CONTROL THE DATABASE
-===============================================
-
-The AI model should understand intent.
-
-The Express backend should validate and execute actions.
-
-Architecture:
-
-React
-↓
-Express
-↓
-AI prediction
-↓
-validated action
-↓
-existing SABLE service
-↓
-MongoDB
-
-Never allow unrestricted AI-generated database queries or mutations.
-
-================================================== 26. PRODUCT DETAIL PAGE + APBOT DEMO
-====================================
-
-The final experience should support this:
-
-Open Product Details.
-
-User opens ApBot.
-
-User:
-"Tell me about this product."
-
-ApBot:
-Returns real description, material, sizes, price, availability.
-
-User:
-"Show me something similar."
-
-ApBot:
-Returns related products.
-
-User:
-"Show me something cheaper."
-
-ApBot:
-Returns cheaper alternatives.
-
-User:
-"Add the first one to my bag."
-
-ApBot:
-Adds the correct product.
-
-This should work using real database information.
-
-================================================== 27. AWWWARDS-LEVEL PRODUCT PAGE
-===============================
-
-Make the Product Details page visually exceptional.
-
-Use subtle:
-
-- image reveal
-- image transitions
-- hover zoom
-- GSAP entrance animations
-- smooth typography transitions
-- elegant size selection
-- refined CTA interactions
-- responsive mobile layout
-
-Do not over-animate.
-
-The design should communicate:
-
-Luxury
-Fashion
-Technology
-Precision
-
-It should feel like a premium editorial fashion website rather than a standard Shopify clone.
-
-================================================== 28. RESPONSIVE PRODUCT EXPERIENCE
-=================================
+Use the existing checkout system.
 
 Verify:
 
-Desktop
-Tablet
-Mobile
-
-Product images must remain high quality.
-
-Buttons must remain usable.
-
-Chatbot must not cover important product controls.
-
-ApBot should intelligently reposition or minimize when the product page requires more screen space.
-
-================================================== 29. DATA CONSISTENCY
-====================
-
-Ensure the same product data is used everywhere:
-
-Product Listing
-Product Card
-Product Detail
-Search
-ApBot
-Recommendations
 Cart
-Wishlist
-Checkout
-Orders
+→ Checkout
+→ Order creation
+→ Tracking ID
+→ Order tracking
 
-Avoid duplicated product definitions.
+Authentication and ownership must be validated server-side.
 
-MongoDB should remain the source of truth.
+Do not fabricate order information.
 
-================================================== 30. DATABASE SAFETY
-===================
+Do not allow users to access other users' orders.
 
-DO NOT:
+==================================================
+PHASE 10 — BUSINESS INFORMATION CONSISTENCY
+==================================================
 
-- drop database
-- delete existing users
-- delete existing orders
-- replace existing products blindly
-- change product IDs unnecessarily
+Audit the entire project for conflicting information.
 
-If seed data must be updated:
+Check:
 
-Use safe upsert/migration/backfill logic.
+- shipping threshold
+- return policy
+- delivery time
+- payment information
+- product availability
+- product pricing
+- FAQ answers
 
-Preserve existing data.
+If the same business information appears in multiple places:
 
-================================================== 31. TESTING
-===========
+make it consistent.
 
-Run the following exact conversation:
+ApBot's answers must match the website.
 
-1.
+Do not invent new policies.
 
-"Show me jackets."
+Use the project's actual intended policy.
 
-2.
+==================================================
+PHASE 11 — AI / ML
+==================================================
 
-"Only black."
+DO NOT replace the existing TensorFlow/Keras architecture with an LLM.
 
-3.
+Keep:
 
-"Under £200."
+- TensorFlow
+- Keras
+- NLTK
+- tokenization
+- lemmatization
+- Bag of Words
+- intents.json
+- trained model
+- Flask API
 
-4.
+Verify the REAL trained model is being used.
 
-"Show me the first one."
+MockPredictor must NOT be reintroduced.
 
-5.
+If training data needs improvement, improve intents.json and retrain the existing model.
 
-"Tell me about it."
+Do not fabricate accuracy numbers.
 
-6.
+==================================================
+PHASE 12 — VISUAL SEARCH
+==================================================
 
-"Show me something similar."
+Inspect the existing image-search feature.
 
-7.
+Be technically honest.
 
-"Show me something cheaper."
+If it is metadata/keyword-based search rather than actual computer vision:
 
-8.
+keep it functional but do NOT call it CNN/image-embedding AI.
 
-"Add the second one to my bag."
+Do not claim functionality that does not exist.
 
-9.
+==================================================
+PHASE 13 — DOCUMENTATION
+==================================================
 
-"What's in my bag?"
+Update documentation ONLY where it does not match the actual implementation.
 
-10.
+Especially verify claims about:
 
-"Open checkout."
+- bcrypt
+- ML accuracy
+- confidence scores
+- response time
+- uptime
+- visual AI
+- security
+- testing
 
-11.
+Never invent metrics.
 
-"Go to the tracking page."
+If something has not been formally measured, say:
 
-12.
+"Not formally benchmarked."
 
-"Open my wishlist."
+If something is not implemented, clearly say:
 
-13.
+"Not implemented."
 
-"Open my profile."
+Documentation must match the source code.
 
-14.
+==================================================
+PHASE 14 — TEST EVERYTHING
+==================================================
 
-"Log me out."
+After fixes, actually test the application.
 
-15.
+Test:
 
-"Open my profile."
+### CONVERSATION
 
-Expected:
-User is sent to login because they are logged out.
+Hi
+Hello
+Thanks
+Okay
+Bye
+How are you?
 
-16.
+### PRODUCT
 
-"Login."
+Show me jackets
+Show me black jackets
+Show me jackets under £200
+Tell me about this
+What material is it?
+What sizes are available?
+Show me something similar
 
-Expected:
-Existing login UI/page opens.
+### CONTEXT
 
-17.
+Show me jackets
+Only black
+Under £200
+Show me the first one
+Tell me about it
+Add it to my bag
 
-After login:
-"Open my profile."
+### CART
 
-Expected:
-Profile opens, NOT login.
+What's in my bag?
+Add another one
+Remove it
+Increase quantity
+Decrease quantity
 
-18.
+### WISHLIST
 
-"Open my bag."
+Save this for later
+Show my wishlist
+Remove this from wishlist
 
-Expected:
-Cart opens.
+### CHECKOUT
 
-19.
+Take me to checkout
 
-"Open tracking."
+### TRACKING
 
-Expected:
-Tracking page opens.
+Track my order
+Open tracking
 
-20.
+### NAVIGATION
 
-"Show me Outerwear."
+Go home
+Open shop
+Open Outerwear
+Open Knitwear
+Open Tailoring
+Open Archive
+Open profile
+Open orders
+Open wishlist
+Open bag
 
-Expected:
-Outerwear products are shown.
+### AUTH
 
-================================================== 32. SECURITY TESTS
-==================
+Login
+Logout
+Open profile while logged out
+Open orders while logged out
+Open profile while logged in
+
+### FALLBACK
+
+Ask something completely unrelated.
+
+The bot should politely refuse instead of hallucinating.
+
+==================================================
+PHASE 15 — SECURITY TESTING
+==================================================
+
+Actually verify:
+
+- invalid JWT rejected
+- missing authentication rejected for protected actions
+- User A cannot access User B orders
+- User A cannot access User B wishlist
+- User A cannot access User B cart
+- frontend cannot spoof userId
+- frontend cannot spoof email
+- protected ApBot actions respect authentication
+
+==================================================
+PHASE 16 — BUILD VERIFICATION
+==================================================
+
+Run the actual project.
 
 Verify:
 
-- logged-out users cannot access private account data
-- logged-out users are redirected to login for protected actions
-- logged-in users are not unnecessarily redirected to login
-- logout actually invalidates the session
-- users cannot access another user's orders
-- users cannot modify another user's cart
-- users cannot access another user's wishlist
-- frontend userId manipulation cannot bypass backend authorization
+Frontend build succeeds.
+Backend starts.
+Python service starts.
+TensorFlow model loads.
+NLTK resources load.
+MongoDB connects.
+ApBot works.
 
-================================================== 33. ML VERIFICATION
-===================
+Fix all errors discovered during testing.
 
-After expanding intents:
+Then run the tests again.
 
-1. retrain TensorFlow/Keras model
-2. verify NLTK resources
-3. run evaluation
-4. verify model artifacts
-5. test live Flask prediction
-6. verify no MockPredictor exists in runtime
-7. test all new navigation/action intents
+==================================================
+PHASE 17 — DO NOT BREAK EXISTING PROJECT
+==================================================
 
-Do not claim completion without retraining.
+Before finishing, verify that these existing features still work:
 
-================================================== 34. DOCUMENTATION
-=================
+- homepage
+- product listing
+- search
+- cart
+- wishlist
+- authentication
+- checkout
+- order creation
+- tracking
+- profile
+- Product Detail page
+- ApBot
+- GSAP animations
+- Lenis scrolling
+- responsive design
 
-Update:
+Do not remove existing functionality.
 
-- README
-- SRS_COMPLIANCE.md
-- ApBot capability documentation
+==================================================
+FINAL RESPONSE
+==================================================
 
-Document:
+When everything is finished, give me a concise report with:
 
-- Product Details
-- Product Knowledge
-- Recommendations
-- Navigation actions
-- Authentication awareness
-- Login/logout
-- Cart actions
-- Wishlist actions
-- Tracking
-- Context
-- Security
-- Database architecture
+1. SECURITY FIXES
+2. FUNCTIONAL FIXES
+3. AI/ML FIXES
+4. NAVIGATION FIXES
+5. DATABASE FIXES
+6. DOCUMENTATION FIXES
+7. TESTS ACTUALLY RUN
+8. BUILD RESULT
+9. REMAINING LIMITATIONS
 
-Do not document capabilities that are not actually implemented.
+For every item use:
 
-================================================== 35. FINAL QUALITY STANDARD
-==========================
+✅ FIXED
+⚠️ PARTIAL
+❌ NOT FIXED
 
-The final system should feel like:
+IMPORTANT:
 
-SABLE
+Do not say "PASS" just because code was modified.
 
-- AI Shopping Assistant
-- AI Navigation Agent
-- AI Product Expert
-- AI Cart Assistant
-- AI Order Assistant
+Only say PASS after actually verifying the behavior.
 
-The user should be able to interact with the storefront naturally rather than manually navigating every page.
+Do not fabricate test results.
 
-However:
+Do not claim 100% completion unless every relevant SRS requirement has actually been verified.
 
-Do NOT remove normal website navigation.
+The final goal is:
 
-ApBot is an additional intelligent interface, not a replacement for the website.
+SABLE + ApBot
+= Secure
+= SRS-compliant
+= technically accurate
+= natural conversational AI
+= fully integrated e-commerce assistant
+= competition-ready
 
-================================================== 36. FINAL NON-NEGOTIABLE RULES
-==============================
-
-- Preserve SABLE.
-- Preserve existing functionality.
-- Use real MongoDB product data.
-- Use real TensorFlow/Keras model.
-- No MockPredictor.
-- No fake product information.
-- No fake tracking information.
-- No fake offers.
-- No duplicate authentication system.
-- No duplicate cart system.
-- No duplicate wishlist system.
-- No duplicate checkout system.
-- No database reset.
-- No unnecessary admin panel.
-- No dashboard.
-- No generic chatbot UI.
-- No security shortcuts.
-- No trusting frontend userId.
-- No unnecessary login redirects.
-- No fabricated product details.
-
-Inspect → Implement → Test → Fix → Retrain → Verify → Document.
-
-Only declare completion after the entire experience has been tested end-to-end.
+Preserve the existing SABLE identity and architecture throughout.
