@@ -36,6 +36,8 @@ export default function App() {
   useScrollEffects();
   const { transitionTo } = usePageTransition();
   const [currentView, setCurrentView] = useState('home'); // 'home' | 'about' | 'contact'
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [pendingScrollTarget, setPendingScrollTarget] = useState(null);
 
   const handleSelectProduct = (id) => {
     transitionTo(() => {
@@ -64,8 +66,6 @@ export default function App() {
       setCurrentView('contact');
     });
   };
-
-  const [pendingScrollTarget, setPendingScrollTarget] = useState(null);
 
   const scrollToElement = (selector) => {
     const el = document.querySelector(selector);
@@ -151,7 +151,6 @@ export default function App() {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [trackingDefaultOrder, setTrackingDefaultOrder] = useState(null);
-  const [selectedProductId, setSelectedProductId] = useState(null);
   const [products, setProducts] = useState([]);
 
   // Fetch real products
