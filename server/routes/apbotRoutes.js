@@ -20,6 +20,25 @@ function getRequestedIndex(text) {
     }
     return null;
 }
+function isValidAddress(text) {
+    if (!text || text.trim().length < 8) return false;
+    const lower = text.toLowerCase().trim();
+    const junkWords = ['add', 'fill', 'random', 'test', 'asdf', '123', 'yes', 'no', 'ok', 'hi', 'hello', 'help', 'product', 'item', 'something', 'report', 'what'];
+    if (junkWords.includes(lower)) return false;
+    const hasNumber = /\d+/.test(lower);
+    const hasAddressKw = /\b(street|st|road|rd|ave|avenue|drive|flat|apartment|house|lane|city|london|karachi|lahore|islamabad|postcode|zip|block|town|country|mayfair|york|uk|pakistan|suite|sector|phase|building)\b/i.test(lower);
+    return hasNumber || hasAddressKw || lower.includes(',');
+}
+
+function isValidPayment(text) {
+    if (!text || text.trim().length < 2) return false;
+    const lower = text.toLowerCase().trim();
+    const junkWords = ['add', 'fill', 'random', 'test', 'asdf', '123', 'ok', 'hi', 'hello', 'help'];
+    if (junkWords.includes(lower)) return false;
+    const validPaymentKw = /\b(card|credit|debit|visa|mastercard|cash|cod|cash on delivery|apple pay|applepay|google pay|gpay|paypal|klarna|online|bank)\b/i;
+    return validPaymentKw.test(lower);
+}
+
 router.post('/message', async (req, res) => {
     try {
         const { message, context } = req.body;
@@ -30,8 +49,8 @@ router.post('/message', async (req, res) => {
                 const token = authHeader.split(' ')[1];
                 authenticatedUser = jwt.verify(token, JWT_SECRET);
             } catch (err) {
-                console.warn("Invalid JWT presented to ApBot");
-                return res.status(401).json({ error: "Invalid Authentication Token" });
+                console.warn("Invalid JWT presented to ApBot, falling back to guest mode.");
+                authenticatedUser = null;
             }
         }
         let aiData = { intent: 'unknown', confidence: 0, message: '', context: context || {} };
@@ -78,11 +97,21 @@ router.post('/message', async (req, res) => {
             }
         }
         let activeIntent = intent;
-        if (context?.checkoutState === 'awaiting_address') {
+        
+        const isCancelReq = /\b(cancel|stop|exit|abort|nevermind)\b/i.test(lowerMsg);
+        const isTopicSwitch = /\b(show|find|search|where|what|how|return|policy|shipping|track|tracking|order|jacket|knitwear|tailoring|price|size|discount|outfit|contact|report)\b/i.test(lowerMsg);
+        
+        if (isCancelReq) {
+            responseData.context.checkoutState = null;
+            activeIntent = 'cancel_checkout';
+        } else if (isTopicSwitch) {
+            responseData.context.checkoutState = null;
+        } else if (context?.checkoutState === 'awaiting_address') {
             activeIntent = 'process_address';
         } else if (context?.checkoutState === 'awaiting_payment') {
             activeIntent = 'process_payment';
         }
+
         if (!context?.checkoutState && (lowerMsg.includes('add it') || lowerMsg.includes('add another')) && context?.lastProducts?.length > 0) {
              activeIntent = 'add_to_cart';
         }
@@ -90,7 +119,7 @@ router.post('/message', async (req, res) => {
             responseData.context.lastProducts = [context.lastProducts[referencedProductIndex]];
             if (lowerMsg.includes('wishlist') || lowerMsg.includes('favorite') || lowerMsg.includes('fav') || lowerMsg.includes('save')) {
                 activeIntent = 'wishlist_add';
-            } else if (lowerMsg.includes('add') || lowerMsg.includes('buy') || lowerMsg.includes('cart') || lowerMsg.includes('bag')) {
+            } else if (/\b(add|buy|cart|bag)\b/i.test(lowerMsg)) {
                 activeIntent = 'add_to_cart';
             } else {
                 activeIntent = 'product_information';
@@ -105,13 +134,15 @@ router.post('/message', async (req, res) => {
         if (!context?.checkoutState && referencedProductIndex === -1) {
             if (lowerMsg.includes('wishlist') || lowerMsg.includes('favorite') || lowerMsg.includes('fav') || lowerMsg.includes('save')) {
                 activeIntent = 'wishlist_add';
-            } else if (lowerMsg.includes('add') || lowerMsg.includes('put') || lowerMsg.includes('buy') || lowerMsg.includes('get this') || lowerMsg.includes('take this') || lowerMsg.includes('kro') || lowerMsg.includes('do')) {
+            } else if (/\b(add|put|buy|purchase)\b/i.test(lowerMsg) || lowerMsg.includes('get this') || lowerMsg.includes('take this')) {
                 if (lowerMsg.includes('cart') || lowerMsg.includes('bag') || lowerMsg.includes('this') || lowerMsg.includes('item') || lowerMsg.includes('one') || lowerMsg.includes('product') || lowerMsg.includes('jacket') || lowerMsg.includes('coat') || lowerMsg.includes('wali') || lowerMsg.includes('wala') || getRequestedIndex(lowerMsg) !== null) {
                     activeIntent = 'add_to_cart';
                 }
             }
             if (activeIntent !== 'add_to_cart') {
-                if (lowerMsg.includes('outfit') || lowerMsg.includes('complete look') || lowerMsg.includes('pair with') || lowerMsg.includes('style with') || lowerMsg.includes('bundle')) {
+                if (lowerMsg.includes('report') || lowerMsg.includes('doc') || lowerMsg.includes('srs')) {
+                    activeIntent = 'report_info';
+                } else if (lowerMsg.includes('outfit') || lowerMsg.includes('complete look') || lowerMsg.includes('pair with') || lowerMsg.includes('style with') || lowerMsg.includes('bundle')) {
                     activeIntent = 'ai_outfit';
                 } else if (lowerMsg.includes('size') || /\bfit\b/.test(lowerMsg) || lowerMsg.includes('height') || lowerMsg.includes('weight') || lowerMsg.includes('kg') || lowerMsg.includes('cm') || lowerMsg.includes('ft')) {
                     activeIntent = 'ai_size_fit';
@@ -126,7 +157,7 @@ router.post('/message', async (req, res) => {
                     activeIntent = 'checkout';
                 } else if ((lowerMsg.includes('view') || lowerMsg.includes('open') || lowerMsg.includes('check') || lowerMsg.trim() === 'cart' || lowerMsg.trim() === 'bag') && (lowerMsg.includes('bag') || lowerMsg.includes('cart'))) {
                     activeIntent = 'view_cart';
-                } else if (lowerMsg.includes('track') || lowerMsg.includes('delivery')) {
+                } else if (lowerMsg.includes('track') || lowerMsg.includes('delivery') || lowerMsg.includes('received') || lowerMsg.includes('receive')) {
                     activeIntent = 'order_tracking';
                 } else if (lowerMsg.includes('show') || lowerMsg.includes('find') || lowerMsg.includes('search') || lowerMsg.includes('outerwear') || lowerMsg.includes('knitwear') || lowerMsg.includes('tailoring') || lowerMsg.includes('jacket') || lowerMsg.includes('jaket') || lowerMsg.includes('dikhao') || lowerMsg.includes('dikao') || lowerMsg.includes('batao') || lowerMsg.includes('btao') || lowerMsg.includes('chahiye') || lowerMsg.includes('all') || lowerMsg.includes('sare') || lowerMsg.includes('sab') || lowerMsg.includes('products') || lowerMsg.includes('items')) {
                     activeIntent = 'product_search';
@@ -565,14 +596,32 @@ router.post('/message', async (req, res) => {
                     responseData.data = { type: 'address_form' };
                 }
                 break;
+            case 'cancel_checkout':
+                responseData.context.checkoutState = null;
+                responseData.message = "Checkout has been cancelled. How else can I help you today?";
+                break;
+            case 'report_info':
+                responseData.message = "The complete SABLE Project Report and Technical SRS documentation are available in the repository root (SABLE_PROJECT_DOCUMENTATION.md) and submission folder.";
+                break;
             case 'process_address':
-                responseData.context.checkoutState = 'awaiting_payment';
-                responseData.context.shippingAddress = message;
-                responseData.message = "Got it! Your address is saved. Now, please securely enter your payment details.";
-                responseData.data = { type: 'payment_form' };
+                if (!isValidAddress(message)) {
+                    responseData.context.checkoutState = 'awaiting_address';
+                    responseData.message = "Please provide a complete shipping address with house/street number, area, and city (e.g. '14 Bruton Street, Mayfair, London W1J 6LX'). Say 'cancel' to exit checkout.";
+                    responseData.data = { type: 'address_form' };
+                } else {
+                    responseData.context.checkoutState = 'awaiting_payment';
+                    responseData.context.shippingAddress = message;
+                    responseData.message = "Got it! Your delivery address is saved. Now, please enter your payment method (Credit/Debit Card, Apple Pay, PayPal, or Cash on Delivery).";
+                    responseData.data = { type: 'payment_form' };
+                }
                 break;
             case 'process_payment':
-                const finalRawCart = context?.cartItems || [];
+                if (!isValidPayment(message)) {
+                    responseData.context.checkoutState = 'awaiting_payment';
+                    responseData.message = "Please specify a valid payment method: Credit/Debit Card, Apple Pay, PayPal, or Cash on Delivery (COD). Say 'cancel' to exit checkout.";
+                    responseData.data = { type: 'payment_form' };
+                } else {
+                    const finalRawCart = context?.cartItems || [];
                 let itemsToSave = [];
                 if (finalRawCart.length > 0) {
                     itemsToSave = finalRawCart.map(item => ({
@@ -626,6 +675,7 @@ router.post('/message', async (req, res) => {
                 responseData.actions.push('place_order');
                 responseData.data = { type: 'order', item: newOrder };
                 responseData.message = "Payment Successful! Your order has been confirmed.";
+                }
                 break;
             case 'order_tracking':
             case 'order_status':

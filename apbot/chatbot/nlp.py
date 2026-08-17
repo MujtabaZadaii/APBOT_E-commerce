@@ -38,7 +38,12 @@ ROMAN_URDU_TYPO_MAP = {
     'trak': 'track',
     'trck': 'track',
     'shiping': 'shipping',
-    'shping': 'shipping'
+    'shping': 'shipping',
+    'oder': 'order',
+    'isnot': 'is not',
+    'recevied': 'received',
+    'repoart': 'report',
+    'repart': 'report'
 }
 def tokenize(sentence):
     """
