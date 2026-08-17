@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Search, ShoppingBag, User, Heart, Package, ChevronRight, Sparkles, LogOut, SlidersHorizontal } from 'lucide-react';
+import { Menu, X, Search, ShoppingBag, User, Heart, Package, ChevronRight, Sparkles, LogOut, SlidersHorizontal, Info, Mail, HelpCircle } from 'lucide-react';
 import ProfileDropdown from './ProfileDropdown';
 
 export default function Navbar({
@@ -14,7 +14,9 @@ export default function Navbar({
   onOpenWishlist,
   onOpenTracking,
   onOpenOrders,
-  onGoHome
+  onGoHome,
+  onOpenAbout,
+  onOpenContact
 }) {
   const [isCompressed, setIsCompressed] = useState(false);
   const [bagPulse, setBagPulse] = useState(false);
@@ -84,11 +86,30 @@ export default function Navbar({
         <div className="wrap bar">
           {/* Desktop Left Links */}
           <ul className="desktop-links">
-            <li><a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>Outerwear</a></li>
-            <li><a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>Knitwear</a></li>
-            <li><a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>Tailoring</a></li>
-            <li><a href="#shop" onClick={(e) => handleAnchorClick(e, '#shop')}>Archive</a></li>
-            <li><a href="#atelier" onClick={(e) => handleAnchorClick(e, '#atelier')}>Atelier</a></li>
+            <li><a href="#shop" onClick={(e) => handleAnchorClick(e, '#shop')}>PRODUCTS</a></li>
+            <li>
+              <a 
+                href="#about" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onOpenAbout) onOpenAbout();
+                }}
+              >
+                ABOUT
+              </a>
+            </li>
+            <li><a href="#faq" onClick={(e) => handleAnchorClick(e, '#faq')}>FAQ</a></li>
+            <li>
+              <a 
+                href="#contact" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onOpenContact) onOpenContact();
+                }}
+              >
+                CONTACT
+              </a>
+            </li>
           </ul>
 
           {/* Mobile Hamburger Trigger */}
@@ -192,35 +213,43 @@ export default function Navbar({
           {/* Main Navigation Categories */}
           <div className="mobile-nav-body">
             <div className="mobile-nav-section">
-              <span className="mobile-nav-subtitle">COLLECTIONS</span>
+              <span className="mobile-nav-subtitle">NAVIGATION</span>
               <ul className="mobile-nav-links">
                 <li>
-                  <a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>
-                    <span>Outerwear</span>
-                    <ChevronRight size={16} />
-                  </a>
-                </li>
-                <li>
-                  <a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>
-                    <span>Knitwear</span>
-                    <ChevronRight size={16} />
-                  </a>
-                </li>
-                <li>
-                  <a href="#cats" onClick={(e) => handleAnchorClick(e, '#cats')}>
-                    <span>Tailoring</span>
-                    <ChevronRight size={16} />
-                  </a>
-                </li>
-                <li>
                   <a href="#shop" onClick={(e) => handleAnchorClick(e, '#shop')}>
-                    <span>Full Collection / Archive</span>
+                    <span>PRODUCTS</span>
                     <ChevronRight size={16} />
                   </a>
                 </li>
                 <li>
-                  <a href="#atelier" onClick={(e) => handleAnchorClick(e, '#atelier')}>
-                    <span>The Atelier</span>
+                  <a 
+                    href="#about" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMobileMenuOpen(false);
+                      if (onOpenAbout) onOpenAbout();
+                    }}
+                  >
+                    <span>ABOUT SABLE</span>
+                    <ChevronRight size={16} />
+                  </a>
+                </li>
+                <li>
+                  <a href="#faq" onClick={(e) => handleAnchorClick(e, '#faq')}>
+                    <span>FAQ</span>
+                    <ChevronRight size={16} />
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#contact" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMobileMenuOpen(false);
+                      if (onOpenContact) onOpenContact();
+                    }}
+                  >
+                    <span>CONTACT US</span>
                     <ChevronRight size={16} />
                   </a>
                 </li>

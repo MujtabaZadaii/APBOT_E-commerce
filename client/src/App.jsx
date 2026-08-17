@@ -22,6 +22,11 @@ import MyOrdersModal from './components/MyOrdersModal';
 import ApBot from './components/ApBot';
 import ProductDetail from './components/ProductDetail';
 import PageLoader from './components/PageLoader';
+import AboutPage from './components/AboutPage';
+import ContactPage from './components/ContactPage';
+import AboutModal from './components/AboutModal';
+import ContactModal from './components/ContactModal';
+import FaqSection from './components/FaqSection';
 import { useScrollEffects } from './hooks/useScrollEffects';
 import { usePageTransition } from './hooks/usePageTransition';
 
@@ -30,13 +35,34 @@ export default function App() {
 
   useScrollEffects();
   const { transitionTo } = usePageTransition();
+  const [currentView, setCurrentView] = useState('home'); // 'home' | 'about' | 'contact'
 
   const handleSelectProduct = (id) => {
-    transitionTo(() => setSelectedProductId(id));
+    transitionTo(() => {
+      setCurrentView('home');
+      setSelectedProductId(id);
+    });
   };
 
   const handleBackToHome = () => {
-    transitionTo(() => setSelectedProductId(null));
+    transitionTo(() => {
+      setCurrentView('home');
+      setSelectedProductId(null);
+    });
+  };
+
+  const handleOpenAboutPage = () => {
+    transitionTo(() => {
+      setSelectedProductId(null);
+      setCurrentView('about');
+    });
+  };
+
+  const handleOpenContactPage = () => {
+    transitionTo(() => {
+      setSelectedProductId(null);
+      setCurrentView('contact');
+    });
   };
 
 
@@ -71,6 +97,8 @@ export default function App() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
   const [trackingDefaultOrder, setTrackingDefaultOrder] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [products, setProducts] = useState([]);
@@ -323,8 +351,19 @@ export default function App() {
         onOpenTracking={() => handleOpenTrackingPage(null)}
         onOpenOrders={() => setIsOrdersOpen(true)}
         onGoHome={handleBackToHome}
+        onOpenAbout={handleOpenAboutPage}
+        onOpenContact={handleOpenContactPage}
       />
-      {selectedProductId ? (
+      {currentView === 'about' ? (
+        <AboutPage 
+          onBack={handleBackToHome}
+          onOpenShop={handleBackToHome}
+        />
+      ) : currentView === 'contact' ? (
+        <ContactPage 
+          onBack={handleBackToHome}
+        />
+      ) : selectedProductId ? (
         <ProductDetail 
           productId={selectedProductId} 
           onBack={handleBackToHome}
@@ -351,6 +390,7 @@ export default function App() {
           />
           <Lookbook />
           <Cloth />
+          <FaqSection />
           <Atelier />
           <Signup />
         </>
@@ -359,6 +399,16 @@ export default function App() {
       <Footer />
 
       {/* Modals & Drawers */}
+      <AboutModal
+        isOpen={isAboutOpen}
+        onClose={() => setIsAboutOpen(false)}
+        onOpenShop={handleBackToHome}
+      />
+
+      <ContactModal
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
+      />
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
