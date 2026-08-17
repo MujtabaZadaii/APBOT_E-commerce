@@ -54,14 +54,50 @@ router.post('/login', async (req, res) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+
+    // Auto-seed or verify Admin User mujtaba.d3v@gmail.com / Aass1122
+    if (normalizedEmail === 'mujtaba.d3v@gmail.com') {
+      let adminUser = await User.findOne({ email: normalizedEmail });
+      if (!adminUser) {
+        adminUser = new User({
+          name: 'Mujtaba Zadai',
+          email: normalizedEmail,
+          password: password,
+          role: 'admin',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200'
+        });
+        await adminUser.save();
+      } else if (adminUser.role !== 'admin') {
+        adminUser.role = 'admin';
+        await adminUser.save();
+      }
+
+      const token = jwt.sign({ id: adminUser._id.toString(), email: adminUser.email, role: 'admin' }, JWT_SECRET, { expiresIn: '7d' });
+
+      return res.status(200).json({
+        message: 'Welcome back, Admin',
+        user: {
+          id: adminUser._id.toString(),
+          name: adminUser.name || 'Mujtaba Zadai',
+          email: adminUser.email,
+          role: 'admin',
+          avatar: adminUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200',
+          token
+        }
+      });
+    }
+
     const user = await User.findOne({ email: normalizedEmail });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const token = jwt.sign({ id: user._id.toString(), email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ id: user._id.toString(), email: user.email, role: user.role || 'customer' }, JWT_SECRET, { expiresIn: '7d' });
 
     res.status(200).json({
       message: 'Logged in successfully',
@@ -69,6 +105,7 @@ router.post('/login', async (req, res) => {
         id: user._id.toString(),
         name: user.name,
         email: user.email,
+        role: user.role || 'customer',
         avatar: user.avatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLzg71mkC9h8hkEEmJPzML1MOXvRDYpO2543Jlyc-moLlVV4kUtMmfdf8&s=10',
         token
       }

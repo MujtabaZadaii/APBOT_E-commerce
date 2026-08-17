@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, ChevronDown, ChevronRight, Package, Heart, Truck, LogOut } from 'lucide-react';
+import { User, ChevronDown, ChevronRight, Package, Heart, Truck, LogOut, LayoutDashboard } from 'lucide-react';
 
 export default function ProfileDropdown({
   currentUser,
@@ -8,6 +8,7 @@ export default function ProfileDropdown({
   onOpenWishlist,
   onOpenTracking,
   onOpenOrders,
+  onOpenAdminDashboard,
   onSignOut
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +16,7 @@ export default function ProfileDropdown({
 
   const defaultAvatar = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLzg71mkC9h8hkEEmJPzML1MOXvRDYpO2543Jlyc-moLlVV4kUtMmfdf8&s=10';
   const userAvatar = currentUser?.avatar || defaultAvatar;
+  const isAdmin = currentUser?.role === 'admin' || currentUser?.email === 'mujtaba.d3v@gmail.com';
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -27,6 +29,12 @@ export default function ProfileDropdown({
   }, []);
 
   const menuItems = [
+    ...(isAdmin ? [{
+      label: 'ADMIN DASHBOARD',
+      icon: LayoutDashboard,
+      action: () => (onOpenAdminDashboard ? onOpenAdminDashboard() : null),
+      showChevron: true
+    }] : []),
     {
       label: 'MY PROFILE',
       icon: User,

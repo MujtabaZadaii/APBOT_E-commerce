@@ -14,6 +14,7 @@ export default function Navbar({
   onOpenWishlist,
   onOpenTracking,
   onOpenOrders,
+  onOpenAdminDashboard,
   onGoHome,
   onOpenProducts,
   onOpenAbout,
@@ -192,6 +193,7 @@ export default function Navbar({
                 onOpenWishlist={onOpenWishlist}
                 onOpenTracking={onOpenTracking}
                 onOpenOrders={onOpenOrders}
+                onOpenAdminDashboard={onOpenAdminDashboard}
                 onSignOut={onSignOut}
               />
             ) : (

@@ -27,6 +27,7 @@ import ContactPage from './components/ContactPage';
 import AboutModal from './components/AboutModal';
 import ContactModal from './components/ContactModal';
 import FaqSection from './components/FaqSection';
+import AdminDashboard from './components/AdminDashboard';
 import { useScrollEffects } from './hooks/useScrollEffects';
 import { usePageTransition } from './hooks/usePageTransition';
 
@@ -35,7 +36,18 @@ export default function App() {
 
   useScrollEffects();
   const { transitionTo } = usePageTransition();
-  const [currentView, setCurrentView] = useState('home'); // 'home' | 'about' | 'contact'
+  const [currentView, setCurrentView] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('sable_user');
+      if (savedUser) {
+        const u = JSON.parse(savedUser);
+        if (u?.role === 'admin' || u?.email === 'mujtaba.d3v@gmail.com') {
+          return 'admin_dashboard';
+        }
+      }
+    } catch {}
+    return 'home';
+  }); // 'home' | 'about' | 'contact' | 'admin_dashboard'
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [pendingScrollTarget, setPendingScrollTarget] = useState(null);
 
@@ -254,6 +266,10 @@ export default function App() {
   const handleLoginSuccess = (user) => {
     setCurrentUser(user);
     localStorage.setItem('sable_user', JSON.stringify(user));
+    if (user.role === 'admin' || user.email === 'mujtaba.d3v@gmail.com') {
+      setSelectedProductId(null);
+      setCurrentView('admin_dashboard');
+    }
     if (guestCart.length > 0) {
       setUserCarts((prev) => {
         const existingUserCart = prev[user.email] || [];
@@ -400,13 +416,20 @@ export default function App() {
         onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenTracking={() => handleOpenTrackingPage(null)}
         onOpenOrders={() => setIsOrdersOpen(true)}
+        onOpenAdminDashboard={() => setCurrentView('admin_dashboard')}
         onGoHome={handleBackToHome}
         onOpenProducts={handleOpenProductsPage}
         onOpenAbout={handleOpenAboutPage}
         onOpenFaq={handleOpenFaqPage}
         onOpenContact={handleOpenContactPage}
       />
-      {currentView === 'about' ? (
+      {currentView === 'admin_dashboard' ? (
+        <AdminDashboard 
+          currentUser={currentUser}
+          onSignOut={handleSignOut}
+          onGoToStore={() => setCurrentView('home')}
+        />
+      ) : currentView === 'about' ? (
         <AboutPage 
           onBack={handleBackToHome}
           onOpenShop={handleBackToHome}
