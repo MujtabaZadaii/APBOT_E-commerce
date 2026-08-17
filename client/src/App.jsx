@@ -65,6 +65,8 @@ export default function App() {
     });
   };
 
+  const [pendingScrollTarget, setPendingScrollTarget] = useState(null);
+
   const scrollToElement = (selector) => {
     const el = document.querySelector(selector);
     if (el) {
@@ -74,8 +76,25 @@ export default function App() {
         const topPos = el.getBoundingClientRect().top + window.pageYOffset - 90;
         window.scrollTo({ top: topPos, behavior: 'smooth' });
       }
+      return true;
     }
+    return false;
   };
+
+  useEffect(() => {
+    if (pendingScrollTarget && currentView === 'home' && !selectedProductId) {
+      let attempts = 0;
+      const interval = setInterval(() => {
+        attempts++;
+        const success = scrollToElement(pendingScrollTarget);
+        if (success || attempts > 20) {
+          clearInterval(interval);
+          setPendingScrollTarget(null);
+        }
+      }, 40);
+      return () => clearInterval(interval);
+    }
+  }, [pendingScrollTarget, currentView, selectedProductId]);
 
   const handleOpenProductsPage = () => {
     if (currentView === 'home' && !selectedProductId) {
@@ -83,9 +102,7 @@ export default function App() {
     } else {
       setSelectedProductId(null);
       setCurrentView('home');
-      setTimeout(() => {
-        scrollToElement('#shop');
-      }, 80);
+      setPendingScrollTarget('#shop');
     }
   };
 
@@ -95,9 +112,7 @@ export default function App() {
     } else {
       setSelectedProductId(null);
       setCurrentView('home');
-      setTimeout(() => {
-        scrollToElement('#faq');
-      }, 80);
+      setPendingScrollTarget('#faq');
     }
   };
 
