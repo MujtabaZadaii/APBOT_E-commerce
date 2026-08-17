@@ -3,7 +3,7 @@ import ProductCard from './ProductCard';
 
 export default function Shop({ products, favs, onToggleFav, onAddToCart, onProductSelect }) {
   return (
-    <section id="shop">
+    <section id="shop" data-section="products">
       <div className="wrap">
         <div className="hd">
           <h2 className="rv">Best of Sable</h2>

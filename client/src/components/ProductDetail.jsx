@@ -194,7 +194,11 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
               <span style={{ color: '#666' }}>{selectedColor.toUpperCase() || 'BLACK'}</span>
             </div>
             <div className="pd-colors">
-              {colors.map((c, i) => (
+              {([
+                { name: (product.colour || 'BLACK').toUpperCase(), hex: '#101010' },
+                { name: 'CHARCOAL', hex: '#2A2A2A' },
+                { name: 'OFF WHITE', hex: '#EFEDE8' }
+              ]).map((c, i) => (
                 <button 
                   key={i} 
                   onClick={() => setSelectedColor(c.name)}

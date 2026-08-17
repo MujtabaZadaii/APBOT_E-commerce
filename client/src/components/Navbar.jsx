@@ -15,7 +15,9 @@ export default function Navbar({
   onOpenTracking,
   onOpenOrders,
   onGoHome,
+  onOpenProducts,
   onOpenAbout,
+  onOpenFaq,
   onOpenContact
 }) {
   const [isCompressed, setIsCompressed] = useState(false);
@@ -75,9 +77,14 @@ export default function Navbar({
     setTimeout(() => {
       const el = document.querySelector(targetId);
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
+        if (window.lenis) {
+          window.lenis.scrollTo(el, { offset: -90, duration: 1.2 });
+        } else {
+          const topPos = el.getBoundingClientRect().top + window.pageYOffset - 90;
+          window.scrollTo({ top: topPos, behavior: 'smooth' });
+        }
       }
-    }, 100);
+    }, 80);
   };
 
   return (

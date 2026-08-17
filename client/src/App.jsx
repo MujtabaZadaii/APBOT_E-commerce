@@ -65,27 +65,39 @@ export default function App() {
     });
   };
 
+  const scrollToElement = (selector) => {
+    const el = document.querySelector(selector);
+    if (el) {
+      if (window.lenis) {
+        window.lenis.scrollTo(el, { offset: -90, duration: 1.2 });
+      } else {
+        const topPos = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: topPos, behavior: 'smooth' });
+      }
+    }
+  };
+
   const handleOpenProductsPage = () => {
     if (currentView === 'home' && !selectedProductId) {
-      const el = document.querySelector('#shop');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      scrollToElement('#shop');
     } else {
-      transitionTo(() => {
-        setCurrentView('home');
-        setSelectedProductId(null);
-      }, '#shop');
+      setSelectedProductId(null);
+      setCurrentView('home');
+      setTimeout(() => {
+        scrollToElement('#shop');
+      }, 80);
     }
   };
 
   const handleOpenFaqPage = () => {
     if (currentView === 'home' && !selectedProductId) {
-      const el = document.querySelector('#faq');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      scrollToElement('#faq');
     } else {
-      transitionTo(() => {
-        setCurrentView('home');
-        setSelectedProductId(null);
-      }, '#faq');
+      setSelectedProductId(null);
+      setCurrentView('home');
+      setTimeout(() => {
+        scrollToElement('#faq');
+      }, 80);
     }
   };
 
