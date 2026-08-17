@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Mail, Phone, MapPin, Send, CheckCircle2, Clock, MessageSquare, Sparkles, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MessageSquare, MapPin, User, ListFilter, Edit3, ArrowRight, Plus, Minus, CheckCircle2 } from 'lucide-react';
 import './ContactPage.css';
 
-export default function ContactPage({ onBack }) {
-  const [formData, setFormData] = useState({ name: '', email: '', subject: 'General Inquiry', message: '' });
+export default function ContactPage({ onBack, onOpenApBot }) {
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [openFaq, setOpenFaq] = useState(null);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -16,175 +19,255 @@ export default function ContactPage({ onBack }) {
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
-      setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
+      setFormData({ name: '', email: '', subject: '', message: '' });
     }, 4000);
   };
 
-  return (
-    <div className="contact-page-wrap">
-      {/* Top Breadcrumb & Navigation */}
-      <div className="wrap contact-page-nav">
-        <button type="button" onClick={onBack} className="contact-back-btn">
-          <ArrowLeft size={16} />
-          <span>RETURN TO STORE</span>
-        </button>
-        <span className="contact-page-badge">MAYFAIR CONCIERGE DIVISION</span>
-      </div>
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+    setSubscribed(true);
+    setTimeout(() => setSubscribed(false), 3000);
+  };
 
-      {/* Hero Banner Section */}
-      <div className="contact-page-hero">
-        <div className="contact-hero-overlay" />
-        <div className="wrap contact-hero-container">
-          <span className="contact-hero-sub">PRIVATE CLIENT SERVICES</span>
-          <h1 className="contact-hero-headline">CLIENT CONCIERGE & ATELIER</h1>
-          <p className="contact-hero-subhead">
-            Our London Atelier team and client concierge are at your service for bespoke sizing consultations, 
-            private showroom appointments, and order assistance.
-          </p>
+  const faqs = [
+    {
+      q: 'HOW LONG DOES SHIPPING TAKE?',
+      a: 'Standard domestic shipping takes 2-4 business days. Express international courier delivery takes 3-5 business days globally.'
+    },
+    {
+      q: 'WHAT IS YOUR RETURN POLICY?',
+      a: 'We offer a 30-day complimentary return window for unworn garments with original security tags attached.'
+    },
+    {
+      q: 'DO YOU OFFER INTERNATIONAL SHIPPING?',
+      a: 'Yes, SABLE ships worldwide to over 120 countries via DHL Express & FedEx Luxury Courier.'
+    },
+    {
+      q: 'HOW CAN I TRACK MY ORDER?',
+      a: 'You can use our interactive Order Tracking modal or ask ApBot AI Concierge anytime with your Order ID.'
+    }
+  ];
+
+  return (
+    <div className="sable-contact-page">
+      {/* 1. HERO SECTION */}
+      <div className="sable-contact-hero">
+        <div className="wrap sable-contact-hero-grid">
+          <div className="sable-contact-hero-left">
+            <span className="sable-eyebrow">CONTACT</span>
+            <h1 className="sable-contact-title">
+              WE'RE HERE<br />FOR YOU
+            </h1>
+            <p className="sable-contact-hero-desc">
+              Have a question, need style advice, or want to collaborate? Our team is always ready to assist you.
+            </p>
+            <a href="#send-message" className="sable-contact-hero-link">
+              <span>GET IN TOUCH</span>
+              <div className="sable-arrow-circle"><ArrowRight size={14} /></div>
+            </a>
+          </div>
+
+          <div className="sable-contact-hero-right">
+            <img 
+              src="/images/sable_contact_boutique.png" 
+              alt="SABLE Flagship Boutique Storefront" 
+              className="sable-boutique-img"
+            />
+          </div>
         </div>
       </div>
 
-      {/* Main Body */}
-      <div className="wrap contact-page-body">
-        <div className="contact-grid">
-          
-          {/* Left Column: Direct Info Cards */}
-          <div className="contact-left-col">
-            <div className="contact-section-header">
-              <span className="contact-section-tag">DIRECT CHANNELS</span>
-              <h2 className="contact-section-title">MAYFAIR HEADQUARTERS</h2>
-            </div>
-
-            <div className="contact-cards-stack">
-              <div className="contact-card">
-                <div className="contact-card-icon"><MapPin size={22} /></div>
-                <div className="contact-card-content">
-                  <h3>FLAGSHIP ATELIER</h3>
-                  <p>14 Bruton Street, Mayfair, London W1J 6LX, United Kingdom</p>
-                  <span className="contact-card-extra">Private appointments available upon request</span>
-                </div>
-              </div>
-
-              <div className="contact-card">
-                <div className="contact-card-icon"><Mail size={22} /></div>
-                <div className="contact-card-content">
-                  <h3>EMAIL CONCIERGE</h3>
-                  <p>concierge@sable-couture.com</p>
-                  <span className="contact-card-extra">Priority response within 2 hours</span>
-                </div>
-              </div>
-
-              <div className="contact-card">
-                <div className="contact-card-icon"><Phone size={22} /></div>
-                <div className="contact-card-content">
-                  <h3>TELEPHONE DIRECT</h3>
-                  <p>+44 20 7946 0912</p>
-                  <span className="contact-card-extra">Mon&ndash;Fri, 9:00am &ndash; 6:00pm GMT</span>
-                </div>
-              </div>
-
-              <div className="contact-card">
-                <div className="contact-card-icon"><Clock size={22} /></div>
-                <div className="contact-card-content">
-                  <h3>OPERATING HOURS</h3>
-                  <p>Atelier: Mon&ndash;Sat 10:00am &ndash; 7:00pm GMT</p>
-                  <p>AI Assistant (ApBot): 24/7 Real-Time Availability</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Atelier Map / Image Card */}
-            <div className="contact-atelier-preview">
-              <img 
-                src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800" 
-                alt="SABLE Mayfair Storefront" 
-              />
-              <div className="contact-preview-badge">
-                <Sparkles size={14} className="gold-icon" />
-                <span>VISIT OUR MAYFAIR SHOWROOM</span>
-              </div>
-            </div>
+      {/* 2. 4 CONTACT CARDS STRIP */}
+      <div className="sable-contact-cards-strip">
+        <div className="wrap sable-contact-cards-grid">
+          {/* Email Us */}
+          <div className="sable-c-card">
+            <div className="sable-c-card-icon"><Mail size={20} /></div>
+            <h3>EMAIL US</h3>
+            <p>For general inquiries<br />or support.</p>
+            <a href="mailto:hello@sable.com" className="sable-c-link">
+              hello@sable.com <ArrowRight size={14} />
+            </a>
           </div>
 
-          {/* Right Column: Inquiry Form */}
-          <div className="contact-right-col">
-            <div className="contact-form-container">
-              {submitted ? (
-                <div className="contact-submitted-view">
-                  <CheckCircle2 size={54} className="contact-check-icon" />
-                  <h2>INQUIRY TRANSMITTED</h2>
-                  <p>
-                    Thank you, <strong>{formData.name}</strong>. Your message has been received by our Mayfair Concierge Manager. 
-                    We will contact you at <strong>{formData.email}</strong> shortly.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="contact-main-form">
-                  <div className="contact-form-header">
-                    <span className="contact-form-tag">CONCIERGE INQUIRY</span>
-                    <h2>SEND A DIRECT MESSAGE</h2>
-                  </div>
-
-                  <div className="contact-form-group">
-                    <label>FULL NAME</label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g. Lord Sterling"
-                      value={formData.name}
-                      onChange={e => setFormData({ ...formData, name: e.target.value })}
-                      required
-                    />
-                  </div>
-
-                  <div className="contact-form-group">
-                    <label>EMAIL ADDRESS</label>
-                    <input 
-                      type="email" 
-                      placeholder="sterling@maison.com"
-                      value={formData.email}
-                      onChange={e => setFormData({ ...formData, email: e.target.value })}
-                      required
-                    />
-                  </div>
-
-                  <div className="contact-form-group">
-                    <label>INQUIRY TYPE</label>
-                    <select 
-                      value={formData.subject}
-                      onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                    >
-                      <option value="General Inquiry">General Product Inquiry</option>
-                      <option value="Bespoke Order">Bespoke Fitting & Sizing Consultation</option>
-                      <option value="Order Tracking">Order & Delivery Status</option>
-                      <option value="Showroom Visit">Mayfair Showroom Appointment</option>
-                    </select>
-                  </div>
-
-                  <div className="contact-form-group">
-                    <label>MESSAGE</label>
-                    <textarea 
-                      rows={5}
-                      placeholder="Please detail your request or preferred appointment time..."
-                      value={formData.message}
-                      onChange={e => setFormData({ ...formData, message: e.target.value })}
-                      required
-                    />
-                  </div>
-
-                  <button type="submit" className="contact-main-submit-btn">
-                    <Send size={16} />
-                    <span>TRANSMIT INQUIRY TO CONCIERGE</span>
-                  </button>
-
-                  <div className="contact-form-security-note">
-                    <ShieldCheck size={14} />
-                    <span>All client inquiries are transmitted via 256-bit encrypted SSL protocols.</span>
-                  </div>
-                </form>
-              )}
-            </div>
+          {/* Call Us */}
+          <div className="sable-c-card">
+            <div className="sable-c-card-icon"><Phone size={20} /></div>
+            <h3>CALL US</h3>
+            <p>Mon &ndash; Fri | 9AM &ndash; 6PM<br />(PKT)</p>
+            <a href="tel:+923001234567" className="sable-c-link">
+              +92 300 1234567 <ArrowRight size={14} />
+            </a>
           </div>
 
+          {/* Live Chat */}
+          <div className="sable-c-card" onClick={onOpenApBot} style={{ cursor: 'pointer' }}>
+            <div className="sable-c-card-icon"><MessageSquare size={20} /></div>
+            <h3>LIVE CHAT</h3>
+            <p>Chat with our team<br />for quick help.</p>
+            <span className="sable-c-link">
+              START CHAT <ArrowRight size={14} />
+            </span>
+          </div>
+
+          {/* Visit Us */}
+          <div className="sable-c-card">
+            <div className="sable-c-card-icon"><MapPin size={20} /></div>
+            <h3>VISIT US</h3>
+            <p>SABLE Flagship Store<br />Clifton 5, Karachi<br />Pakistan</p>
+            <a href="https://maps.google.com" target="_blank" rel="noreferrer" className="sable-c-link">
+              VIEW MAP <ArrowRight size={14} />
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. SEND A MESSAGE SECTION */}
+      <div id="send-message" className="sable-message-section">
+        <div className="wrap sable-message-grid">
+          {/* Left Form */}
+          <div className="sable-msg-left">
+            <span className="sable-eyebrow">SEND A MESSAGE</span>
+            <h2 className="sable-msg-heading">
+              WE'D LOVE TO<br />HEAR FROM YOU
+            </h2>
+
+            {submitted ? (
+              <div className="sable-form-success">
+                <CheckCircle2 size={48} color="#D8C5A2" />
+                <h3>MESSAGE TRANSMITTED</h3>
+                <p>Thank you, {formData.name}. Our team will contact you shortly.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="sable-contact-form">
+                <div className="sable-input-wrapper">
+                  <input 
+                    type="text" 
+                    placeholder="Full Name" 
+                    value={formData.name}
+                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                  <User size={16} className="sable-input-icon" />
+                </div>
+
+                <div className="sable-input-wrapper">
+                  <input 
+                    type="email" 
+                    placeholder="Email Address" 
+                    value={formData.email}
+                    onChange={e => setFormData({ ...formData, email: e.target.value })}
+                    required
+                  />
+                  <Mail size={16} className="sable-input-icon" />
+                </div>
+
+                <div className="sable-input-wrapper">
+                  <input 
+                    type="text" 
+                    placeholder="Subject" 
+                    value={formData.subject}
+                    onChange={e => setFormData({ ...formData, subject: e.target.value })}
+                  />
+                  <ListFilter size={16} className="sable-input-icon" />
+                </div>
+
+                <div className="sable-input-wrapper">
+                  <textarea 
+                    rows={4}
+                    placeholder="Your Message" 
+                    value={formData.message}
+                    onChange={e => setFormData({ ...formData, message: e.target.value })}
+                    required
+                  />
+                  <Edit3 size={16} className="sable-input-icon textarea-icon" />
+                </div>
+
+                <button type="submit" className="sable-gold-btn">
+                  <span>SEND MESSAGE</span>
+                  <ArrowRight size={16} />
+                </button>
+              </form>
+            )}
+          </div>
+
+          {/* Right Dark Portrait Image & Quote */}
+          <div className="sable-msg-right">
+            <img 
+              src="/images/sable_contact_model.png" 
+              alt="SABLE Luxury Model" 
+              className="sable-portrait-img"
+            />
+            <div className="sable-quote-overlay">
+              <span className="sable-quote-mark">“</span>
+              <blockquote className="sable-quote-text">
+                True luxury is not about logos, it's about how it makes you feel.
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 4. FREQUENTLY ASKED QUESTIONS STRIP */}
+      <div className="sable-faq-strip">
+        <div className="wrap">
+          <div className="sable-faq-header">
+            <span className="sable-faq-line" />
+            <span className="sable-faq-title">FREQUENTLY ASKED QUESTIONS</span>
+            <span className="sable-faq-line" />
+          </div>
+
+          <div className="sable-faq-horizontal-grid">
+            {faqs.map((faq, idx) => (
+              <div key={idx} className="sable-faq-col">
+                <div 
+                  className="sable-faq-q-box" 
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                >
+                  <span className="sable-faq-q-text">{faq.q}</span>
+                  <div className="sable-faq-toggle">
+                    {openFaq === idx ? <Minus size={14} /> : <Plus size={14} />}
+                  </div>
+                </div>
+                {openFaq === idx && (
+                  <div className="sable-faq-a-box">
+                    <p>{faq.a}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 5. NEWSLETTER STAY IN THE KNOW FOOTER */}
+      <div className="sable-newsletter-bar">
+        <div className="wrap sable-news-container">
+          <div className="sable-news-left">
+            <h3>STAY IN THE KNOW</h3>
+            <p>Be the first to know about new collections, exclusive offers, and more.</p>
+          </div>
+
+          <div className="sable-news-right">
+            {subscribed ? (
+              <span className="sable-subscribed-text">✓ YOU ARE NOW SUBSCRIBED TO SABLE</span>
+            ) : (
+              <form onSubmit={handleSubscribe} className="sable-news-form">
+                <input 
+                  type="email" 
+                  placeholder="Enter your email" 
+                  value={newsletterEmail}
+                  onChange={e => setNewsletterEmail(e.target.value)}
+                  required
+                />
+                <button type="submit" className="sable-gold-btn news-btn">
+                  <span>SUBSCRIBE</span>
+                  <ArrowRight size={16} />
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </div>

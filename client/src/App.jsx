@@ -362,6 +362,10 @@ export default function App() {
       ) : currentView === 'contact' ? (
         <ContactPage 
           onBack={handleBackToHome}
+          onOpenApBot={() => {
+            const chatToggle = document.querySelector('[data-apbot-toggle]');
+            if (chatToggle) chatToggle.click();
+          }}
         />
       ) : selectedProductId ? (
         <ProductDetail 
