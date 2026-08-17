@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, Lock, Truck, RefreshCw, Headphones, ChevronDown } from 'lucide-react';
-
 export default function CartDrawer({
   isOpen,
   onClose,
@@ -13,7 +12,6 @@ export default function CartDrawer({
 }) {
   const backdropRef = useRef(null);
   const drawerRef = useRef(null);
-
   const subtotal = cartItems.reduce((acc, item) => acc + (item.pr || item.price || 0) * item.quantity, 0);
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const freeShippingThreshold = 150;
@@ -21,13 +19,11 @@ export default function CartDrawer({
   const shippingProgress = Math.min(100, (subtotal / freeShippingThreshold) * 100);
   const shippingCost = subtotal >= freeShippingThreshold || subtotal === 0 ? 0 : 15;
   const grandTotal = subtotal + shippingCost;
-
   useEffect(() => {
     if (isOpen && backdropRef.current && drawerRef.current) {
       const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
       tl.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.25 })
         .fromTo(drawerRef.current, { x: '100%' }, { x: '0%', duration: 0.38, ease: 'power3.out' }, '-=0.1');
-
       const items = drawerRef.current.querySelectorAll('.sable-cart-item');
       if (items.length > 0) {
         tl.fromTo(items, 
@@ -38,8 +34,6 @@ export default function CartDrawer({
       }
     }
   }, [isOpen]);
-
-
   const handleAnimatedClose = () => {
     if (backdropRef.current && drawerRef.current) {
       const tl = gsap.timeline({
@@ -52,9 +46,7 @@ export default function CartDrawer({
       onClose();
     }
   };
-
   if (!isOpen) return null;
-
   return (
     <div
       ref={backdropRef}
@@ -89,7 +81,7 @@ export default function CartDrawer({
           fontFamily: 'Archivo, system-ui, sans-serif'
         }}
       >
-        {/* Drawer Header */}
+        {}
         <div
           style={{
             padding: '24px 28px 20px',
@@ -132,8 +124,7 @@ export default function CartDrawer({
             <X size={20} />
           </button>
         </div>
-
-        {/* Sub-Header Shipping & User Banner */}
+        {}
         <div
           style={{
             padding: '16px 28px',
@@ -172,7 +163,6 @@ export default function CartDrawer({
               CHANGE <ChevronDown size={12} />
             </button>
           </div>
-
           <div
             style={{
               display: 'flex',
@@ -194,8 +184,7 @@ export default function CartDrawer({
               )}
             </span>
           </div>
-
-          {/* Progress Bar Track */}
+          {}
           <div
             style={{
               width: '100%',
@@ -215,8 +204,7 @@ export default function CartDrawer({
             />
           </div>
         </div>
-
-        {/* Content Body */}
+        {}
         <div
           className="no-scrollbar"
           style={{
@@ -227,7 +215,6 @@ export default function CartDrawer({
           }}
         >
           {cartItems.length === 0 ? (
-            /* EMPTY STATE MATCHING SCREENSHOT */
             <div
               style={{
                 flex: 1,
@@ -240,7 +227,6 @@ export default function CartDrawer({
               }}
             >
               <ShoppingBag size={72} strokeWidth={1} style={{ marginBottom: '24px', opacity: 0.85 }} />
-
               <h4
                 style={{
                   fontFamily: '"Bodoni MT", "Didot", "Times New Roman", serif',
@@ -254,7 +240,6 @@ export default function CartDrawer({
               >
                 YOUR BAG IS CURRENTLY EMPTY
               </h4>
-
               <p
                 style={{
                   fontSize: '13px',
@@ -266,7 +251,6 @@ export default function CartDrawer({
               >
                 Explore our new collection and add pieces to your bag.
               </p>
-
               <button
                 onClick={handleAnimatedClose}
                 style={{
@@ -289,14 +273,12 @@ export default function CartDrawer({
               </button>
             </div>
           ) : (
-            /* CART ITEMS LIST */
             <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {cartItems.map((item) => {
                 const price = item.pr || item.price;
                 const image = item.img || (item.images && item.images[0]);
                 const name = item.nm || item.name;
                 const category = item.ct || item.category;
-
                 return (
                   <div
                     key={item.id}
@@ -319,7 +301,6 @@ export default function CartDrawer({
                         flexShrink: 0
                       }}
                     />
-
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                       <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -344,7 +325,6 @@ export default function CartDrawer({
                               </span>
                             )}
                           </div>
-
                           <button
                             onClick={() => onRemoveItem(item.id)}
                             aria-label="Remove item"
@@ -363,9 +343,8 @@ export default function CartDrawer({
                           </button>
                         </div>
                       </div>
-
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
-                        {/* Quantity Stepper */}
+                        {}
                         <div
                           style={{
                             display: 'flex',
@@ -411,7 +390,6 @@ export default function CartDrawer({
                             <Plus size={11} />
                           </button>
                         </div>
-
                         <div style={{ fontSize: '14px', fontWeight: '600', color: '#101010' }}>
                           £{(price * item.quantity).toFixed(2)}
                         </div>
@@ -423,8 +401,7 @@ export default function CartDrawer({
             </div>
           )}
         </div>
-
-        {/* Footer Subtotal & Checkout Button (When items exist) */}
+        {}
         {cartItems.length > 0 && (
           <div
             style={{
@@ -447,7 +424,6 @@ export default function CartDrawer({
               <span>Total</span>
               <span>£{grandTotal.toFixed(2)}</span>
             </div>
-
             <button
               onClick={() => {
                 handleAnimatedClose();
@@ -478,8 +454,7 @@ export default function CartDrawer({
             </button>
           </div>
         )}
-
-        {/* Bottom Trust Strip (Always visible matching screenshot) */}
+        {}
         <div
           style={{
             padding: '18px 20px',
@@ -502,7 +477,6 @@ export default function CartDrawer({
               <div style={{ fontSize: '9px', color: '#666666' }}>14-day return policy</div>
             </div>
           </div>
-
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <div style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid rgba(16,16,16,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Lock size={12} strokeWidth={1.5} />
@@ -514,7 +488,6 @@ export default function CartDrawer({
               <div style={{ fontSize: '9px', color: '#666666' }}>100% protected</div>
             </div>
           </div>
-
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <div style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid rgba(16,16,16,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Headphones size={12} strokeWidth={1.5} />

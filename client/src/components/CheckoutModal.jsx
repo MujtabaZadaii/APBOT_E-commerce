@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { X, CreditCard, Lock, CheckCircle2, ArrowRight, MapPin, Copy, Check } from 'lucide-react';
-
 const API_BASE_URL = 'http://localhost:5000/api/orders';
-
 export default function CheckoutModal({
   isOpen,
   onClose,
@@ -12,8 +10,7 @@ export default function CheckoutModal({
   onOrderPlaced,
   onOpenTrackingPage
 }) {
-  const [step, setStep] = useState(1); // 1: Address, 2: Payment, 3: Confirmation
-  
+  const [step, setStep] = useState(1); 
   const [shippingAddress, setShippingAddress] = useState({
     name: '',
     street: '',
@@ -22,31 +19,24 @@ export default function CheckoutModal({
     country: 'United Kingdom',
     phone: ''
   });
-
   const [paymentData, setPaymentData] = useState({
     cardName: '',
     cardNumber: '',
     expiry: '',
     cvc: ''
   });
-
   const [processing, setProcessing] = useState(false);
   const [completedOrder, setCompletedOrder] = useState(null);
   const [copied, setCopied] = useState(false);
-
   const backdropRef = useRef(null);
   const modalRef = useRef(null);
-
   const subtotal = cartItems.reduce((acc, i) => acc + i.pr * i.quantity, 0);
   const shippingCost = subtotal >= 150 ? 0 : 15;
   const grandTotal = subtotal + shippingCost;
-
   useEffect(() => {
     if (isOpen) {
       setStep(1);
       setCompletedOrder(null);
-      
-      // Initialize address from user if available, otherwise empty strings
       setShippingAddress({
         name: currentUser?.name || '',
         street: currentUser?.address?.street || '',
@@ -55,33 +45,26 @@ export default function CheckoutModal({
         country: currentUser?.address?.country || 'United Kingdom',
         phone: currentUser?.address?.phone || ''
       });
-
-      // Initialize payment inputs blank
       setPaymentData({
         cardName: currentUser?.name || '',
         cardNumber: '',
         expiry: '',
         cvc: ''
       });
-
       if (backdropRef.current && modalRef.current) {
         gsap.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2 });
         gsap.fromTo(modalRef.current, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.28, ease: 'power3.out' });
       }
     }
   }, [isOpen, currentUser]);
-
   if (!isOpen) return null;
-
   const handleAddressSubmit = (e) => {
     e.preventDefault();
     setStep(2);
   };
-
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
     setProcessing(true);
-
     const now = new Date();
     const orderPayload = {
       userId: currentUser?.email || 'guest',
@@ -97,7 +80,6 @@ export default function CheckoutModal({
       trackingStatus: 'Order Placed',
       createdAt: now.toISOString()
     };
-
     try {
       const res = await fetch(`${API_BASE_URL}/create`, {
         method: 'POST',
@@ -114,18 +96,15 @@ export default function CheckoutModal({
       console.warn('API order fallback:', err);
       setCompletedOrder(orderPayload);
     }
-
     setProcessing(false);
     setStep(3);
     onOrderPlaced(orderPayload);
   };
-
   const handleCopyCode = (text) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
   return (
     <div
       ref={backdropRef}
@@ -162,7 +141,7 @@ export default function CheckoutModal({
           fontFamily: 'Archivo, system-ui, sans-serif'
         }}
       >
-        {/* Close Button */}
+        {}
         {step !== 3 && (
           <button
             onClick={onClose}
@@ -184,8 +163,7 @@ export default function CheckoutModal({
             <X size={20} />
           </button>
         )}
-
-        {/* STEP 1: SHIPPING ADDRESS */}
+        {}
         {step === 1 && (
           <div>
             <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', marginBottom: '32px' }}>
@@ -222,7 +200,6 @@ export default function CheckoutModal({
                 </p>
               </div>
             </div>
-
             <form onSubmit={handleAddressSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '10px', letterSpacing: '0.16em', fontWeight: '600', textTransform: 'uppercase', color: '#555555', marginBottom: '4px' }}>
@@ -239,7 +216,6 @@ export default function CheckoutModal({
                   onBlur={(e) => (e.target.style.borderBottomColor = '#C0BCB4')}
                 />
               </div>
-
               <div>
                 <label style={{ display: 'block', fontSize: '10px', letterSpacing: '0.16em', fontWeight: '600', textTransform: 'uppercase', color: '#555555', marginBottom: '4px' }}>
                   STREET ADDRESS
@@ -255,7 +231,6 @@ export default function CheckoutModal({
                   onBlur={(e) => (e.target.style.borderBottomColor = '#C0BCB4')}
                 />
               </div>
-
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '10px', letterSpacing: '0.16em', fontWeight: '600', textTransform: 'uppercase', color: '#555555', marginBottom: '4px' }}>
@@ -288,7 +263,6 @@ export default function CheckoutModal({
                   />
                 </div>
               </div>
-
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '10px', letterSpacing: '0.16em', fontWeight: '600', textTransform: 'uppercase', color: '#555555', marginBottom: '4px' }}>
@@ -322,7 +296,6 @@ export default function CheckoutModal({
                   />
                 </div>
               </div>
-
               <button
                 type="submit"
                 style={{
@@ -349,8 +322,7 @@ export default function CheckoutModal({
             </form>
           </div>
         )}
-
-        {/* STEP 2: CARD PAYMENT DETAILS */}
+        {}
         {step === 2 && (
           <div>
             <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', marginBottom: '32px' }}>
@@ -387,7 +359,6 @@ export default function CheckoutModal({
                 </p>
               </div>
             </div>
-
             <form onSubmit={handlePaymentSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '10px', letterSpacing: '0.16em', fontWeight: '600', textTransform: 'uppercase', color: '#555555', marginBottom: '4px' }}>
@@ -404,7 +375,6 @@ export default function CheckoutModal({
                   onBlur={(e) => (e.target.style.borderBottomColor = '#C0BCB4')}
                 />
               </div>
-
               <div>
                 <label style={{ display: 'block', fontSize: '10px', letterSpacing: '0.16em', fontWeight: '600', textTransform: 'uppercase', color: '#555555', marginBottom: '4px' }}>
                   CARD NUMBER
@@ -420,7 +390,6 @@ export default function CheckoutModal({
                   onBlur={(e) => (e.target.style.borderBottomColor = '#C0BCB4')}
                 />
               </div>
-
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '10px', letterSpacing: '0.16em', fontWeight: '600', textTransform: 'uppercase', color: '#555555', marginBottom: '4px' }}>
@@ -454,7 +423,6 @@ export default function CheckoutModal({
                   />
                 </div>
               </div>
-
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px' }}>
                 <button
                   type="button"
@@ -465,7 +433,6 @@ export default function CheckoutModal({
                 </button>
                 <span style={{ fontSize: '14px', fontWeight: '700', color: '#101010' }}>Total: £{grandTotal}</span>
               </div>
-
               <button
                 type="submit"
                 disabled={processing}
@@ -493,8 +460,7 @@ export default function CheckoutModal({
             </form>
           </div>
         )}
-
-        {/* STEP 3: ORDER CONFIRMATION */}
+        {}
         {step === 3 && completedOrder && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '10px 0' }}>
             <CheckCircle2 size={48} color="#15803D" style={{ marginBottom: '14px' }} />
@@ -504,7 +470,6 @@ export default function CheckoutModal({
             <p style={{ fontSize: '12px', color: '#666666', marginBottom: '24px' }}>
               Your order has been recorded. Use your Order ID to track dispatch in real time.
             </p>
-
             <div style={{ width: '100%', backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '4px', border: '1px solid rgba(16,16,16,0.1)', textAlign: 'left', marginBottom: '24px', fontSize: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                 <span style={{ color: '#666666' }}>Order ID:</span>
@@ -528,7 +493,6 @@ export default function CheckoutModal({
                 <span>£{completedOrder.totalAmount}</span>
               </div>
             </div>
-
             <div style={{ width: '100%', display: 'flex', gap: '12px' }}>
               <button
                 onClick={onClose}
@@ -547,7 +511,6 @@ export default function CheckoutModal({
               >
                 CLOSE
               </button>
-
               <button
                 onClick={() => {
                   onClose();

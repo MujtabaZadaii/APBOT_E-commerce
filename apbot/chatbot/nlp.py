@@ -2,19 +2,15 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 import numpy as np
 import difflib
-
 try:
     nltk.data.find('tokenizers/punkt')
 except LookupError:
     nltk.download('punkt')
-
 try:
     nltk.data.find('corpora/wordnet')
 except LookupError:
     nltk.download('wordnet')
-
 lemmatizer = WordNetLemmatizer()
-
 ROMAN_URDU_TYPO_MAP = {
     'btao': 'batao',
     'bataoo': 'batao',
@@ -44,13 +40,11 @@ ROMAN_URDU_TYPO_MAP = {
     'shiping': 'shipping',
     'shping': 'shipping'
 }
-
 def tokenize(sentence):
     """
     Split sentence into array of words/tokens
     """
     return nltk.word_tokenize(sentence)
-
 def correct_word(word, vocabulary=None):
     """
     Fuzzy correct typos in English & Roman Urdu using Levenshtein distance
@@ -63,13 +57,11 @@ def correct_word(word, vocabulary=None):
         if matches:
             return matches[0]
     return w_clean
-
 def lemmatize(word):
     """
     Lemmatize word to its root form
     """
     return lemmatizer.lemmatize(word.lower())
-
 def bag_of_words(tokenized_sentence, all_words):
     """
     Return bag of words array with fuzzy typo tolerance for English & Roman Urdu

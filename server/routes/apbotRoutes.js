@@ -2,24 +2,17 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import Product from '../models/Product.js';
 import Order from '../models/Order.js';
-
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'sable_super_secret_key_123';
-
 const APBOT_API_URL = process.env.APBOT_API_URL || 'http://localhost:5001/api/apbot/predict';
-
 function getRequestedIndex(text) {
     if (!text) return null;
     const lower = text.toLowerCase();
-    
-    // Explicit English & Roman Urdu ordinal phrases
     if (lower.includes('1st') || lower.includes('first') || lower.includes('pehli') || lower.includes('pehla') || lower.includes('pehle') || lower.includes('1st wali')) return 0;
     if (lower.includes('2nd') || lower.includes('second') || lower.includes('doosri') || lower.includes('doosra') || lower.includes('dusri') || lower.includes('dusra') || lower.includes('2nd wali') || lower.includes('doosri wali')) return 1;
     if (lower.includes('3rd') || lower.includes('third') || lower.includes('teesri') || lower.includes('teesra') || lower.includes('tisri') || lower.includes('tisra') || lower.includes('3rd wali') || lower.includes('teesri wali')) return 2;
     if (lower.includes('4th') || lower.includes('fourth') || lower.includes('chauthi') || lower.includes('chautha') || lower.includes('4th wali')) return 3;
     if (lower.includes('5th') || lower.includes('fifth') || lower.includes('paanchvi') || lower.includes('paanchva') || lower.includes('5th wali')) return 4;
-    
-    // Pattern match: "2nd", "3rd", "1st", "2 wali", "3 wali", "number 2", "no 3", "2 item"
     const match = lower.match(/\b(?:no|number|num)?\s*([1-9])(?:st|nd|rd|th)?\s*(?:one|item|piece|product|jacket|shirt|coat|wali|wala|valey)?\b/);
     if (match) {
         const num = parseInt(match[1], 10);
@@ -27,12 +20,9 @@ function getRequestedIndex(text) {
     }
     return null;
 }
-
 router.post('/message', async (req, res) => {
     try {
         const { message, context } = req.body;
-        
-        // Security Audit: Identify authenticated user securely via JWT
         let authenticatedUser = null;
         const authHeader = req.headers.authorization;
         if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -44,7 +34,6 @@ router.post('/message', async (req, res) => {
                 return res.status(401).json({ error: "Invalid Authentication Token" });
             }
         }
-        
         let aiData = { intent: 'unknown', confidence: 0, message: '', context: context || {} };
         try {
             const aiResponse = await fetch(APBOT_API_URL, {
@@ -58,9 +47,7 @@ router.post('/message', async (req, res) => {
         } catch (fetchErr) {
             console.warn("Python AI Service offline, falling back to Node NLP engine.");
         }
-        
         const { intent = 'unknown', confidence = 0, message: botMessage = '', context: updatedPythonContext } = aiData;
-        
         let responseData = {
             intent,
             confidence,
@@ -69,28 +56,19 @@ router.post('/message', async (req, res) => {
             actions: [],
             context: updatedPythonContext || context || {}
         };
-
-        
-        // Contextual NLP Extractors
         const lowerMsg = message.toLowerCase();
-        
-        // Check for Multi-turn filters (e.g. "Only under 200", "in black")
         const priceMatch = lowerMsg.match(/under\s*£?(\d+)/) || lowerMsg.match(/less than\s*£?(\d+)/) || lowerMsg.match(/below\s*£?(\d+)/) || lowerMsg.match(/within\s*£?(\d+)/);
         if (priceMatch) {
             responseData.context.priceFilter = parseInt(priceMatch[1]);
         } else if (!lowerMsg.includes('also') && !lowerMsg.includes('only') && !lowerMsg.includes('same')) {
             responseData.context.priceFilter = null;
         }
-
         const colorMatch = lowerMsg.match(/(black|white|grey|gray|blue|red|green|brown|navy|ivory|charcoal|onyx|obsidian|khaki)/i);
         if (colorMatch) {
             responseData.context.colorFilter = colorMatch[1];
         } else if (!lowerMsg.includes('also') && !lowerMsg.includes('only') && !lowerMsg.includes('same')) {
             responseData.context.colorFilter = null;
         }
-
-
-        // Handle "Show me the first one" or "Add the second one" or "Tell me about the 1st product"
         const indexMap = { 'first': 0, '1st': 0, 'second': 1, '2nd': 1, 'third': 2, '3rd': 2, 'fourth': 3, '4th': 3, 'fifth': 4, '5th': 4 };
         let referencedProductIndex = -1;
         for (const [word, idx] of Object.entries(indexMap)) {
@@ -99,22 +77,15 @@ router.post('/message', async (req, res) => {
                 break;
             }
         }
-
-        // Conversational State Machine Overrides (Highest Priority)
         let activeIntent = intent;
-        
         if (context?.checkoutState === 'awaiting_address') {
             activeIntent = 'process_address';
         } else if (context?.checkoutState === 'awaiting_payment') {
             activeIntent = 'process_payment';
         }
-
-        // Handle "Add it to my bag" referencing the selected/filtered product
         if (!context?.checkoutState && (lowerMsg.includes('add it') || lowerMsg.includes('add another')) && context?.lastProducts?.length > 0) {
              activeIntent = 'add_to_cart';
         }
-
-        // Contextual intent promotion for specific product references
         if (!context?.checkoutState && referencedProductIndex !== -1 && context?.lastProducts?.length > referencedProductIndex) {
             responseData.context.lastProducts = [context.lastProducts[referencedProductIndex]];
             if (lowerMsg.includes('wishlist') || lowerMsg.includes('favorite') || lowerMsg.includes('fav') || lowerMsg.includes('save')) {
@@ -125,18 +96,13 @@ router.post('/message', async (req, res) => {
                 activeIntent = 'product_information';
             }
         }
-
-        // If they just said "under 200" but no search intent, promote to search using previous search
         if (!context?.checkoutState && (priceMatch || colorMatch) && referencedProductIndex === -1) {
             if (!['add_to_cart', 'wishlist_add', 'remove_from_cart', 'checkout', 'process_payment', 'process_address'].includes(activeIntent)) {
                 activeIntent = 'product_search';
                 responseData.message = "Let me filter those for you.";
             }
         }
-
-        // Robust Pattern Matcher Overrides for Common E-commerce Triggers (only if not in active checkout state)
         if (!context?.checkoutState && referencedProductIndex === -1) {
-            // Check Wishlist FIRST before Add to Cart!
             if (lowerMsg.includes('wishlist') || lowerMsg.includes('favorite') || lowerMsg.includes('fav') || lowerMsg.includes('save')) {
                 activeIntent = 'wishlist_add';
             } else if (lowerMsg.includes('add') || lowerMsg.includes('put') || lowerMsg.includes('buy') || lowerMsg.includes('get this') || lowerMsg.includes('take this') || lowerMsg.includes('kro') || lowerMsg.includes('do')) {
@@ -144,8 +110,6 @@ router.post('/message', async (req, res) => {
                     activeIntent = 'add_to_cart';
                 }
             }
-
-            
             if (activeIntent !== 'add_to_cart') {
                 if (lowerMsg.includes('outfit') || lowerMsg.includes('complete look') || lowerMsg.includes('pair with') || lowerMsg.includes('style with') || lowerMsg.includes('bundle')) {
                     activeIntent = 'ai_outfit';
@@ -168,21 +132,12 @@ router.post('/message', async (req, res) => {
                     activeIntent = 'product_search';
                 }
             }
-
-
         }
-
-
-
-
-        // Handle low confidence & unknown ONLY if no overrides happened
         if ((confidence < 0.5 || intent === 'unknown') && activeIntent === intent) {
             responseData.message = "I'm sorry, I didn't quite catch that. Could you please rephrase or let me know what you're looking for?";
             responseData.intent = 'unknown';
             return res.json(responseData);
         }
-
-        // Handle Intents
         switch (activeIntent) {
             case 'product_search':
             case 'similar_products':
@@ -191,10 +146,8 @@ router.post('/message', async (req, res) => {
                 let products = [];
                 let dbQuery = {};
                 let searchKeywords = [];
-                
                 const isSimilar = activeIntent === 'similar_products';
                 const hasLastProducts = responseData.context.lastProducts && responseData.context.lastProducts.length > 0;
-                
                 if (isSimilar && hasLastProducts) {
                     const lastProduct = await Product.findById(responseData.context.lastProducts[0]);
                     if (lastProduct) {
@@ -207,40 +160,32 @@ router.post('/message', async (req, res) => {
                     responseData.message = "Here are some gorgeous pieces I recommend for you.";
                 } else {
                     const isAllRequest = lowerMsg.includes('all') || lowerMsg.includes('everything') || lowerMsg.includes('sare') || lowerMsg.includes('sab') || lowerMsg.includes('catalog') || lowerMsg.includes('collection') || lowerMsg.trim() === 'products' || lowerMsg.trim() === 'items';
-                    
                     if (isAllRequest) {
                         searchKeywords = [];
                         responseData.message = "Here is our full collection of SABLE products:";
                     } else {
                         const stopWords = ['new', 'arrivals', 'arrival', 'latest', 'show', 'me', 'only', 'under', 'less', 'than', 'more', 'over', 'price', 'the', 'a', 'an', 'some', 'any', 'please', 'just', 'add', 'it', 'to', 'my', 'bag', 'cart', 'buy', 'purchase', 'want', 'looking', 'for', 'can', 'you', 'find', 'like', 'ones', 'one', 'item', 'items', 'piece', 'pieces', 'thing', 'things', 'stuff', 'everything', 'all'];
                         const colorWords = ['black', 'white', 'grey', 'gray', 'blue', 'red', 'green', 'brown', 'navy', 'ivory', 'beige', 'charcoal', 'onyx', 'obsidian', 'khaki'];
-                        
                         searchKeywords = lowerMsg
                             .replace(/£?\d+/g, '')
                             .split(/[\s,.]+/)
                             .filter(w => w.length > 2 && !stopWords.includes(w) && !colorWords.includes(w));
-                        
                         const synonymMap = {
                             'outwheres': 'outerwear', 'jacket': 'outerwear', 'jackets': 'outerwear', 'coat': 'outerwear', 'coats': 'outerwear', 'overshirt': 'outerwear',
                             'shirt': 'essentials', 'shirts': 'essentials', 'tee': 'essentials', 'tshirt': 'essentials',
                             'sweater': 'knitwear', 'sweaters': 'knitwear', 'jumper': 'knitwear', 'cardigan': 'knitwear', 'knit': 'knitwear', 'knitwear': 'knitwear',
                             'trouser': 'trousers', 'trousers': 'trousers', 'pants': 'trousers', 'slacks': 'trousers'
                         };
-                        
                         const isExplicitCarryover = lowerMsg.includes('same') || lowerMsg.includes('similar') || lowerMsg.includes('more of');
                         if (isExplicitCarryover && context?.lastSearchKeywords) {
                             searchKeywords = context.lastSearchKeywords;
                         } else if (searchKeywords.length > 0) {
                             responseData.context.lastSearchKeywords = searchKeywords;
                         }
-
                         searchKeywords = searchKeywords.map(w => synonymMap[w] || w);
                     }
                 }
-
-                // Construct robust $and query conditions
                 const andConditions = [];
-
                 if (searchKeywords.length > 0) {
                     const regexPattern = searchKeywords.join('|');
                     andConditions.push({
@@ -251,8 +196,6 @@ router.post('/message', async (req, res) => {
                         ]
                     });
                 }
-                
-                // Color Synonym Map for broader, accurate database matching
                 const colorSynonymMap = {
                     'black': ['black', 'obsidian', 'onyx', 'charcoal', 'dark', 'slate'],
                     'white': ['white', 'off-white', 'ivory', 'oatmeal', 'cream', 'sand'],
@@ -263,7 +206,6 @@ router.post('/message', async (req, res) => {
                     'brown': ['brown', 'tobacco', 'tan', 'khaki', 'suede'],
                     'green': ['green', 'olive', 'khaki']
                 };
-
                 let cRegex = null;
                 if (responseData.context.colorFilter) {
                     const rawColor = responseData.context.colorFilter.toLowerCase();
@@ -280,16 +222,12 @@ router.post('/message', async (req, res) => {
                         ]
                     });
                 }
-
                 if (responseData.context.priceFilter) {
                     andConditions.push({ pr: { $lte: responseData.context.priceFilter } });
                 }
-
                 if (andConditions.length > 0) {
                     dbQuery = { $and: andConditions };
                 }
-                
-                // Extract user-requested count (e.g. "only 1", "show 2", "1 jacket", "just one", "the best jacket")
                 let requestedCount = null;
                 const countPatterns = [
                     { regex: /(?:only|just|show|top|get|find|bring|display|want)?\s*1\b|\bonly 1\b|\bjust 1\b|\b1 jacket\b|\b1 product\b|\b1 item\b|\b1 piece\b|\bone jacket\b|\bone item\b|\bone piece\b|\bjust one\b|\bonly one\b/i, count: 1 },
@@ -297,28 +235,21 @@ router.post('/message', async (req, res) => {
                     { regex: /(?:only|just|show|top|get|find|bring|display|want)?\s*3\b|\bonly 3\b|\bjust 3\b|\b3 jackets\b|\b3 products\b|\b3 items\b|\b3 pieces\b|\bthree jackets\b|\bthree items\b|\bthree pieces\b|\bjust three\b|\bonly three\b/i, count: 3 },
                     { regex: /(?:only|just|show|top|get|find|bring|display|want)?\s*4\b|\bonly 4\b|\bjust 4\b|\b4 jackets\b|\b4 products\b|\b4 items\b|\b4 pieces\b|\bfour jackets\b|\bfour items\b|\bfour pieces\b|\bjust four\b|\bonly four\b/i, count: 4 }
                 ];
-
                 for (const p of countPatterns) {
                     if (p.regex.test(lowerMsg)) {
                         requestedCount = p.count;
                         break;
                     }
                 }
-
                 if (!requestedCount && (lowerMsg.includes('the best jacket') || lowerMsg.includes('the top jacket') || lowerMsg.includes('the best piece') || lowerMsg.includes('best jacket'))) {
                     requestedCount = 1;
                 }
-
                 const fetchLimit = requestedCount ? requestedCount : 20;
                 const sortCriteria = (lowerMsg.includes('best') || lowerMsg.includes('top') || lowerMsg.includes('premium')) ? { pr: -1 } : { pr: 1 };
-
                 products = await Product.find(dbQuery).sort(sortCriteria).limit(fetchLimit);
-
                 if (requestedCount && products.length > requestedCount) {
                     products = products.slice(0, requestedCount);
                 }
-
-                // Smart Fallbacks - Strictly preserve requested color/price intent
                 if (products.length === 0) {
                     if (cRegex) {
                         products = await Product.find({
@@ -330,7 +261,6 @@ router.post('/message', async (req, res) => {
                                 { tags: cRegex }
                             ]
                         }).sort(sortCriteria).limit(fetchLimit);
-                        
                         if (products.length > 0) {
                             responseData.message = `I couldn't find any ${responseData.context.colorFilter} items under £${responseData.context.priceFilter || 200}, but here are all available ${responseData.context.colorFilter} pieces:`;
                         }
@@ -340,16 +270,13 @@ router.post('/message', async (req, res) => {
                             responseData.message = `Here are our pieces under £${responseData.context.priceFilter}:`;
                         }
                     }
-                    
                     if (products.length === 0) {
                         products = await Product.find({}).sort({ _id: -1 }).limit(fetchLimit);
                     }
                 }
-
                 if (requestedCount && products.length > requestedCount) {
                     products = products.slice(0, requestedCount);
                 }
-
                 if (products.length > 0) {
                     if (requestedCount === 1) {
                         const prod = products[0];
@@ -371,14 +298,11 @@ router.post('/message', async (req, res) => {
                     } else {
                         responseData.message = "Here are the pieces I selected for you:";
                     }
-
                     const formattedProducts = products.map(p => ({
                         ...p.toObject(),
                         _id: p._id.toString(), id: p._id.toString(),
                         name: p.nm, brand: 'SABLE', price: p.pr, category: p.ct, images: [p.img]
                     }));
-
-
                     let dynamicHint = "Click any item to view full details, or tell me which piece to add to your bag.";
                     if (lowerMsg.includes('new') || lowerMsg.includes('arrival') || lowerMsg.includes('latest')) {
                         dynamicHint = "These are our latest SABLE arrivals click any item for full details, or let me know which piece to add to your bag.";
@@ -392,15 +316,12 @@ router.post('/message', async (req, res) => {
                         const kw = searchKeywords.join(', ');
                         dynamicHint = `Here are our curated ${kw} pieces click to view details or ask me to add one to your bag.`;
                     }
-
                     responseData.data = { type: 'products', items: formattedProducts, hint: dynamicHint };
-
                     responseData.context.lastProducts = products.map(p => p._id.toString());
                     if (products[0].ct) responseData.context.lastCategory = products[0].ct;
                 }
                 break;
             }
-                
             case 'product_information':
             case 'product_price':
             case 'product_availability':
@@ -414,7 +335,6 @@ router.post('/message', async (req, res) => {
                             name: prod.nm, brand: 'SABLE', price: prod.pr, category: prod.ct, images: [prod.img]
                         };
                         responseData.data = { type: 'product_detail', product: formattedProduct };
-                        
                         if (activeIntent === 'product_price') {
                             responseData.message = `The ${prod.nm} is priced at £${prod.pr}.`;
                         } else if (activeIntent === 'product_availability') {
@@ -422,7 +342,6 @@ router.post('/message', async (req, res) => {
                         } else {
                             responseData.message = `Here is the full breakdown for ${prod.nm} (£${prod.pr}):\n\n• Craftsmanship: ${prod.desc}\n• Material: ${prod.material || '100% Premium Luxury Blend'}\n• Sizes: ${prod.sizes ? prod.sizes.join(', ') : 'S, M, L, XL'}`;
                         }
-
                     } else {
                         responseData.message = "I couldn't find the product details.";
                     }
@@ -430,26 +349,19 @@ router.post('/message', async (req, res) => {
                     responseData.message = "Please search for a product first so I can give you the details.";
                 }
                 break;
-
             case 'offers':
                 responseData.message = "Currently, SABLE offers standard pricing on all our luxury items. We don't have any sales right now, but sign up for our newsletter to stay updated on exclusive events.";
                 break;
-
             case 'add_to_cart':
                 let productToAdd = null;
                 const requestedIndex = getRequestedIndex(lowerMsg);
-
-                // 1. Check if user specified an ordinal position (e.g. "2nd wali", "3rd jacket", "first one")
                 if (requestedIndex !== null && responseData.context.lastProducts && responseData.context.lastProducts.length > requestedIndex) {
                     const targetId = responseData.context.lastProducts[requestedIndex];
                     productToAdd = await Product.findById(targetId);
                 }
-
-                // 2. If no index match, search by product name/keywords
                 if (!productToAdd) {
                     const addStopWords = ['only', 'under', 'less', 'than', 'more', 'over', 'price', 'show', 'me', 'the', 'a', 'an', 'some', 'any', 'please', 'just', 'add', 'in', 'it', 'to', 'my', 'bag', 'cart', 'buy', 'purchase', 'want', 'looking', 'for', 'can', 'you', 'find', 'like', 'this', 'one', 'best', 'wali', 'wala', 'valey', 'item', 'product', 'piece'];
                     let potentialNames = lowerMsg.replace(/£?\d+/g, '').split(/[\s,.]+/).filter(w => w.length > 2 && !addStopWords.includes(w));
-                    
                     if (potentialNames.length > 0) {
                         const regexP = potentialNames.join('|');
                         productToAdd = await Product.findOne({
@@ -460,16 +372,11 @@ router.post('/message', async (req, res) => {
                         });
                     }
                 }
-
-                // 3. Fallback to 1st product from previous search context
                 if (!productToAdd && responseData.context.lastProducts && responseData.context.lastProducts.length > 0) {
                     productToAdd = await Product.findById(responseData.context.lastProducts[0]);
                 }
-
                 if (productToAdd) {
                     let quantity = 1;
-                    
-                    // Only increase quantity if user explicitly specifies quantity/count keywords
                     if (/\b(?:qty|quantity|count)\s*(?:of|=|:)?\s*(\d+)\b/i.test(lowerMsg)) {
                         const qtyMatch = lowerMsg.match(/\b(?:qty|quantity)\s*(?:of|=|:)?\s*(\d+)\b/i);
                         if (qtyMatch) quantity = Math.min(10, Math.max(1, parseInt(qtyMatch[1], 10)));
@@ -477,13 +384,11 @@ router.post('/message', async (req, res) => {
                         const pcsMatch = lowerMsg.match(/\b(\d+)\s*(?:pieces|items|copies|pairs|pkgs)\b/i);
                         if (pcsMatch) quantity = Math.min(10, Math.max(1, parseInt(pcsMatch[1], 10)));
                     }
-                    
                     const formattedProduct = {
                         ...productToAdd.toObject(),
                         _id: productToAdd._id.toString(), id: productToAdd._id.toString(),
                         name: productToAdd.nm, brand: 'SABLE', price: productToAdd.pr, category: productToAdd.ct, images: [productToAdd.img]
                     };
-
                     responseData.actions.push('add_to_cart');
                     responseData.data = { type: 'cart_action', product: formattedProduct, quantity };
                     responseData.message = `I've added 1x ${formattedProduct.name} to your bag.`;
@@ -491,7 +396,6 @@ router.post('/message', async (req, res) => {
                     responseData.message = "I couldn't find which product to add. Please search for a product first.";
                 }
                 break;
-
             case 'wishlist_add':
                 let productToSave = null;
                 if (responseData.context.lastProducts && responseData.context.lastProducts.length > 0) {
@@ -500,14 +404,12 @@ router.post('/message', async (req, res) => {
                 if (!productToSave) {
                     productToSave = await Product.findOne({});
                 }
-
                 if (productToSave) {
                     const formattedSave = {
                         ...productToSave.toObject(),
                         _id: productToSave._id.toString(), id: productToSave._id.toString(),
                         name: productToSave.nm, brand: 'SABLE', price: productToSave.pr, category: productToSave.ct, images: [productToSave.img]
                     };
-
                     responseData.actions.push('wishlist_add');
                     responseData.data = { type: 'wishlist_action', product: formattedSave };
                     responseData.message = `I've saved the ${formattedSave.name} to your Wishlist!`;
@@ -515,26 +417,19 @@ router.post('/message', async (req, res) => {
                     responseData.message = "I couldn't find the item to save to your wishlist.";
                 }
                 break;
-
-
-
             case 'remove_from_cart':
                 if (context?.cartItems?.length > 0) {
-                    // Just push the action, frontend will show cart for them to remove, or we try to guess which one
                     responseData.actions.push('remove_from_cart');
-                    // We'll pass the first item in the cart to remove if they didn't specify
                     responseData.data = { type: 'cart_remove_action', productId: context.cartItems[0].id || context.cartItems[0]._id };
                     responseData.message = "I've removed that item from your bag.";
                 } else {
                     responseData.message = "Your bag is already empty.";
                 }
                 break;
-
             case 'update_cart':
                 responseData.message = "You can update your bag quantities below.";
                 responseData.actions.push('open_cart');
                 break;
-
             case 'view_cart':
                 const rawCart = context?.cartItems || [];
                 if (rawCart.length === 0) {
@@ -550,7 +445,6 @@ router.post('/message', async (req, res) => {
                     responseData.data = { type: 'cart_summary', items: formattedCart };
                 }
                 break;
-
             case 'wishlist_add':
                 if (responseData.context.lastProducts && responseData.context.lastProducts.length > 0) {
                     responseData.actions.push('wishlist_add');
@@ -560,7 +454,6 @@ router.post('/message', async (req, res) => {
                     responseData.message = "I don't know which product to save. Please select a product first.";
                 }
                 break;
-
             case 'wishlist_remove':
                 if (responseData.context.lastProducts && responseData.context.lastProducts.length > 0) {
                     responseData.actions.push('wishlist_remove');
@@ -570,13 +463,10 @@ router.post('/message', async (req, res) => {
                     responseData.message = "I don't know which product to remove. Please select a product first.";
                 }
                 break;
-                
             case 'view_wishlist':
                 responseData.actions.push('open_wishlist');
                 responseData.message = "Opening your wishlist now.";
                 break;
-
-            // AUTH ACTIONS
             case 'login':
                 if (authenticatedUser) {
                     responseData.message = "You're already signed in to your SABLE account.";
@@ -609,8 +499,6 @@ router.post('/message', async (req, res) => {
                     responseData.actions.push('open_orders');
                 }
                 break;
-
-            // NAVIGATION ACTIONS
             case 'open_shop':
             case 'go_home':
                 responseData.message = "Taking you to the storefront.";
@@ -665,7 +553,6 @@ router.post('/message', async (req, res) => {
                     responseData.message = "I don't know which product to open. Please search for a product first.";
                 }
                 break;
-
             case 'checkout':
                 const checkoutCart = context?.cartItems || [];
                 if (checkoutCart.length === 0) {
@@ -678,18 +565,15 @@ router.post('/message', async (req, res) => {
                     responseData.data = { type: 'address_form' };
                 }
                 break;
-                
             case 'process_address':
                 responseData.context.checkoutState = 'awaiting_payment';
                 responseData.context.shippingAddress = message;
                 responseData.message = "Got it! Your address is saved. Now, please securely enter your payment details.";
                 responseData.data = { type: 'payment_form' };
                 break;
-                
             case 'process_payment':
                 const finalRawCart = context?.cartItems || [];
                 let itemsToSave = [];
-                
                 if (finalRawCart.length > 0) {
                     itemsToSave = finalRawCart.map(item => ({
                         productId: item.id || item._id,
@@ -716,20 +600,16 @@ router.post('/message', async (req, res) => {
                         image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800'
                     }];
                 }
-
                 const orderTotal = itemsToSave.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 const trackingId = `SBL-${Math.floor(10000 + Math.random() * 90000)}`;
-
                 let userEmail = authenticatedUser?.email || 'guest@sable.com';
                 let userName = authenticatedUser?.name || 'Guest Customer';
                 let shippingAddrStr = context?.shippingAddress || '';
-
                 if (typeof shippingAddrStr === 'string' && shippingAddrStr.includes(',')) {
                     const parts = shippingAddrStr.split(',').map(s => s.trim());
                     if (parts[0]) userName = parts[0];
                     if (parts[1] && parts[1].includes('@')) userEmail = parts[1];
                 }
-
                 const newOrder = new Order({
                     orderId: trackingId,
                     userId: userEmail,
@@ -740,20 +620,13 @@ router.post('/message', async (req, res) => {
                     trackingNumber: trackingId,
                     shippingAddress: shippingAddrStr || 'Standard Priority Delivery'
                 });
-                
                 await newOrder.save();
-                
                 responseData.context.checkoutState = null;
                 responseData.context.shippingAddress = null;
-                
                 responseData.actions.push('place_order');
                 responseData.data = { type: 'order', item: newOrder };
                 responseData.message = "Payment Successful! Your order has been confirmed.";
                 break;
-
-
-
-
             case 'order_tracking':
             case 'order_status':
             case 'delivery_date':
@@ -767,19 +640,16 @@ router.post('/message', async (req, res) => {
                     if (elapsedMins >= 10) return 'Processing';
                     return 'Order Placed';
                 };
-
                 const trackingMatch = message.match(/SBL-\d+/i);
                 if (trackingMatch) {
                     const tId = trackingMatch[0].toUpperCase();
                     const order = await Order.findOne({
                         $or: [{ orderId: tId }, { trackingNumber: tId }]
                     });
-                    
                     if (order) {
                         const activeId = order.orderId || order.trackingNumber;
                         const dynamicStatus = getDynamicStatus(order);
                         order.trackingStatus = dynamicStatus;
-
                         responseData.data = { type: 'order', item: order };
                         responseData.message = `Tracking Order #${activeId}:\n\nStatus: "${dynamicStatus}"\nLocation: SABLE London Fulfillment Centre\nExpected Delivery: 3-5 Business Days.`;
                     } else {
@@ -792,7 +662,6 @@ router.post('/message', async (req, res) => {
                         const activeId = latestOrder.orderId || latestOrder.trackingNumber;
                         const dynamicStatus = getDynamicStatus(latestOrder);
                         latestOrder.trackingStatus = dynamicStatus;
-
                         responseData.data = { type: 'order', item: latestOrder };
                         responseData.message = `Tracking Latest Order #${activeId}:\n\nStatus: "${dynamicStatus}"\nLocation: SABLE London Fulfillment Centre\nExpected Delivery: 3-5 Business Days.`;
                     } else {
@@ -800,16 +669,12 @@ router.post('/message', async (req, res) => {
                     }
                 }
                 break;
-
-
-                
             case 'previous_orders':
                 const orderHistoryEmail = authenticatedUser?.email || context?.userId;
                 if (!orderHistoryEmail || orderHistoryEmail === 'guest') {
                     responseData.message = "Please sign in to view your order history.";
                 } else {
                     const orders = await Order.find({ userId: orderHistoryEmail }).sort({ createdAt: -1 }).limit(3);
-
                     if (orders.length > 0) {
                         const activeId = orders[0].orderId || orders[0].trackingNumber;
                         responseData.data = { type: 'order', item: orders[0] };
@@ -819,13 +684,9 @@ router.post('/message', async (req, res) => {
                     }
                 }
                 break;
-
-
-            // ── AI SIZE & FIT RECOMMENDATION ENGINE ────────────────────
             case 'ai_size_fit': {
                 const weightMatch = lowerMsg.match(/(\d+)\s*kg/i) || lowerMsg.match(/(\d+)\s*lbs/i);
                 const heightMatch = lowerMsg.match(/(\d+)\s*cm/i) || lowerMsg.match(/(\d+)\s*ft/i);
-                
                 if (weightMatch || heightMatch) {
                     let recSize = 'M';
                     let kg = 75;
@@ -833,14 +694,11 @@ router.post('/message', async (req, res) => {
                         const raw = parseInt(weightMatch[1]);
                         kg = lowerMsg.includes('lbs') ? Math.round(raw * 0.453592) : raw;
                     }
-                    
                     if (kg < 65) { recSize = 'S'; }
                     else if (kg <= 78) { recSize = 'M'; }
                     else if (kg <= 90) { recSize = 'L'; }
                     else { recSize = 'XL'; }
-
                     const explanation = `Based on your submitted build (${kg}kg), Size ${recSize} provides a refined tailored silhouette with effortless comfort.`;
-
                     responseData.data = {
                         type: 'size_fit_recommendation',
                         size: recSize,
@@ -853,9 +711,6 @@ router.post('/message', async (req, res) => {
                 }
                 break;
             }
-
-
-            // ── AI OUTFIT BUILDER (COMPLETE THE LOOK) ──────────────────
             case 'ai_outfit': {
                 const outfitItems = await Product.find({}).limit(3);
                 const formattedOutfit = outfitItems.map(p => ({
@@ -864,7 +719,6 @@ router.post('/message', async (req, res) => {
                     name: p.nm, brand: 'SABLE', price: p.pr, category: p.ct, images: [p.img]
                 }));
                 const totalBundle = formattedOutfit.reduce((s, i) => s + i.price, 0);
-
                 responseData.data = {
                     type: 'ai_outfit',
                     items: formattedOutfit,
@@ -873,8 +727,6 @@ router.post('/message', async (req, res) => {
                 responseData.message = "Here is an AI-curated 3-piece luxury ensemble designed to complete your look:";
                 break;
             }
-
-            // ── VIP DISCOUNT CONCIERGE ──────────────────────────────────
             case 'vip_discount': {
                 responseData.data = {
                     type: 'vip_discount',
@@ -884,32 +736,24 @@ router.post('/message', async (req, res) => {
                 responseData.message = "As a valued guest of SABLE, I've unlocked an exclusive 15% VIP discount code for your order!";
                 break;
             }
-
-            // ── VISUAL SEARCH / PHOTO MATCH ────────────────────────────
             case 'visual_search': {
                 const imgKeywords = ['bomber', 'trench', 'coat', 'sweater', 'jacket', 'trouser', 'overshirt', 'shirt', 'tee', 'cardigan', 'wool', 'leather', 'suede'];
                 const colorKeywords = ['black', 'white', 'grey', 'gray', 'blue', 'red', 'green', 'brown', 'navy'];
-                
                 const foundKeyword = imgKeywords.find(k => lowerMsg.includes(k));
                 const foundColor = colorKeywords.find(c => lowerMsg.includes(c));
-
                 let matchedProducts = [];
-
                 if (foundKeyword || foundColor) {
                     const searchConditions = [];
                     if (foundKeyword) searchConditions.push({ $or: [{ nm: new RegExp(foundKeyword, 'i') }, { ct: new RegExp(foundKeyword, 'i') }, { desc: new RegExp(foundKeyword, 'i') }] });
                     if (foundColor) searchConditions.push({ $or: [{ nm: new RegExp(foundColor, 'i') }, { desc: new RegExp(foundColor, 'i') }, { colour: new RegExp(foundColor, 'i') }] });
-
                     matchedProducts = await Product.find({ $and: searchConditions }).limit(3);
                 }
-
                 if (matchedProducts.length > 0) {
                     const formattedVisual = matchedProducts.map(p => ({
                         ...p.toObject(),
                         _id: p._id.toString(), id: p._id.toString(),
                         name: p.nm, brand: 'SABLE', price: p.pr, category: p.ct, images: [p.img]
                     }));
-
                     responseData.data = {
                         type: 'products',
                         items: formattedVisual,
@@ -923,7 +767,6 @@ router.post('/message', async (req, res) => {
                         _id: p._id.toString(), id: p._id.toString(),
                         name: p.nm, brand: 'SABLE', price: p.pr, category: p.ct, images: [p.img]
                     }));
-
                     responseData.data = {
                         type: 'products',
                         items: formattedAlt,
@@ -933,9 +776,6 @@ router.post('/message', async (req, res) => {
                 }
                 break;
             }
-
-
-            // FAQ & Support
             case 'checkout_help':
             case 'payment_help':
                 responseData.message = "You can securely check out directly in this chat! Just say 'checkout'. We accept all major credit and debit cards.";
@@ -954,10 +794,7 @@ router.post('/message', async (req, res) => {
                 responseData.message = "You can return items within 14 days of receipt. Please contact support@sable.com with your Order ID to initiate a return.";
                 break;
         }
-
-        
         res.json(responseData);
-        
     } catch (error) {
         console.error('ApBot Route Error:', error);
         res.status(500).json({
@@ -967,5 +804,4 @@ router.post('/message', async (req, res) => {
         });
     }
 });
-
 export default router;

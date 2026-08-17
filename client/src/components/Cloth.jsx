@@ -1,5 +1,4 @@
 import React from 'react';
-
 export default function Cloth() {
   return (
     <section id="cloth">
@@ -32,4 +31,3 @@ export default function Cloth() {
     </section>
   );
 }
-

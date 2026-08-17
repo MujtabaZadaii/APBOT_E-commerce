@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-
 export default function ProductCard({ product, isFav, onToggleFav, onAddToCart, onClick }) {
   const [btnText, setBtnText] = useState('Add to bag');
   const [heartAnim, setHeartAnim] = useState(false);
-
   const handleAdd = (e) => {
     e.stopPropagation();
     onAddToCart(product);
@@ -12,14 +10,12 @@ export default function ProductCard({ product, isFav, onToggleFav, onAddToCart, 
       setBtnText('Add to bag');
     }, 1400);
   };
-
   const handleFavClick = (e) => {
     e.stopPropagation();
     setHeartAnim(true);
     onToggleFav(product.id);
     setTimeout(() => setHeartAnim(false), 350);
   };
-
   return (
     <article className="card rv product-card">
       <div className="ph">
@@ -54,4 +50,3 @@ export default function ProductCard({ product, isFav, onToggleFav, onAddToCart, 
     </article>
   );
 }
-

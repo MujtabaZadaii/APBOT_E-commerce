@@ -1,5 +1,4 @@
 import React from 'react';
-
 export default function AnnouncementBar() {
   return (
     <div className="ann" aria-hidden="true">
@@ -20,4 +19,3 @@ export default function AnnouncementBar() {
     </div>
   );
 }
-

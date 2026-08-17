@@ -27,58 +27,38 @@ import ContactPage from './components/ContactPage';
 import AboutModal from './components/AboutModal';
 import ContactModal from './components/ContactModal';
 import FaqSection from './components/FaqSection';
-import AdminDashboard from './components/AdminDashboard';
 import { useScrollEffects } from './hooks/useScrollEffects';
 import { usePageTransition } from './hooks/usePageTransition';
-
-
 export default function App() {
-
   useScrollEffects();
   const { transitionTo } = usePageTransition();
-  const [currentView, setCurrentView] = useState(() => {
-    try {
-      const savedUser = localStorage.getItem('sable_user');
-      if (savedUser) {
-        const u = JSON.parse(savedUser);
-        if (u?.role === 'admin' || u?.email === 'mujtaba.d3v@gmail.com') {
-          return 'admin_dashboard';
-        }
-      }
-    } catch {}
-    return 'home';
-  }); // 'home' | 'about' | 'contact' | 'admin_dashboard'
+  const [currentView, setCurrentView] = useState('home'); 
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [pendingScrollTarget, setPendingScrollTarget] = useState(null);
-
   const handleSelectProduct = (id) => {
     transitionTo(() => {
       setCurrentView('home');
       setSelectedProductId(id);
     });
   };
-
   const handleBackToHome = () => {
     transitionTo(() => {
       setCurrentView('home');
       setSelectedProductId(null);
     });
   };
-
   const handleOpenAboutPage = () => {
     transitionTo(() => {
       setSelectedProductId(null);
       setCurrentView('about');
     });
   };
-
   const handleOpenContactPage = () => {
     transitionTo(() => {
       setSelectedProductId(null);
       setCurrentView('contact');
     });
   };
-
   const scrollToElement = (selector) => {
     const el = document.querySelector(selector);
     if (el) {
@@ -92,7 +72,6 @@ export default function App() {
     }
     return false;
   };
-
   useEffect(() => {
     if (pendingScrollTarget && currentView === 'home' && !selectedProductId) {
       let attempts = 0;
@@ -107,7 +86,6 @@ export default function App() {
       return () => clearInterval(interval);
     }
   }, [pendingScrollTarget, currentView, selectedProductId]);
-
   const handleOpenProductsPage = () => {
     if (currentView === 'home' && !selectedProductId) {
       scrollToElement('#shop');
@@ -117,7 +95,6 @@ export default function App() {
       setPendingScrollTarget('#shop');
     }
   };
-
   const handleOpenFaqPage = () => {
     if (currentView === 'home' && !selectedProductId) {
       scrollToElement('#faq');
@@ -127,9 +104,6 @@ export default function App() {
       setPendingScrollTarget('#faq');
     }
   };
-
-
-
   const [favs, setFavs] = useState(() => {
     try {
       const savedFavs = localStorage.getItem('sable_favs');
@@ -138,11 +112,8 @@ export default function App() {
       return {};
     }
   });
-
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState('register');
-
-  // Persistent User Session via localStorage
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const savedUser = localStorage.getItem('sable_user');
@@ -151,8 +122,6 @@ export default function App() {
       return null;
     }
   });
-
-  // Modals & Drawers State
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
@@ -164,19 +133,14 @@ export default function App() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [trackingDefaultOrder, setTrackingDefaultOrder] = useState(null);
   const [products, setProducts] = useState([]);
-
-  // Fetch real products
   useEffect(() => {
     fetch('http://localhost:5000/api/products')
       .then(res => res.json())
       .then(data => {
-        // Map _id to id for backwards compatibility with Shop component
         setProducts(data.map(p => ({ ...p, id: p._id })));
       })
       .catch(err => console.error("Failed to fetch products", err));
   }, []);
-
-  // Cart & Orders State with Persistence
   const [userCarts, setUserCarts] = useState(() => {
     try {
       const savedCarts = localStorage.getItem('sable_userCarts');
@@ -185,7 +149,6 @@ export default function App() {
       return {};
     }
   });
-
   const [guestCart, setGuestCart] = useState([]);
   const [userOrders, setUserOrders] = useState(() => {
     try {
@@ -195,12 +158,9 @@ export default function App() {
       return [];
     }
   });
-
-  // Persist User Session on Change & Fetch DB Wishlist
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem('sable_user', JSON.stringify(currentUser));
-      // Fetch wishlist from MongoDB
       fetch(`http://localhost:5000/api/user/wishlist?email=${encodeURIComponent(currentUser.email)}`)
         .then(res => res.json())
         .then(data => {
@@ -215,22 +175,15 @@ export default function App() {
       localStorage.removeItem('sable_user');
     }
   }, [currentUser]);
-
-  // Persist User Carts on Change
   useEffect(() => {
     localStorage.setItem('sable_userCarts', JSON.stringify(userCarts));
   }, [userCarts]);
-
-  // Persist Wishlist on Change
   useEffect(() => {
     localStorage.setItem('sable_favs', JSON.stringify(favs));
   }, [favs]);
-
-  // Persist Orders on Change
   useEffect(() => {
     localStorage.setItem('sable_orders', JSON.stringify(userOrders));
   }, [userOrders]);
-
   const isAnyModalOpen =
     isAuthOpen ||
     isCartOpen ||
@@ -239,8 +192,6 @@ export default function App() {
     isProfileOpen ||
     isCheckoutOpen ||
     isTrackingOpen;
-
-  // Lock body scrolling and stop Lenis when any modal or drawer is open
   useEffect(() => {
     if (isAnyModalOpen) {
       document.body.classList.add('modal-open');
@@ -254,22 +205,15 @@ export default function App() {
       if (window.lenis) window.lenis.start();
     };
   }, [isAnyModalOpen]);
-
   const activeUserId = currentUser ? currentUser.email : 'guest';
   const activeCartItems = currentUser
     ? userCarts[activeUserId] || []
     : guestCart;
-
   const totalBagCount = activeCartItems.reduce((acc, item) => acc + item.quantity, 0);
   const favCount = Object.keys(favs).filter((id) => favs[id]).length;
-
   const handleLoginSuccess = (user) => {
     setCurrentUser(user);
     localStorage.setItem('sable_user', JSON.stringify(user));
-    if (user.role === 'admin' || user.email === 'mujtaba.d3v@gmail.com') {
-      setSelectedProductId(null);
-      setCurrentView('admin_dashboard');
-    }
     if (guestCart.length > 0) {
       setUserCarts((prev) => {
         const existingUserCart = prev[user.email] || [];
@@ -287,7 +231,6 @@ export default function App() {
       setGuestCart([]);
     }
   };
-
   const handleAddToCart = (product, openDrawer = true) => {
     const updateCartArray = (items) => {
       const existing = items.find((i) => i.id === product.id);
@@ -298,7 +241,6 @@ export default function App() {
       }
       return [...items, { ...product, quantity: 1 }];
     };
-
     if (currentUser) {
       setUserCarts((prev) => ({
         ...prev,
@@ -311,14 +253,11 @@ export default function App() {
       setIsCartOpen(true);
     }
   };
-
-
   const handleUpdateQuantity = (id, newQty) => {
     const updateCartArray = (items) => {
       if (newQty <= 0) return items.filter((i) => i.id !== id);
       return items.map((i) => (i.id === id ? { ...i, quantity: newQty } : i));
     };
-
     if (currentUser) {
       setUserCarts((prev) => ({
         ...prev,
@@ -328,10 +267,8 @@ export default function App() {
       setGuestCart((prev) => updateCartArray(prev));
     }
   };
-
   const handleRemoveItem = (id) => {
     const updateCartArray = (items) => items.filter((i) => i.id !== id);
-
     if (currentUser) {
       setUserCarts((prev) => ({
         ...prev,
@@ -341,13 +278,11 @@ export default function App() {
       setGuestCart((prev) => updateCartArray(prev));
     }
   };
-
   const handleToggleFav = (id) => {
     setFavs((prev) => ({
       ...prev,
       [id]: !prev[id]
     }));
-
     if (currentUser) {
       fetch('http://localhost:5000/api/user/wishlist/toggle', {
         method: 'POST',
@@ -356,17 +291,14 @@ export default function App() {
       }).catch(err => console.error("Failed to sync wishlist to DB", err));
     }
   };
-
   const handleOpenAuth = (mode = 'register') => {
     setAuthMode(mode);
     setIsAuthOpen(true);
   };
-
   const handleSignOut = () => {
     setCurrentUser(null);
     localStorage.removeItem('sable_user');
   };
-
   const handleStartCheckout = () => {
     setIsCartOpen(false);
     if (!currentUser) {
@@ -375,7 +307,6 @@ export default function App() {
       setIsCheckoutOpen(true);
     }
   };
-
   const handleOrderPlaced = (order) => {
     if (order) {
       setUserOrders((prev) => [order, ...prev]);
@@ -385,13 +316,10 @@ export default function App() {
     }
     setGuestCart([]);
   };
-
-
   const handleOpenTrackingPage = (order = null) => {
     setTrackingDefaultOrder(order || null);
     setIsTrackingOpen(true);
   };
-
   const handleUpdateAddress = (newAddress) => {
     if (currentUser) {
       const updatedUser = { ...currentUser, address: newAddress };
@@ -399,7 +327,6 @@ export default function App() {
       localStorage.setItem('sable_user', JSON.stringify(updatedUser));
     }
   };
-
   return (
     <div>
       <PageLoader />
@@ -416,20 +343,13 @@ export default function App() {
         onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenTracking={() => handleOpenTrackingPage(null)}
         onOpenOrders={() => setIsOrdersOpen(true)}
-        onOpenAdminDashboard={() => setCurrentView('admin_dashboard')}
         onGoHome={handleBackToHome}
         onOpenProducts={handleOpenProductsPage}
         onOpenAbout={handleOpenAboutPage}
         onOpenFaq={handleOpenFaqPage}
         onOpenContact={handleOpenContactPage}
       />
-      {currentView === 'admin_dashboard' ? (
-        <AdminDashboard 
-          currentUser={currentUser}
-          onSignOut={handleSignOut}
-          onGoToStore={() => setCurrentView('home')}
-        />
-      ) : currentView === 'about' ? (
+      {currentView === 'about' ? (
         <AboutPage 
           onBack={handleBackToHome}
           onOpenShop={handleBackToHome}
@@ -474,7 +394,6 @@ export default function App() {
           <Signup />
         </>
       )}
-
       <Footer 
         onGoHome={handleBackToHome}
         onOpenProducts={handleOpenProductsPage}
@@ -482,14 +401,12 @@ export default function App() {
         onOpenFaq={handleOpenFaqPage}
         onOpenContact={handleOpenContactPage}
       />
-
-      {/* Modals & Drawers */}
+      {}
       <AboutModal
         isOpen={isAboutOpen}
         onClose={() => setIsAboutOpen(false)}
         onOpenShop={handleBackToHome}
       />
-
       <ContactModal
         isOpen={isContactOpen}
         onClose={() => setIsContactOpen(false)}
@@ -500,7 +417,6 @@ export default function App() {
         initialMode={authMode}
         onLoginSuccess={handleLoginSuccess}
       />
-
       <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -510,13 +426,11 @@ export default function App() {
         onCheckout={handleStartCheckout}
         currentUser={currentUser}
       />
-
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         onAddToCart={handleAddToCart}
       />
-
       <WishlistDrawer
         isOpen={isWishlistOpen}
         onClose={() => setIsWishlistOpen(false)}
@@ -527,14 +441,12 @@ export default function App() {
         onProductSelect={setSelectedProductId}
         currentUser={currentUser}
       />
-
       <ProfileModal
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
         currentUser={currentUser}
         onUpdateAddress={handleUpdateAddress}
       />
-
       <MyOrdersModal
         isOpen={isOrdersOpen}
         onClose={() => setIsOrdersOpen(false)}
@@ -543,7 +455,6 @@ export default function App() {
         onOpenTrackingPage={handleOpenTrackingPage}
         onAddToCart={handleAddToCart}
       />
-
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
@@ -552,7 +463,6 @@ export default function App() {
         onOrderPlaced={handleOrderPlaced}
         onOpenTrackingPage={handleOpenTrackingPage}
       />
-
       <OrderTrackingPage
         isOpen={isTrackingOpen}
         onClose={() => setIsTrackingOpen(false)}
@@ -568,7 +478,6 @@ export default function App() {
         onOpenProfile={() => setIsProfileOpen(true)}
         onOpenWishlist={() => setIsWishlistOpen(true)}
       />
-
       <ApBot 
         currentUser={currentUser}
         cartItems={activeCartItems}
@@ -578,7 +487,6 @@ export default function App() {
         onOpenCart={() => setIsCartOpen(true)}
         onOpenCheckout={() => setIsCheckoutOpen(true)}
         onOpenTracking={handleOpenTrackingPage}
-
         favs={favs}
         onToggleFav={handleToggleFav}
         onOpenWishlist={() => setIsWishlistOpen(true)}
@@ -589,7 +497,6 @@ export default function App() {
         onNavigate={(target, params) => {
           if (target === 'home') setSelectedProductId(null);
           else if (target === 'product' && params?.id) setSelectedProductId(params.id);
-          // could add more targets like categories if supported
         }}
         onOpenSearch={() => setIsSearchOpen(true)}
       />

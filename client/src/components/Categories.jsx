@@ -1,12 +1,10 @@
 import React from 'react';
-
 export default function Categories() {
   const handleScrollToShop = (e) => {
     e.preventDefault();
     const el = document.querySelector('#shop');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
-
   return (
     <section id="cats">
       <div className="wrap row">
@@ -24,7 +22,6 @@ export default function Categories() {
             <span className="go">Shop outerwear <i>→</i></span>
           </div>
         </a>
-
         <a href="#shop" className="rv" onClick={handleScrollToShop}>
           <div className="ph">
             <img
@@ -39,7 +36,6 @@ export default function Categories() {
             <span className="go">Shop knitwear <i>→</i></span>
           </div>
         </a>
-
         <a href="#shop" className="rv" onClick={handleScrollToShop}>
           <div className="ph">
             <img
@@ -58,4 +54,3 @@ export default function Categories() {
     </section>
   );
 }
-

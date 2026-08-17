@@ -1,21 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { MessageSquare, X, Send, Package, RefreshCw, Minus, Mic, Plus, MapPin, Calendar, Truck, Bot, Volume2, VolumeX, Camera } from 'lucide-react';
-
-
-
-
-
 const INITIAL_MESSAGES = [
   {
     role: 'assistant',
     content: 'I am ApBot, SABLE\'s AI shopping assistant. How can I elevate your experience today?'
   }
 ];
-
 const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onOpenCart, onOpenCheckout, onOpenTracking, onOrderPlaced, favs = {}, onToggleFav, onOpenWishlist, onOpenAuth, onSignOut, onOpenProfile, onNavigate, onOpenSearch }) => {
   const [isOpen, setIsOpen] = useState(false);
-
   const [messages, setMessages] = useState(() => {
     try {
       const saved = localStorage.getItem('sable_apbot_messages');
@@ -28,21 +21,16 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
     }
     return INITIAL_MESSAGES;
   });
-
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
-
-
   const recognitionRef = useRef(null);
-
   const handleVoiceInput = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Voice recognition is not supported in this browser. Please use Google Chrome or Microsoft Edge.");
       return;
     }
-
     if (isListening) {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
@@ -51,30 +39,25 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       setActionNotice('');
       return;
     }
-
     try {
       const recognition = new SpeechRecognition();
       recognitionRef.current = recognition;
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = 'en-US';
-
       recognition.onstart = () => {
         setIsListening(true);
         setActionNotice("Listening... speak into your microphone");
       };
-
       recognition.onend = () => {
         setIsListening(false);
         setActionNotice('');
       };
-
       recognition.onerror = (err) => {
         console.error("Speech Recognition Error:", err);
         setIsListening(false);
         setActionNotice('');
       };
-
       recognition.onresult = (event) => {
         let textResult = '';
         for (let i = 0; i < event.results.length; i++) {
@@ -84,7 +67,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           setInput(textResult);
         }
       };
-
       recognition.start();
     } catch (e) {
       console.error(e);
@@ -92,9 +74,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       setActionNotice('');
     }
   };
-
-
-
   const [conversationContext, setConversationContext] = useState(() => {
     try {
       const saved = localStorage.getItem('sable_apbot_context');
@@ -104,7 +83,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
     }
     return { userId: currentUser?.email || 'guest' };
   });
-
   useEffect(() => {
     try {
       localStorage.setItem('sable_apbot_messages', JSON.stringify(messages));
@@ -112,7 +90,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       console.error(e);
     }
   }, [messages]);
-
   useEffect(() => {
     try {
       localStorage.setItem('sable_apbot_context', JSON.stringify(conversationContext));
@@ -120,7 +97,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       console.error(e);
     }
   }, [conversationContext]);
-
   const handleResetChat = () => {
     setMessages(INITIAL_MESSAGES);
     setConversationContext({ userId: currentUser?.email || 'guest' });
@@ -131,17 +107,14 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       console.error(e);
     }
   };
-
   const [actionNotice, setActionNotice] = useState('');
   const [isSpeechEnabled, setIsSpeechEnabled] = useState(false);
   const panelRef = useRef(null);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
   useEffect(() => {
     scrollToBottom();
     if (isSpeechEnabled && messages.length > 0) {
@@ -156,7 +129,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       }
     }
   }, [messages, isTyping, isSpeechEnabled]);
-
   const handleImageUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -167,8 +139,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       }, 1200);
     }
   };
-
-
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -182,11 +152,9 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       if (window.lenis) window.lenis.start();
     };
   }, [isOpen]);
-
   const handleClose = () => {
     setIsOpen(false);
   };
-
   const triggerActionFeedback = (text, callback) => {
     setActionNotice(text);
     setTimeout(() => {
@@ -194,23 +162,16 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       if (callback) callback();
     }, 1200);
   };
-
-
-
-
   const handlePaymentSubmit = async (paymentStr) => {
     setMessages(prev => [...prev, { role: 'user', content: paymentStr }]);
     setIsTyping(true);
     setActionNotice('Processing payment securely...');
-
     await new Promise(r => setTimeout(r, 1400));
-
     try {
       const headers = { 'Content-Type': 'application/json' };
       if (currentUser?.token) {
         headers['Authorization'] = `Bearer ${currentUser.token}`;
       }
-
       const response = await fetch('http://localhost:5000/api/apbot/message', {
         method: 'POST',
         headers,
@@ -222,13 +183,10 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           }
         })
       });
-
       const data = await response.json();
-      
       if (data.context) {
         setConversationContext(prev => ({ ...prev, ...data.context }));
       }
-
       if (data.actions && data.actions.length > 0) {
         data.actions.forEach(action => {
           if (action === 'place_order' && onOrderPlaced) {
@@ -236,26 +194,17 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           }
         });
       }
-
-
-      // Step 1: Payment Successful Message
       setIsTyping(false);
       setActionNotice('');
       setMessages(prev => [...prev, { 
         role: 'assistant', 
         content: "Payment Successful! Your order has been confirmed." 
       }]);
-
-      // Step 2: Tracking Generation Loader
       setIsTyping(true);
       setActionNotice('Generating shipping tracking label...');
-
       await new Promise(r => setTimeout(r, 1600));
-
       setIsTyping(false);
       setActionNotice('');
-
-      // Step 3: Render Live Order Tracking Card
       if (data.data) {
         setMessages(prev => [...prev, { 
           role: 'assistant', 
@@ -272,23 +221,17 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       }]);
     }
   };
-
   const sendMessage = async (userMessage) => {
-
     if (!userMessage.trim()) return;
-
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: userMessage, time: timeStr }]);
     setIsTyping(true);
-
-
     try {
       const headers = { 'Content-Type': 'application/json' };
       if (currentUser?.token) {
         headers['Authorization'] = `Bearer ${currentUser.token}`;
       }
-
       const response = await fetch('http://localhost:5000/api/apbot/message', {
         method: 'POST',
         headers,
@@ -300,14 +243,10 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           }
         })
       });
-
       const data = await response.json();
-      
       if (data.context) {
         setConversationContext(prev => ({ ...prev, ...data.context }));
       }
-
-      // Handle actions
       if (data.actions && data.actions.length > 0) {
         data.actions.forEach(action => {
           if (action === 'navigate' && onNavigate && data.data?.target) {
@@ -331,38 +270,31 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
             onOpenOrders();
             handleClose();
           }
-
           if (action === 'open_cart' && onOpenCart) onOpenCart();
           if (action === 'open_checkout' && onOpenCheckout) onOpenCheckout();
           if (action === 'open_tracking' && onOpenTracking) onOpenTracking(data.data?.item);
           if (action === 'open_wishlist' && onOpenWishlist) onOpenWishlist();
-
           if (action === 'add_to_cart' && onAddToCart && data.data?.product) {
             const qty = data.data.quantity || 1;
             for(let i=0; i<qty; i++) {
                 onAddToCart({ ...data.data.product, id: data.data.product._id }, false);
             }
           }
-
           if (action === 'remove_from_cart' && onRemoveFromCart && data.data?.productId) {
             onRemoveFromCart(data.data.productId);
           }
-
           if (action === 'wishlist_add' && onToggleFav && data.data?.product) {
             onToggleFav(data.data.product._id || data.data.product.id);
             triggerActionFeedback("Item saved to Wishlist!");
           }
-
           if (action === 'wishlist_remove' && onToggleFav && data.data?.productId) {
             if (favs[data.data.productId]) onToggleFav(data.data.productId);
           }
           if (action === 'place_order' && onOrderPlaced) {
             onOrderPlaced(data.data?.item || data.data?.order);
           }
-
         });
       }
-
       setMessages(prev => [...prev, { 
         role: 'assistant', 
         content: data.message,
@@ -377,20 +309,16 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       setIsTyping(false);
     }
   };
-
   const handleSend = async (e) => {
     e.preventDefault();
     sendMessage(input);
   };
-
   const handleProductAdd = (e, product) => {
     e.stopPropagation();
     if (onAddToCart) onAddToCart({ ...product, id: product._id }, false);
   };
-
   const renderData = (data) => {
     if (!data) return null;
-
     if (data.type === 'products') {
       return (
         <>
@@ -404,7 +332,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
                   onAddToCart({ ...product, id: product._id }, false);
                 }
               }}>
-
                 <div className="apbot-product-img-wrap">
                   <img src={product.images[0] || 'https://via.placeholder.com/150'} alt={product.name} />
                 </div>
@@ -418,13 +345,9 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           <p className="apbot-product-hint">
             {data.hint || "Click any item to view full details, or let me know which piece you'd like me to add to your bag."}
           </p>
-
-
         </>
       );
     }
-
-
     if (data.type === 'product_detail' || data.type === 'product_info') {
         const prod = data.product || data.item;
         if (!prod) return null;
@@ -449,7 +372,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
                   >
                     Add to Bag
                   </button>
-
                   <button 
                     onClick={() => {
                       if (onNavigate) {
@@ -466,7 +388,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           </div>
         );
     }
-
     if (data.type === 'cart_summary') {
       return (
         <div className="apbot-products">
@@ -486,7 +407,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
         </div>
       );
     }
-
     if (data.type === 'order') {
       const orderObj = data.item || {};
       const orderCode = orderObj.orderId || orderObj.trackingNumber || 'SBL-ORDER';
@@ -494,7 +414,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       const steps = ['Order Placed', 'Processing', 'In Transit', 'Out for Delivery', 'Delivered'];
       const activeStepIdx = steps.findIndex(s => s.toLowerCase() === orderStatus.toLowerCase());
       const currentStepIdx = activeStepIdx !== -1 ? activeStepIdx : 0;
-
       return (
         <div className="apbot-order-card" style={{ marginTop: '12px', padding: '14px 16px', background: '#FFFFFF', borderRadius: '8px', border: '1px solid rgba(16, 16, 16, 0.12)', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }}>
           <div className="apbot-order-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', borderBottom: '1px solid rgba(16,16,16,0.08)', paddingBottom: '10px' }}>
@@ -506,7 +425,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
               <span style={{ fontSize: '12px', fontWeight: '700', color: '#101010' }}>£{orderObj.totalAmount.toFixed(2)}</span>
             )}
           </div>
-
           <div style={{ fontSize: '11px', color: '#555', marginBottom: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <MapPin size={13} style={{ color: '#101010' }} />
@@ -521,9 +439,7 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
               <span><strong>Status:</strong> <strong style={{ color: '#16a34a' }}>{orderStatus}</strong></span>
             </div>
           </div>
-
-
-          {/* Timeline progress bar */}
+          {}
           <div style={{ margin: '14px 0 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
             <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '2px', background: 'rgba(16,16,16,0.1)', zIndex: 1, transform: 'translateY(-50%)' }} />
             <div style={{ position: 'absolute', top: '50%', left: 0, width: `${(currentStepIdx / (steps.length - 1)) * 100}%`, height: '2px', background: '#101010', zIndex: 2, transform: 'translateY(-50%)', transition: 'width 0.4s ease' }} />
@@ -543,13 +459,11 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
               );
             })}
           </div>
-
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#777', marginBottom: '12px' }}>
             <span>Placed</span>
             <span>In Transit</span>
             <span>Delivered</span>
           </div>
-
           <button
             onClick={() => {
               if (onOpenTracking) onOpenTracking(orderObj);
@@ -570,7 +484,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
               alignItems: 'center',
               justifyContent: 'center',
               gap: '6px'
-
             }}
           >
             <span>Open Full Order Tracking</span>
@@ -579,9 +492,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
         </div>
       );
     }
-
-
-
     if (data.type === 'size_fit_form') {
       return (
         <form
@@ -601,7 +511,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
         </form>
       );
     }
-
     if (data.type === 'size_fit_recommendation') {
       return (
         <div style={{ background: '#FAF9F6', padding: '14px', borderRadius: '8px', border: '1px solid rgba(16,16,16,0.1)', marginTop: '10px' }}>
@@ -612,8 +521,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
         </div>
       );
     }
-
-
     if (data.type === 'ai_outfit') {
       return (
         <div style={{ marginTop: '12px' }}>
@@ -645,7 +552,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
         </div>
       );
     }
-
     if (data.type === 'vip_discount') {
       return (
         <div style={{ background: '#101010', color: '#EFEDE8', padding: '16px', borderRadius: '8px', marginTop: '12px', textAlign: 'center' }}>
@@ -665,7 +571,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
         </div>
       );
     }
-
     if (data.type === 'address_form') {
       return (
         <form 
@@ -686,7 +591,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
         </form>
       );
     }
-
     if (data.type === 'payment_form') {
       return (
         <form 
@@ -708,11 +612,8 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
         </form>
       );
     }
-
-
     return null;
   };
-
   return (
     <>
       <button 
@@ -722,8 +623,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
       >
         <Bot size={20} />
       </button>
-
-
       <div ref={panelRef} className={`apbot-container ${isOpen ? 'open' : ''}`}>
         {actionNotice && (
           <div style={{
@@ -745,7 +644,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           </div>
         )}
         <div className="apbot-header">
-
           <div className="apbot-header-left">
             <img src="/apbot-logo.png" alt="ApBot" className="apbot-header-avatar" />
             <div className="apbot-title-group">
@@ -759,7 +657,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
             <button onClick={handleResetChat} title="Reset Chat">
               <RefreshCw size={14} />
             </button>
-
             <button onClick={handleClose}>
               <Minus size={16} />
             </button>
@@ -767,10 +664,7 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
               <X size={18} />
             </button>
           </div>
-
-
         </div>
-
         <div className="apbot-messages no-scrollbar" data-lenis-prevent="true">
           {messages.map((msg, idx) => (
             <div key={idx} className={`apbot-message-wrapper ${msg.role}`}>
@@ -783,8 +677,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
               </div>
             </div>
           ))}
-
-          
           {isTyping && (
             <div className="apbot-message-wrapper assistant">
               <img src="/apbot-logo.png" alt="Avatar" className="apbot-bot-avatar" />
@@ -797,14 +689,11 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           )}
           <div ref={messagesEndRef} />
         </div>
-
         <div className="apbot-quick-actions">
           <button onClick={() => setInput('What\'s in my bag?')}>View Bag</button>
           <button onClick={() => setInput('Track my order')}>Track Order</button>
           <button onClick={() => setInput('Show me new arrivals')}>New Arrivals</button>
         </div>
-
-
         <form onSubmit={handleSend} className="apbot-input-area">
           <div className="apbot-input-box">
             <input 
@@ -822,7 +711,6 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
             >
               <Plus size={18} className="icon-plus" />
             </button>
-
             <input 
               type="text" 
               value={input}
@@ -838,17 +726,14 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
               >
                 <Mic size={16} />
               </button>
-
               <button type="submit" className="send-btn" disabled={!input.trim() || isTyping}>
                 <Send size={14} />
               </button>
             </div>
           </div>
         </form>
-
       </div>
     </>
   );
 };
-
 export default ApBot;

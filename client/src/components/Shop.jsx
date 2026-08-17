@@ -1,6 +1,5 @@
 import React from 'react';
 import ProductCard from './ProductCard';
-
 export default function Shop({ products, favs, onToggleFav, onAddToCart, onProductSelect }) {
   return (
     <section id="shop" data-section="products">
@@ -25,4 +24,3 @@ export default function Shop({ products, favs, onToggleFav, onAddToCart, onProdu
     </section>
   );
 }
-

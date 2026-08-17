@@ -1,12 +1,10 @@
 import React from 'react';
-
 export default function Season() {
   const handleScrollToShop = (e) => {
     e.preventDefault();
     const el = document.querySelector('#shop');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
-
   return (
     <section id="season">
       <div className="grid">
@@ -33,4 +31,3 @@ export default function Season() {
     </section>
   );
 }
-

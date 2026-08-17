@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Truck, RotateCcw, Shirt, CreditCard, User, HelpCircle, Plus, Minus, Headphones, ArrowRight } from 'lucide-react';
 import './FaqSection.css';
-
 export default function FaqSection({ onOpenContact }) {
   const [activeCategory, setActiveCategory] = useState('ORDERS');
   const [openQuestionIdx, setOpenQuestionIdx] = useState(0);
-
   const categories = [
     { id: 'ORDERS', name: 'ORDERS', icon: <ShoppingBag size={18} />, count: 4 },
     { id: 'SHIPPING', name: 'SHIPPING', icon: <Truck size={18} />, count: 4 },
@@ -15,7 +13,6 @@ export default function FaqSection({ onOpenContact }) {
     { id: 'ACCOUNT', name: 'ACCOUNT', icon: <User size={18} />, count: 3 },
     { id: 'OTHER', name: 'OTHER', icon: <HelpCircle size={18} />, count: 3 },
   ];
-
   const faqData = {
     ORDERS: [
       {
@@ -128,14 +125,11 @@ export default function FaqSection({ onOpenContact }) {
       }
     ]
   };
-
   const currentQuestions = faqData[activeCategory] || [];
-
   return (
     <section id="faq" className="sable-faq-layout-section">
       <div className="wrap">
-        
-        {/* Section Header */}
+        {}
         <div className="sable-faq-header-block">
           <span className="sable-faq-eyebrow">CLIENT INTELLIGENCE</span>
           <h2 className="sable-faq-main-title">FREQUENTLY ASKED QUESTIONS</h2>
@@ -143,9 +137,8 @@ export default function FaqSection({ onOpenContact }) {
             Find answers to common inquiries regarding orders, shipping, returns, products, and client services.
           </p>
         </div>
-
         <div className="sable-faq-main-grid">
-          {/* Left Sidebar Menu */}
+          {}
           <div className="sable-faq-sidebar">
             <div className="sable-faq-tabs-stack">
               {categories.map(cat => (
@@ -166,8 +159,7 @@ export default function FaqSection({ onOpenContact }) {
                 </button>
               ))}
             </div>
-
-            {/* Support Card */}
+            {}
             <div className="sable-faq-support-card">
               <div className="sable-support-headset-circle">
                 <Headphones size={22} color="#D8C5A2" />
@@ -186,8 +178,7 @@ export default function FaqSection({ onOpenContact }) {
               </button>
             </div>
           </div>
-
-          {/* Right Accordion List */}
+          {}
           <div className="sable-faq-accordion-container">
             <div className="sable-faq-list-stack">
               {currentQuestions.map((item, idx) => {
@@ -204,7 +195,6 @@ export default function FaqSection({ onOpenContact }) {
                         {isOpen ? <Minus size={18} /> : <Plus size={18} />}
                       </span>
                     </button>
-
                     {isOpen && (
                       <div className="sable-faq-row-answer">
                         <p>{item.a}</p>
@@ -215,9 +205,7 @@ export default function FaqSection({ onOpenContact }) {
               })}
             </div>
           </div>
-
         </div>
-
       </div>
     </section>
   );

@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Product from './models/Product.js';
-
 dotenv.config();
-
 const newProducts = [
   {
     nm: 'Premium Bomber Jacket',
@@ -101,29 +99,20 @@ const newProducts = [
     inStock: true
   }
 ];
-
 mongoose.connect('mongodb://127.0.0.1:27017/sable', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(async () => {
   try {
     console.log("Adding 5 luxury products to SABLE...");
-    
-    // Insert new products
     const inserted = await Product.insertMany(newProducts);
     console.log(`Successfully added ${inserted.length} products.`);
-
-    // Link related products (cross-selling)
-    // Make the first 3 products related to the Bomber Jacket
     const bomberId = inserted[0]._id;
     const relatedIds = [inserted[1]._id, inserted[2]._id, inserted[3]._id];
-    
     await Product.findByIdAndUpdate(bomberId, {
       $set: { relatedProducts: relatedIds }
     });
-    
     console.log("Successfully linked related products for the Bomber Jacket.");
-    
     process.exit(0);
   } catch (err) {
     console.error("Error inserting products:", err);

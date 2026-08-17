@@ -1,13 +1,10 @@
 import { useCallback, useRef } from 'react';
 import { gsap } from 'gsap';
-
 export function usePageTransition() {
   const isTransitioningRef = useRef(false);
-
   const transitionTo = useCallback((onSwitchView, targetSelector) => {
     if (isTransitioningRef.current) return;
     const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     if (isReduced) {
       onSwitchView();
       if (targetSelector) {
@@ -18,10 +15,7 @@ export function usePageTransition() {
       }
       return;
     }
-
     isTransitioningRef.current = true;
-
-    // Create a temporary transition overlay element
     const overlay = document.createElement('div');
     overlay.className = 'sable-page-transition-overlay';
     Object.assign(overlay.style, {
@@ -33,14 +27,12 @@ export function usePageTransition() {
       pointerEvents: 'none'
     });
     document.body.appendChild(overlay);
-
     const tl = gsap.timeline({
       onComplete: () => {
         if (overlay.parentNode) {
           overlay.parentNode.removeChild(overlay);
         }
         isTransitioningRef.current = false;
-        
         if (targetSelector) {
           setTimeout(() => {
             const el = document.querySelector(targetSelector);
@@ -54,7 +46,6 @@ export function usePageTransition() {
         }
       }
     });
-
     tl.to(overlay, {
       clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
       duration: 0.3,
@@ -76,6 +67,5 @@ export function usePageTransition() {
       delay: 0.05
     });
   }, []);
-
   return { transitionTo };
 }

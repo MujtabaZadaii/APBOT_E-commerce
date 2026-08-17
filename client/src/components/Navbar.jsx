@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Search, ShoppingBag, User, Heart, Package, ChevronRight, Sparkles, LogOut, SlidersHorizontal, Info, Mail, HelpCircle } from 'lucide-react';
 import ProfileDropdown from './ProfileDropdown';
-
 export default function Navbar({
   bagCount = 0,
   favCount = 0,
@@ -14,7 +13,6 @@ export default function Navbar({
   onOpenWishlist,
   onOpenTracking,
   onOpenOrders,
-  onOpenAdminDashboard,
   onGoHome,
   onOpenProducts,
   onOpenAbout,
@@ -25,7 +23,6 @@ export default function Navbar({
   const [bagPulse, setBagPulse] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const prevBagCount = useRef(bagCount);
-
   useEffect(() => {
     const handleScroll = () => {
       const currentScroll = window.scrollY;
@@ -35,12 +32,9 @@ export default function Navbar({
         setIsCompressed(false);
       }
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -51,8 +45,6 @@ export default function Navbar({
       document.body.style.overflow = '';
     };
   }, [isMobileMenuOpen]);
-
-  // Micro-interaction when bag count changes
   useEffect(() => {
     if (bagCount !== prevBagCount.current) {
       setBagPulse(true);
@@ -61,20 +53,16 @@ export default function Navbar({
       return () => clearTimeout(timer);
     }
   }, [bagCount]);
-
   const handleHomeClick = (e) => {
     e.preventDefault();
     setIsMobileMenuOpen(false);
     if (onGoHome) onGoHome();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
   const handleAnchorClick = (e, targetId) => {
     e.preventDefault();
     setIsMobileMenuOpen(false);
-    
     if (onGoHome) onGoHome();
-
     setTimeout(() => {
       const el = document.querySelector(targetId);
       if (el) {
@@ -87,12 +75,11 @@ export default function Navbar({
       }
     }, 80);
   };
-
   return (
     <>
       <nav className={`sable-nav ${isCompressed ? 'compressed' : ''}`}>
         <div className="wrap bar">
-          {/* Desktop Left Links */}
+          {}
           <ul className="desktop-links">
             <li><a href="#home" onClick={handleHomeClick}>HOME</a></li>
             <li>
@@ -142,8 +129,7 @@ export default function Navbar({
               </a>
             </li>
           </ul>
-
-          {/* Mobile Hamburger Trigger */}
+          {}
           <div className="mobile-menu-trigger">
             <button 
               type="button"
@@ -155,8 +141,7 @@ export default function Navbar({
               <span className="mobile-menu-label">MENU</span>
             </button>
           </div>
-
-          {/* SABLE Logo - Takes User to Home */}
+          {}
           <div 
             className="mk brand-logo" 
             onClick={handleHomeClick}
@@ -165,8 +150,7 @@ export default function Navbar({
           >
             SABLE
           </div>
-
-          {/* Utility Controls */}
+          {}
           <div className="util">
             <span 
               onClick={onOpenSearch} 
@@ -175,7 +159,6 @@ export default function Navbar({
             >
               Search
             </span>
-
             <span
               onClick={onOpenSearch}
               style={{ cursor: 'pointer' }}
@@ -184,7 +167,6 @@ export default function Navbar({
             >
               <Search size={18} />
             </span>
-            
             {currentUser ? (
               <ProfileDropdown
                 currentUser={currentUser}
@@ -193,7 +175,6 @@ export default function Navbar({
                 onOpenWishlist={onOpenWishlist}
                 onOpenTracking={onOpenTracking}
                 onOpenOrders={onOpenOrders}
-                onOpenAdminDashboard={onOpenAdminDashboard}
                 onSignOut={onSignOut}
               />
             ) : (
@@ -205,7 +186,6 @@ export default function Navbar({
                 Account
               </span>
             )}
-
             <a
               href="#shop"
               onClick={(e) => {
@@ -221,16 +201,14 @@ export default function Navbar({
           </div>
         </div>
       </nav>
-
-      {/* Advanced Mobile Navigation Overlay Drawer */}
+      {}
       <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
         <div 
           className="mobile-nav-backdrop" 
           onClick={() => setIsMobileMenuOpen(false)} 
         />
-        
         <div className="mobile-nav-content">
-          {/* Drawer Header */}
+          {}
           <div className="mobile-nav-header">
             <span className="mobile-nav-logo" onClick={handleHomeClick}>SABLE</span>
             <button 
@@ -242,8 +220,7 @@ export default function Navbar({
               <X size={24} />
             </button>
           </div>
-
-          {/* Main Navigation Categories */}
+          {}
           <div className="mobile-nav-body">
             <div className="mobile-nav-section">
               <span className="mobile-nav-subtitle">NAVIGATION</span>
@@ -310,8 +287,7 @@ export default function Navbar({
                 </li>
               </ul>
             </div>
-
-            {/* Quick Actions & Account */}
+            {}
             <div className="mobile-nav-section">
               <span className="mobile-nav-subtitle">CLIENT SERVICES</span>
               <div className="mobile-action-grid">
@@ -323,7 +299,6 @@ export default function Navbar({
                   <Search size={18} />
                   <span>Search Catalog</span>
                 </button>
-
                 <button 
                   type="button"
                   className="mobile-action-card"
@@ -332,7 +307,6 @@ export default function Navbar({
                   <ShoppingBag size={18} />
                   <span>Bag ({bagCount})</span>
                 </button>
-
                 <button 
                   type="button"
                   className="mobile-action-card"
@@ -341,7 +315,6 @@ export default function Navbar({
                   <Heart size={18} />
                   <span>Wishlist ({favCount})</span>
                 </button>
-
                 <button 
                   type="button"
                   className="mobile-action-card"
@@ -351,8 +324,7 @@ export default function Navbar({
                   <span>Order Tracking</span>
                 </button>
               </div>
-
-              {/* User Account / Authentication */}
+              {}
               <div className="mobile-user-section">
                 {currentUser ? (
                   <div className="mobile-user-box">
@@ -403,8 +375,7 @@ export default function Navbar({
               </div>
             </div>
           </div>
-
-          {/* Drawer Footer */}
+          {}
           <div className="mobile-nav-footer">
             <div className="mobile-nav-badge">
               <Sparkles size={14} color="#C5A059" />

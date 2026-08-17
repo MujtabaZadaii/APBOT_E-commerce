@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Product from './models/Product.js';
-
 dotenv.config();
-
 const richProducts = [
   {
     nm: 'Rift Overshirt',
@@ -177,31 +175,24 @@ const richProducts = [
     inStock: true
   }
 ];
-
 mongoose.connect('mongodb://127.0.0.1:27017/sable', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(async () => {
   try {
     console.log("Enriching all 9 products with luxury details in SABLE DB...");
-
     await Product.deleteMany({});
     const inserted = await Product.insertMany(richProducts);
-
-    // Link related products dynamically for cross-sell across all products
     for (let i = 0; i < inserted.length; i++) {
       const current = inserted[i];
-      // Pick 3 other products from the list as related items
       const related = inserted
         .filter((_, idx) => idx !== i)
         .slice(i % 5, (i % 5) + 3)
         .map(p => p._id);
-
       await Product.findByIdAndUpdate(current._id, {
         $set: { relatedProducts: related }
       });
     }
-
     console.log(`Successfully saved ${inserted.length} deeply detailed products with cross-product connections!`);
     process.exit(0);
   } catch (err) {

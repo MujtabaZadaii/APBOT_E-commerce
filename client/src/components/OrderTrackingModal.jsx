@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { X, Package, Clock, CheckCircle2, Truck, RefreshCw, Scissors, MapPin } from 'lucide-react';
-
 export default function OrderTrackingModal({ isOpen, onClose, orders = [], currentUser }) {
-  const [secondsRemaining, setSecondsRemaining] = useState(600); // 10 minutes countdown (600 seconds)
+  const [secondsRemaining, setSecondsRemaining] = useState(600); 
   const [activeOrderIndex, setActiveOrderIndex] = useState(0);
-
   const backdropRef = useRef(null);
   const modalRef = useRef(null);
-
   const stages = [
     { title: 'Order Placed', desc: 'Order confirmed and saved in MongoDB database.', icon: CheckCircle2 },
     { title: 'Processing at Atelier', desc: 'Garment cut and sewn on Redchurch Street floor.', icon: Scissors },
@@ -16,30 +13,25 @@ export default function OrderTrackingModal({ isOpen, onClose, orders = [], curre
     { title: 'Out for Delivery', desc: 'Courier driver is en-route to your address.', icon: MapPin },
     { title: 'Delivered', desc: 'Package safely handed over.', icon: CheckCircle2 }
   ];
-
-  // 10-Minute Timer Logic for Auto-Updating Tracking Status
   useEffect(() => {
     if (!isOpen) return;
     const interval = setInterval(() => {
       setSecondsRemaining((prev) => {
         if (prev <= 1) {
-          return 600; // Reset 10-minute cycle
+          return 600; 
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(interval);
   }, [isOpen]);
-
   useEffect(() => {
     if (isOpen && backdropRef.current && modalRef.current) {
       gsap.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2 });
       gsap.fromTo(modalRef.current, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.28, ease: 'power3.out' });
     }
   }, [isOpen]);
-
   if (!isOpen) return null;
-
   const activeOrder = orders[activeOrderIndex] || {
     orderId: 'SABLE-ORD-94810',
     trackingNumber: 'SABLE-TRK-892410',
@@ -48,19 +40,15 @@ export default function OrderTrackingModal({ isOpen, onClose, orders = [], curre
     items: [{ nm: 'Rift Overshirt', quantity: 1, pr: 185 }],
     shippingAddress: { street: '18 Redchurch Street', city: 'London', postcode: 'E2 7DP' }
   };
-
-  // Determine current stage based on elapsed time (simulated 10-minute progression)
   const currentStageIndex = Math.min(
     stages.length - 1,
     1 + Math.floor((600 - secondsRemaining) / 120)
   );
-
   const formatTimer = (secs) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
-
   return (
     <div
       ref={backdropRef}
@@ -115,8 +103,7 @@ export default function OrderTrackingModal({ isOpen, onClose, orders = [], curre
         >
           <X size={15} />
         </button>
-
-        {/* Header */}
+        {}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
           <Package size={22} />
           <div>
@@ -124,8 +111,7 @@ export default function OrderTrackingModal({ isOpen, onClose, orders = [], curre
             <p style={{ fontSize: '12px', opacity: 0.5 }}>Real-time status synced with SABLE Atelier</p>
           </div>
         </div>
-
-        {/* Order Selector (if multiple orders exist) */}
+        {}
         {orders.length > 1 && (
           <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', marginBottom: '18px', paddingBottom: '4px' }}>
             {orders.map((ord, idx) => (
@@ -148,8 +134,7 @@ export default function OrderTrackingModal({ isOpen, onClose, orders = [], curre
             ))}
           </div>
         )}
-
-        {/* Order Meta Bar */}
+        {}
         <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '10px', padding: '14px 18px', marginBottom: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px', fontSize: '12px' }}>
           <div>
             <div style={{ opacity: 0.5, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Tracking Code</div>
@@ -166,22 +151,19 @@ export default function OrderTrackingModal({ isOpen, onClose, orders = [], curre
             </div>
           </div>
         </div>
-
-        {/* Live Timeline */}
+        {}
         <div style={{ padding: '0 8px', marginBottom: '24px' }}>
           <div style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', opacity: 0.5, marginBottom: '16px' }}>
             Tracking Progression Timeline
           </div>
-
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', position: 'relative' }}>
             {stages.map((stg, idx) => {
               const IconComp = stg.icon;
               const isCompleted = idx <= currentStageIndex;
               const isCurrent = idx === currentStageIndex;
-
               return (
                 <div key={idx} style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', position: 'relative' }}>
-                  {/* Step Connector Line */}
+                  {}
                   {idx < stages.length - 1 && (
                     <div
                       style={{
@@ -195,8 +177,7 @@ export default function OrderTrackingModal({ isOpen, onClose, orders = [], curre
                       }}
                     />
                   )}
-
-                  {/* Icon Circle */}
+                  {}
                   <div
                     style={{
                       width: '32px',
@@ -213,8 +194,7 @@ export default function OrderTrackingModal({ isOpen, onClose, orders = [], curre
                   >
                     <IconComp size={16} />
                   </div>
-
-                  {/* Stage Text */}
+                  {}
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ fontSize: '13.5px', fontWeight: '700', color: isCurrent ? '#EFEDE8' : isCompleted ? '#88e0a0' : 'rgba(239, 237, 232, 0.5)' }}>
@@ -233,8 +213,7 @@ export default function OrderTrackingModal({ isOpen, onClose, orders = [], curre
             })}
           </div>
         </div>
-
-        {/* Auto Refresh Info Banner */}
+        {}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'rgba(136, 224, 160, 0.06)', border: '1px solid rgba(136, 224, 160, 0.18)', borderRadius: '8px', fontSize: '11px', color: '#88e0a0' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <RefreshCw size={14} className="spin-icon" />

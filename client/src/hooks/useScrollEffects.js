@@ -2,31 +2,23 @@ import { useEffect } from 'react';
 import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
 gsap.registerPlugin(ScrollTrigger);
-
 export function useScrollEffects(onHeroReady) {
   useEffect(() => {
     const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // 1. Initialize Lenis Smooth Scroll
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       touchMultiplier: 1.5
     });
-
     window.lenis = lenis;
     lenis.on('scroll', ScrollTrigger.update);
-
     const updateLenis = (time) => {
       lenis.raf(time * 1000);
     };
-
     gsap.ticker.add(updateLenis);
     gsap.ticker.lagSmoothing(0);
-
     if (isReducedMotion) {
       document.querySelectorAll('.hv, .rv, .product-card').forEach((el) => {
         el.classList.add('on', 'in');
@@ -38,9 +30,7 @@ export function useScrollEffects(onHeroReady) {
         gsap.ticker.remove(updateLenis);
       };
     }
-
     const ctx = gsap.context(() => {
-      // 2. Nav Progress Rail
       let bar = document.getElementById('prog');
       const nav = document.querySelector('nav');
       if (nav && !bar) {
@@ -48,7 +38,6 @@ export function useScrollEffects(onHeroReady) {
         bar.id = 'prog';
         nav.appendChild(bar);
       }
-
       if (bar) {
         gsap.to(bar, {
           scaleX: 1,
@@ -61,8 +50,6 @@ export function useScrollEffects(onHeroReady) {
           }
         });
       }
-
-      // 3. Hero Entrance Timeline Sequence
       const heroTl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1.1 } });
       heroTl
         .fromTo('.ann', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.6 })
@@ -76,8 +63,6 @@ export function useScrollEffects(onHeroReady) {
         )
         .fromTo('#h2', { opacity: 0, y: 24 }, { opacity: 1, y: 0 }, '-=0.9')
         .fromTo('#h3', { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, '-=0.8');
-
-      // 4. Hero Parallax Scroll
       gsap.to('#hm', {
         y: -35,
         scale: 1.035,
@@ -89,7 +74,6 @@ export function useScrollEffects(onHeroReady) {
           scrub: true
         }
       });
-
       gsap.to('#wb', {
         y: 65,
         ease: 'none',
@@ -100,8 +84,6 @@ export function useScrollEffects(onHeroReady) {
           scrub: true
         }
       });
-
-      // 5. Section Heading and General Element Scroll Reveals (.rv)
       const revealElements = gsap.utils.toArray('.rv');
       revealElements.forEach((el) => {
         gsap.fromTo(
@@ -120,8 +102,6 @@ export function useScrollEffects(onHeroReady) {
           }
         );
       });
-
-      // 6. Product Cards Batch Stagger Reveal
       ScrollTrigger.batch('.card', {
         start: 'top 90%',
         onEnter: (batch) => {
@@ -139,8 +119,6 @@ export function useScrollEffects(onHeroReady) {
           );
         }
       });
-
-      // 7. Season Section Image Scrub Scaling
       const seasonImg = document.getElementById('seasonImg');
       if (seasonImg) {
         gsap.to(seasonImg, {
@@ -155,13 +133,10 @@ export function useScrollEffects(onHeroReady) {
           }
         });
       }
-
-      // 8. Lookbook Clip-Path Scrub Animations
       const lookbookFigures = gsap.utils.toArray('#look figure');
       lookbookFigures.forEach((fig) => {
         const img = fig.querySelector('img');
         const speed = parseFloat(fig.dataset.speed || 0.05);
-
         if (img) {
           gsap.fromTo(
             img,
@@ -182,7 +157,6 @@ export function useScrollEffects(onHeroReady) {
             }
           );
         }
-
         gsap.to(fig, {
           y: speed * -100,
           ease: 'none',
@@ -194,8 +168,6 @@ export function useScrollEffects(onHeroReady) {
           }
         });
       });
-
-      // 9. Cloth Video Observer
       const clothVideo = document.querySelector('#cloth video');
       if (clothVideo) {
         ScrollTrigger.create({
@@ -213,13 +185,10 @@ export function useScrollEffects(onHeroReady) {
           onLeaveBack: () => clothVideo.pause()
         });
       }
-
-      // 10. Atelier Count Up
       const countNums = gsap.utils.toArray('#atelier .acount b');
       countNums.forEach((numEl) => {
         const targetVal = parseInt(numEl.dataset.to || '0', 10);
         const obj = { val: 0 };
-
         ScrollTrigger.create({
           trigger: '#atelier',
           start: 'top 75%',
@@ -237,7 +206,6 @@ export function useScrollEffects(onHeroReady) {
         });
       });
     });
-
     return () => {
       ctx.revert();
       lenis.destroy();
@@ -246,4 +214,3 @@ export function useScrollEffects(onHeroReady) {
     };
   }, []);
 }
-

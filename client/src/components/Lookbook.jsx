@@ -1,5 +1,4 @@
 import React from 'react';
-
 export default function Lookbook() {
   return (
     <section id="look">
@@ -50,4 +49,3 @@ export default function Lookbook() {
     </section>
   );
 }
-

@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, MessageSquare, MapPin, User, ListFilter, Edit3, ArrowRight, Plus, Minus, CheckCircle2 } from 'lucide-react';
 import './ContactPage.css';
-
 export default function ContactPage({ onBack, onOpenApBot }) {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
@@ -22,14 +19,12 @@ export default function ContactPage({ onBack, onOpenApBot }) {
       setFormData({ name: '', email: '', subject: '', message: '' });
     }, 4000);
   };
-
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (!newsletterEmail) return;
     setSubscribed(true);
     setTimeout(() => setSubscribed(false), 3000);
   };
-
   const faqs = [
     {
       q: 'HOW LONG DOES SHIPPING TAKE?',
@@ -48,10 +43,9 @@ export default function ContactPage({ onBack, onOpenApBot }) {
       a: 'You can use our interactive Order Tracking modal or ask ApBot AI Concierge anytime with your Order ID.'
     }
   ];
-
   return (
     <div className="sable-contact-page">
-      {/* 1. HERO SECTION */}
+      {}
       <div className="sable-contact-hero">
         <div className="wrap sable-contact-hero-grid">
           <div className="sable-contact-hero-left">
@@ -67,7 +61,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
               <div className="sable-arrow-circle"><ArrowRight size={14} /></div>
             </a>
           </div>
-
           <div className="sable-contact-hero-right">
             <img 
               src="/images/sable_contact_boutique.png" 
@@ -77,7 +70,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
           </div>
         </div>
       </div>
-
       {/* 2. 4 CONTACT CARDS STRIP */}
       <div className="sable-contact-cards-strip">
         <div className="wrap sable-contact-cards-grid">
@@ -90,7 +82,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
               hello@sable.com <ArrowRight size={14} />
             </a>
           </div>
-
           {/* Call Us */}
           <div className="sable-c-card">
             <div className="sable-c-card-icon"><Phone size={20} /></div>
@@ -100,7 +91,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
               +92 300 1234567 <ArrowRight size={14} />
             </a>
           </div>
-
           {/* Live Chat */}
           <div className="sable-c-card" onClick={onOpenApBot} style={{ cursor: 'pointer' }}>
             <div className="sable-c-card-icon"><MessageSquare size={20} /></div>
@@ -110,7 +100,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
               START CHAT <ArrowRight size={14} />
             </span>
           </div>
-
           {/* Visit Us */}
           <div className="sable-c-card">
             <div className="sable-c-card-icon"><MapPin size={20} /></div>
@@ -122,7 +111,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
           </div>
         </div>
       </div>
-
       {/* 3. SEND A MESSAGE SECTION */}
       <div id="send-message" className="sable-message-section">
         <div className="wrap sable-message-grid">
@@ -132,7 +120,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
             <h2 className="sable-msg-heading">
               WE'D LOVE TO<br />HEAR FROM YOU
             </h2>
-
             {submitted ? (
               <div className="sable-form-success">
                 <CheckCircle2 size={48} color="#D8C5A2" />
@@ -151,7 +138,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
                   />
                   <User size={16} className="sable-input-icon" />
                 </div>
-
                 <div className="sable-input-wrapper">
                   <input 
                     type="email" 
@@ -162,7 +148,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
                   />
                   <Mail size={16} className="sable-input-icon" />
                 </div>
-
                 <div className="sable-input-wrapper">
                   <input 
                     type="text" 
@@ -172,7 +157,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
                   />
                   <ListFilter size={16} className="sable-input-icon" />
                 </div>
-
                 <div className="sable-input-wrapper">
                   <textarea 
                     rows={4}
@@ -183,7 +167,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
                   />
                   <Edit3 size={16} className="sable-input-icon textarea-icon" />
                 </div>
-
                 <button type="submit" className="sable-gold-btn">
                   <span>SEND MESSAGE</span>
                   <ArrowRight size={16} />
@@ -191,8 +174,7 @@ export default function ContactPage({ onBack, onOpenApBot }) {
               </form>
             )}
           </div>
-
-          {/* Right Dark Portrait Image & Quote */}
+          {}
           <div className="sable-msg-right">
             <img 
               src="/images/sable_contact_model.png" 
@@ -208,8 +190,7 @@ export default function ContactPage({ onBack, onOpenApBot }) {
           </div>
         </div>
       </div>
-
-      {/* 4. FREQUENTLY ASKED QUESTIONS STRIP */}
+      {}
       <div className="sable-faq-strip">
         <div className="wrap">
           <div className="sable-faq-header">
@@ -217,7 +198,6 @@ export default function ContactPage({ onBack, onOpenApBot }) {
             <span className="sable-faq-title">FREQUENTLY ASKED QUESTIONS</span>
             <span className="sable-faq-line" />
           </div>
-
           <div className="sable-faq-horizontal-grid">
             {faqs.map((faq, idx) => (
               <div key={idx} className="sable-faq-col">
@@ -240,15 +220,13 @@ export default function ContactPage({ onBack, onOpenApBot }) {
           </div>
         </div>
       </div>
-
-      {/* 5. NEWSLETTER STAY IN THE KNOW FOOTER */}
+      {}
       <div className="sable-newsletter-bar">
         <div className="wrap sable-news-container">
           <div className="sable-news-left">
             <h3>STAY IN THE KNOW</h3>
             <p>Be the first to know about new collections, exclusive offers, and more.</p>
           </div>
-
           <div className="sable-news-right">
             {subscribed ? (
               <span className="sable-subscribed-text">✓ YOU ARE NOW SUBSCRIBED TO SABLE</span>

@@ -1,5 +1,4 @@
 import React from 'react';
-
 export default function Atelier() {
   return (
     <section id="atelier">
@@ -28,4 +27,3 @@ export default function Atelier() {
     </section>
   );
 }
-

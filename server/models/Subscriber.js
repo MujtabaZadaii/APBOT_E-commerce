@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 const subscriberSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -11,5 +10,4 @@ const subscriberSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
-
 export default mongoose.model('Subscriber', subscriberSchema);

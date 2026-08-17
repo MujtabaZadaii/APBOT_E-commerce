@@ -4,35 +4,29 @@
   font-family: Archivo, sans-serif;
   overflow-x: hidden;
 }
-
-/* 1. HERO SECTION */
 .sable-contact-hero {
   padding: 100px 0 80px 0;
   background: var(--bone);
   border-bottom: 1px solid var(--line);
 }
-
 .sable-contact-hero-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
   align-items: center;
 }
-
 .sable-contact-title {
   font: 400 64px/1.05 'Bodoni MT', Didot, 'Playfair Display', serif;
   letter-spacing: -0.02em;
   color: var(--ink);
   margin-bottom: 24px;
 }
-
 .sable-contact-hero-desc {
   font: 400 15px/1.7 Archivo, sans-serif;
   color: var(--mid);
   margin-bottom: 36px;
   max-width: 440px;
 }
-
 .sable-contact-hero-link {
   display: inline-flex;
   align-items: center;
@@ -43,11 +37,9 @@
   text-decoration: none;
   transition: opacity 0.25s ease;
 }
-
 .sable-contact-hero-link:hover {
   opacity: 0.75;
 }
-
 .sable-arrow-circle {
   width: 38px;
   height: 38px;
@@ -58,7 +50,6 @@
   justify-content: center;
   color: var(--ink);
 }
-
 .sable-boutique-img {
   width: 100%;
   height: 480px;
@@ -68,20 +59,16 @@
   border: 1px solid var(--line);
   box-shadow: 0 16px 40px rgba(16, 16, 16, 0.08);
 }
-
-/* 2. 4 CARDS STRIP */
 .sable-contact-cards-strip {
   padding: 80px 0;
   background: #FFFFFF;
   border-bottom: 1px solid var(--line);
 }
-
 .sable-contact-cards-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 30px;
 }
-
 .sable-c-card {
   border-right: 1px solid var(--line);
   padding-right: 20px;
@@ -89,11 +76,9 @@
   flex-direction: column;
   gap: 12px;
 }
-
 .sable-c-card:last-child {
   border-right: none;
 }
-
 .sable-c-card-icon {
   width: 44px;
   height: 44px;
@@ -106,18 +91,15 @@
   justify-content: center;
   margin-bottom: 8px;
 }
-
 .sable-c-card h3 {
   font: 700 12px/1 Archivo, sans-serif;
   letter-spacing: 0.22em;
   color: var(--ink);
 }
-
 .sable-c-card p {
   font: 400 13px/1.5 Archivo, sans-serif;
   color: var(--mid);
 }
-
 .sable-c-link {
   font: 600 11px/1 Archivo, sans-serif;
   letter-spacing: 0.14em;
@@ -129,43 +111,35 @@
   margin-top: 6px;
   transition: opacity 0.2s ease;
 }
-
 .sable-c-link:hover {
   opacity: 0.7;
 }
-
-/* 3. SEND A MESSAGE SECTION */
 .sable-message-section {
   padding: 120px 0;
   background: var(--bone);
   border-bottom: 1px solid var(--line);
 }
-
 .sable-message-grid {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: 80px;
   align-items: center;
 }
-
 .sable-msg-heading {
   font: 400 48px/1.05 'Bodoni MT', Didot, 'Playfair Display', serif;
   letter-spacing: -0.01em;
   color: var(--ink);
   margin-bottom: 36px;
 }
-
 .sable-contact-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
   max-width: 480px;
 }
-
 .sable-input-wrapper {
   position: relative;
 }
-
 .sable-input-wrapper input,
 .sable-input-wrapper textarea {
   width: 100%;
@@ -178,24 +152,20 @@
   outline: none;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
-
 .sable-input-wrapper input:focus,
 .sable-input-wrapper textarea:focus {
   border-color: var(--ink);
   box-shadow: 0 0 0 3px rgba(16, 16, 16, 0.05);
 }
-
 .sable-input-icon {
   position: absolute;
   left: 16px;
   top: 18px;
   color: var(--mid);
 }
-
 .textarea-icon {
   top: 18px;
 }
-
 .sable-gold-btn {
   background: var(--ink);
   color: var(--bone);
@@ -212,12 +182,10 @@
   margin-top: 8px;
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
-
 .sable-gold-btn:hover {
   opacity: 0.9;
   transform: translateY(-2px);
 }
-
 .sable-form-success {
   text-align: center;
   padding: 40px;
@@ -229,7 +197,6 @@
   align-items: center;
   gap: 16px;
 }
-
 .sable-msg-right {
   position: relative;
   border-radius: 12px;
@@ -237,14 +204,12 @@
   border: 1px solid var(--line);
   box-shadow: 0 16px 40px rgba(16, 16, 16, 0.08);
 }
-
 .sable-portrait-img {
   width: 100%;
   height: 580px;
   object-fit: cover;
   display: block;
 }
-
 .sable-quote-overlay {
   position: absolute;
   bottom: 40px;
@@ -256,27 +221,22 @@
   border-radius: 8px;
   border-left: 3px solid #C5A059;
 }
-
 .sable-quote-mark {
   font: 400 36px/1 Georgia, serif;
   color: #C5A059;
   display: block;
   margin-bottom: -10px;
 }
-
 .sable-quote-text {
   font: 400 18px/1.5 'Bodoni MT', Didot, Georgia, serif;
   font-style: italic;
   color: var(--bone);
 }
-
-/* 4. FREQUENTLY ASKED QUESTIONS STRIP */
 .sable-faq-strip {
   padding: 100px 0;
   background: #FFFFFF;
   border-bottom: 1px solid var(--line);
 }
-
 .sable-faq-header {
   display: flex;
   align-items: center;
@@ -284,30 +244,25 @@
   gap: 24px;
   margin-bottom: 50px;
 }
-
 .sable-faq-line {
   width: 120px;
   height: 1px;
   background: var(--line);
 }
-
 .sable-faq-title {
   font: 600 11px/1 Archivo, sans-serif;
   letter-spacing: 0.26em;
   color: var(--mid);
 }
-
 .sable-faq-horizontal-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
-
 .sable-faq-col {
   border-top: 1px solid var(--line);
   padding-top: 20px;
 }
-
 .sable-faq-q-box {
   display: flex;
   align-items: center;
@@ -315,13 +270,11 @@
   cursor: pointer;
   gap: 12px;
 }
-
 .sable-faq-q-text {
   font: 700 10px/1.4 Archivo, sans-serif;
   letter-spacing: 0.18em;
   color: var(--ink);
 }
-
 .sable-faq-toggle {
   width: 24px;
   height: 24px;
@@ -333,44 +286,36 @@
   justify-content: center;
   flex-shrink: 0;
 }
-
 .sable-faq-a-box {
   margin-top: 14px;
   font: 400 12px/1.6 Archivo, sans-serif;
   color: var(--mid);
 }
-
-/* 5. NEWSLETTER BAR */
 .sable-newsletter-bar {
   padding: 80px 0;
   background: var(--bone);
 }
-
 .sable-news-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 40px;
 }
-
 .sable-news-left h3 {
   font: 700 14px/1 Archivo, sans-serif;
   letter-spacing: 0.24em;
   color: var(--ink);
   margin-bottom: 8px;
 }
-
 .sable-news-left p {
   font: 400 13px/1.5 Archivo, sans-serif;
   color: var(--mid);
 }
-
 .sable-news-form {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-
 .sable-news-form input {
   background: #FFFFFF;
   border: 1px solid var(--line);
@@ -381,21 +326,17 @@
   width: 280px;
   outline: none;
 }
-
 .sable-news-form input:focus {
   border-color: var(--ink);
 }
-
 .news-btn {
   margin-top: 0;
 }
-
 .sable-subscribed-text {
   font: 600 11px/1 Archivo, sans-serif;
   letter-spacing: 0.2em;
   color: var(--ink);
 }
-
 @media (max-width: 900px) {
   .sable-contact-hero-grid,
   .sable-message-grid,

@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { X, Package, ArrowRight, ExternalLink, Copy, Check, Clock, Truck, CheckCircle2, ShoppingBag } from 'lucide-react';
-
 const API_BASE_URL = 'http://localhost:5000/api/orders';
-
 export default function MyOrdersModal({
   isOpen,
   onClose,
@@ -15,20 +13,16 @@ export default function MyOrdersModal({
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
-
   const backdropRef = useRef(null);
   const modalRef = useRef(null);
-
   useEffect(() => {
     if (isOpen) {
-      // Merge local userOrders state + DB user orders
       if (currentUser?.email) {
         setLoading(true);
         fetch(`${API_BASE_URL}/user/${encodeURIComponent(currentUser.email)}`)
           .then(res => res.json())
           .then(dbOrders => {
             if (Array.isArray(dbOrders)) {
-              // Combine DB orders + local userOrders uniquely by orderId
               const map = new Map();
               [...dbOrders, ...userOrders].forEach(o => {
                 if (o && (o.orderId || o._id)) {
@@ -48,22 +42,18 @@ export default function MyOrdersModal({
       } else {
         setOrders(userOrders);
       }
-
       if (backdropRef.current && modalRef.current) {
         gsap.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2 });
         gsap.fromTo(modalRef.current, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.28, ease: 'power3.out' });
       }
     }
   }, [isOpen, currentUser, userOrders]);
-
   if (!isOpen) return null;
-
   const handleCopyCode = (orderId) => {
     navigator.clipboard.writeText(orderId);
     setCopiedId(orderId);
     setTimeout(() => setCopiedId(null), 2000);
   };
-
   const handleReorder = (items) => {
     if (items && Array.isArray(items)) {
       items.forEach(item => {
@@ -71,7 +61,6 @@ export default function MyOrdersModal({
       });
     }
   };
-
   const getStatusBadgeStyle = (status) => {
     switch (status) {
       case 'Delivered':
@@ -83,7 +72,6 @@ export default function MyOrdersModal({
         return { bg: '#F1F3F4', color: '#3C4043', border: '#E8EAED' };
     }
   };
-
   return (
     <div
       ref={backdropRef}
@@ -123,7 +111,7 @@ export default function MyOrdersModal({
           fontFamily: 'Archivo, system-ui, sans-serif'
         }}
       >
-        {/* Close Button */}
+        {}
         <button
           onClick={onClose}
           aria-label="Close modal"
@@ -143,8 +131,7 @@ export default function MyOrdersModal({
         >
           <X size={20} />
         </button>
-
-        {/* Header */}
+        {}
         <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', marginBottom: '28px' }}>
           <div
             style={{
@@ -195,8 +182,7 @@ export default function MyOrdersModal({
             </p>
           </div>
         </div>
-
-        {/* Orders Scrollable Container */}
+        {}
         <div
           className="no-scrollbar"
           style={{
@@ -255,7 +241,6 @@ export default function MyOrdersModal({
               const dateStr = order.createdAt
                 ? new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
                 : 'Recent Order';
-
               return (
                 <div
                   key={orderId}
@@ -267,7 +252,7 @@ export default function MyOrdersModal({
                     boxShadow: '0 4px 14px rgba(0, 0, 0, 0.03)'
                   }}
                 >
-                  {/* Order Card Top Bar */}
+                  {}
                   <div
                     style={{
                       padding: '16px 20px',
@@ -299,8 +284,7 @@ export default function MyOrdersModal({
                       <span style={{ fontSize: '11px', color: '#888' }}>&bull;</span>
                       <span style={{ fontSize: '11px', color: '#666' }}>{dateStr}</span>
                     </div>
-
-                    {/* Status Pill */}
+                    {}
                     <div
                       style={{
                         padding: '4px 10px',
@@ -321,15 +305,13 @@ export default function MyOrdersModal({
                       {trackingStatus}
                     </div>
                   </div>
-
-                  {/* Items List */}
+                  {}
                   <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {items.map((item, iIdx) => {
                       const name = item.name || item.nm;
                       const price = item.price || item.pr;
                       const img = item.img || (item.images && item.images[0]);
                       const quantity = item.quantity || 1;
-
                       return (
                         <div
                           key={iIdx}
@@ -352,7 +334,6 @@ export default function MyOrdersModal({
                               <Package size={16} color="#888" />
                             </div>
                           )}
-
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <h4 style={{ fontSize: '13px', fontWeight: '600', color: '#101010', margin: '0 0 2px 0' }}>
                               {name}
@@ -361,7 +342,6 @@ export default function MyOrdersModal({
                               Qty: {quantity} {item.size ? `| Size: ${item.size}` : ''}
                             </div>
                           </div>
-
                           <div style={{ fontSize: '13px', fontWeight: '600', color: '#101010' }}>
                             £{(Number(price) * quantity).toFixed(2)}
                           </div>
@@ -369,8 +349,7 @@ export default function MyOrdersModal({
                       );
                     })}
                   </div>
-
-                  {/* Order Card Footer */}
+                  {}
                   <div
                     style={{
                       padding: '14px 20px',
@@ -387,7 +366,6 @@ export default function MyOrdersModal({
                       <span style={{ fontSize: '10px', letterSpacing: '0.12em', color: '#666', textTransform: 'uppercase', marginRight: '6px' }}>TOTAL PAID:</span>
                       <strong>£{Number(order.totalAmount || order.total || 0).toFixed(2)}</strong>
                     </div>
-
                     <div style={{ display: 'flex', gap: '8px' }}>
                       {items.length > 0 && (
                         <button
@@ -412,7 +390,6 @@ export default function MyOrdersModal({
                           RE-ORDER
                         </button>
                       )}
-
                       <button
                         onClick={() => {
                           onClose();

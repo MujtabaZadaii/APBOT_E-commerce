@@ -2,24 +2,19 @@ import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Search, X, ShoppingBag } from 'lucide-react';
 import { PRODUCTS } from '../data/products';
-
 export default function SearchModal({ isOpen, onClose, onAddToCart }) {
   const [query, setQuery] = useState('');
   const inputRef = useRef(null);
   const backdropRef = useRef(null);
   const modalRef = useRef(null);
-
-  // Show 3 featured products initially, or search results when user types a query
   const displayedProducts = query.trim()
     ? PRODUCTS.filter(
         (p) =>
           p.nm.toLowerCase().includes(query.toLowerCase()) ||
           p.ct.toLowerCase().includes(query.toLowerCase())
       )
-    : PRODUCTS.slice(0, 3); // Max 3 items initially
-
+    : PRODUCTS.slice(0, 3); 
   const resultsContainerRef = useRef(null);
-
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 100);
@@ -31,7 +26,6 @@ export default function SearchModal({ isOpen, onClose, onAddToCart }) {
       setQuery('');
     }
   }, [isOpen]);
-
   useEffect(() => {
     if (isOpen && resultsContainerRef.current) {
       const items = resultsContainerRef.current.querySelectorAll('.search-result-item');
@@ -44,7 +38,6 @@ export default function SearchModal({ isOpen, onClose, onAddToCart }) {
       }
     }
   }, [isOpen, displayedProducts]);
-
   const handleClose = () => {
     if (backdropRef.current && modalRef.current) {
       gsap.to(modalRef.current, { opacity: 0, y: -16, duration: 0.2, ease: 'power2.in' });
@@ -53,10 +46,7 @@ export default function SearchModal({ isOpen, onClose, onAddToCart }) {
       onClose();
     }
   };
-
   if (!isOpen) return null;
-
-
   return (
     <div
       ref={backdropRef}
@@ -92,7 +82,7 @@ export default function SearchModal({ isOpen, onClose, onAddToCart }) {
           boxShadow: '0 24px 70px rgba(0,0,0,0.85)'
         }}
       >
-        {/* Search Input Header */}
+        {}
         <div
           style={{
             display: 'flex',
@@ -145,13 +135,11 @@ export default function SearchModal({ isOpen, onClose, onAddToCart }) {
             <X size={15} />
           </button>
         </div>
-
-        {/* Results List */}
+        {}
         <div ref={resultsContainerRef} className="no-scrollbar" data-lenis-prevent="true" style={{ maxHeight: '60vh', overflowY: 'auto', padding: '16px 20px' }}>
           <div style={{ fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', opacity: 0.45, marginBottom: '12px' }}>
             {query.trim() ? `Search Results (${displayedProducts.length})` : 'Featured Collection (3 Items)'}
           </div>
-
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {displayedProducts.length === 0 ? (
               <div style={{ padding: '24px 0', textAlign: 'center', opacity: 0.5, fontSize: '13px' }}>
@@ -177,7 +165,6 @@ export default function SearchModal({ isOpen, onClose, onAddToCart }) {
                   <div style={{ width: '50px', height: '64px', borderRadius: '4px', overflow: 'hidden', background: '#1A1A1A' }}>
                     <img src={product.img} alt={product.nm} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
-
                   <div>
                     <div style={{ fontSize: '13px', fontWeight: '600' }}>{product.nm}</div>
                     <div style={{ fontSize: '10.5px', color: 'rgba(239, 237, 232, 0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
@@ -185,7 +172,6 @@ export default function SearchModal({ isOpen, onClose, onAddToCart }) {
                     </div>
                     <div style={{ fontSize: '12.5px', fontWeight: '600', marginTop: '2px' }}>£{product.pr}</div>
                   </div>
-
                   <button
                     onClick={() => {
                       onAddToCart(product);
@@ -217,6 +203,5 @@ export default function SearchModal({ isOpen, onClose, onAddToCart }) {
         </div>
       </div>
     </div>
-
   );
 }

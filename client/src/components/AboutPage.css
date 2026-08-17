@@ -4,7 +4,6 @@
   font-family: Archivo, sans-serif;
   overflow-x: hidden;
 }
-
 .sable-eyebrow {
   font: 600 11px/1 Archivo, sans-serif;
   letter-spacing: 0.26em;
@@ -13,8 +12,6 @@
   display: block;
   margin-bottom: 16px;
 }
-
-/* 1. HERO SECTION */
 .sable-about-hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -22,14 +19,12 @@
   background: #000000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .sable-hero-left {
   display: flex;
   padding: 80px 60px;
   position: relative;
   align-items: center;
 }
-
 .sable-scroll-indicator {
   position: absolute;
   left: 40px;
@@ -42,25 +37,21 @@
   letter-spacing: 0.24em;
   color: #8A8781;
 }
-
 .sable-scroll-line {
   width: 32px;
   height: 1px;
   background: #8A8781;
 }
-
 .sable-hero-content {
   margin-left: 40px;
   max-width: 500px;
 }
-
 .sable-hero-heading {
   font: 400 64px/1.05 'Bodoni MT', Didot, 'Playfair Display', serif;
   letter-spacing: -0.02em;
   color: #FFFFFF;
   margin-bottom: 24px;
 }
-
 .sable-hero-subtag {
   font: 600 11px/1 Archivo, sans-serif;
   letter-spacing: 0.24em;
@@ -68,25 +59,21 @@
   display: block;
   margin-bottom: 32px;
 }
-
 .sable-hero-paragraph {
   font: 400 15px/1.7 Archivo, sans-serif;
   color: #A1A1AA;
 }
-
 .sable-hero-right {
   position: relative;
   overflow: hidden;
   min-height: 500px;
 }
-
 .sable-hero-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-
 .sable-film-btn {
   position: absolute;
   right: 60px;
@@ -102,12 +89,10 @@
   cursor: pointer;
   transition: transform 0.3s ease, background 0.3s ease;
 }
-
 .sable-film-btn:hover {
   background: rgba(16, 16, 16, 0.7);
   transform: scale(1.04);
 }
-
 .sable-film-icon {
   width: 44px;
   height: 44px;
@@ -117,66 +102,55 @@
   align-items: center;
   justify-content: center;
 }
-
 .sable-film-text {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-
 .sable-film-title {
   font: 700 11px/1 Archivo, sans-serif;
   letter-spacing: 0.18em;
   color: #FFFFFF;
 }
-
 .sable-film-time {
   font: 400 10px/1 Archivo, sans-serif;
   letter-spacing: 0.14em;
   color: #A1A1AA;
 }
-
-/* 2. PHILOSOPHY SECTION */
 .sable-philosophy-section {
   padding: 120px 0;
   background: #000000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .sable-philosophy-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 80px;
   align-items: center;
 }
-
 .sable-craft-img-wrap {
   border-radius: 4px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .sable-craft-img {
   width: 100%;
   height: 540px;
   object-fit: cover;
   display: block;
 }
-
 .sable-section-heading {
   font: 400 48px/1.1 'Bodoni MT', Didot, 'Playfair Display', serif;
   letter-spacing: -0.01em;
   color: #FFFFFF;
   margin-bottom: 24px;
 }
-
 .sable-philosophy-desc {
   font: 400 16px/1.7 Archivo, sans-serif;
   color: #A1A1AA;
   margin-bottom: 48px;
   max-width: 480px;
 }
-
 .sable-philosophy-pillars {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -184,43 +158,35 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 36px;
 }
-
 .sable-pillar-col {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .sable-pillar-num {
   font: 600 11px/1 Archivo, sans-serif;
   letter-spacing: 0.2em;
   color: #8A8781;
 }
-
 .sable-pillar-col h3 {
   font: 600 14px/1.2 Archivo, sans-serif;
   letter-spacing: 0.08em;
   color: #FFFFFF;
 }
-
 .sable-pillar-col p {
   font: 400 12px/1.5 Archivo, sans-serif;
   color: #71717A;
 }
-
-/* 3. STATS STRIP */
 .sable-stats-strip {
   padding: 50px 0;
   background: #050505;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .sable-stats-flex {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 40px;
 }
-
 .sable-stat-box {
   display: flex;
   align-items: baseline;
@@ -228,39 +194,31 @@
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   padding-right: 20px;
 }
-
 .sable-stat-box:last-child {
   border-right: none;
 }
-
 .sable-stat-tag {
   font: 600 11px/1 Archivo, sans-serif;
   letter-spacing: 0.2em;
   color: #8A8781;
 }
-
 .sable-stat-val {
   font: 400 44px/1 'Bodoni MT', Didot, serif;
   color: #FFFFFF;
 }
-
 .sable-stat-lbl {
   font: 400 12px/1.4 Archivo, sans-serif;
   color: #A1A1AA;
 }
-
-/* 4. CATEGORIES FEATURE GRID */
 .sable-categories-showcase {
   background: #000000;
   padding: 80px 0;
 }
-
 .sable-cat-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
-
 .sable-cat-card {
   position: relative;
   height: 420px;
@@ -268,22 +226,18 @@
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
-
 .sable-cat-card:first-child {
   grid-column: span 1;
 }
-
 .sable-cat-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 .sable-cat-card:hover img {
   transform: scale(1.06);
 }
-
 .sable-cat-card-overlay {
   position: absolute;
   inset: 0;
@@ -292,19 +246,16 @@
   align-items: flex-end;
   padding: 24px;
 }
-
 .sable-cat-meta {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-
 .sable-cat-title {
   font: 700 13px/1 Archivo, sans-serif;
   letter-spacing: 0.2em;
   color: #FFFFFF;
 }
-
 .sable-cat-sub {
   font: 400 12px/1 Archivo, sans-serif;
   color: #A1A1AA;
@@ -312,36 +263,30 @@
   align-items: center;
   gap: 4px;
 }
-
-/* 5. SUSTAINABILITY SECTION */
 .sable-sustainability-section {
   padding: 120px 0;
   background: #000000;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .sable-sustainability-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 80px;
   align-items: center;
 }
-
 .sable-sust-img-wrap img {
   width: 100%;
   height: 460px;
   object-fit: cover;
   display: block;
 }
-
 .sable-sust-desc {
   font: 400 16px/1.7 Archivo, sans-serif;
   color: #A1A1AA;
   margin-bottom: 36px;
   max-width: 460px;
 }
-
 .sable-btn-outline {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -356,44 +301,36 @@
   cursor: pointer;
   transition: background 0.3s ease, border-color 0.3s ease;
 }
-
 .sable-btn-outline:hover {
   background: #FFFFFF;
   color: #000000;
   border-color: #FFFFFF;
 }
-
-/* 6. COMMUNITY FOOTER CTA */
 .sable-community-cta {
   background: #EFEDE8;
   color: #101010;
   padding: 100px 0;
 }
-
 .sable-comm-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
   align-items: center;
 }
-
 .sable-comm-left .sable-eyebrow {
   color: #8A8781;
 }
-
 .sable-comm-title {
   font: 400 52px/1.1 'Bodoni MT', Didot, 'Playfair Display', serif;
   letter-spacing: -0.01em;
   color: #101010;
 }
-
 .sable-comm-right p {
   font: 400 16px/1.6 Archivo, sans-serif;
   color: #55534E;
   margin-bottom: 32px;
   max-width: 440px;
 }
-
 .sable-comm-btn {
   background: #101010;
   color: #EFEDE8;
@@ -408,12 +345,10 @@
   cursor: pointer;
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
-
 .sable-comm-btn:hover {
   opacity: 0.9;
   transform: translateY(-2px);
 }
-
 @media (max-width: 900px) {
   .sable-about-hero {
     grid-template-columns: 1fr;

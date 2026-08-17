@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Product from './models/Product.js';
-
 dotenv.config();
-
 const newProducts = [
   {
     nm: 'Raw Selvedge Denim',
@@ -63,31 +61,23 @@ const newProducts = [
     inStock: true
   }
 ];
-
 mongoose.connect('mongodb://127.0.0.1:27017/sable', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(async () => {
   try {
     console.log("Adding 3 more luxury products to SABLE DB...");
-
     const inserted = await Product.insertMany(newProducts);
-    
-    // Get existing products to link cross-selling
     const allProducts = await Product.find({});
-    
-    // Update related products for cross-sell across all products in DB
     for (let p of allProducts) {
       const related = allProducts
         .filter(other => other._id.toString() !== p._id.toString())
         .slice(0, 3)
         .map(other => other._id);
-
       await Product.findByIdAndUpdate(p._id, {
         $set: { relatedProducts: related }
       });
     }
-
     console.log(`Successfully added 3 products! Total products now: ${allProducts.length}`);
     process.exit(0);
   } catch (err) {

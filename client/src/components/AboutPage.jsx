@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react';
 import { Play, ArrowUpRight, ArrowRight } from 'lucide-react';
 import './AboutPage.css';
-
 export default function AboutPage({ onBack, onOpenShop }) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
-
   return (
     <div className="sable-about-page">
-      {/* 1. HERO SECTION */}
+      {}
       <div className="sable-about-hero">
         <div className="sable-hero-left">
           <div className="sable-scroll-indicator">
@@ -27,7 +25,6 @@ export default function AboutPage({ onBack, onOpenShop }) {
             </p>
           </div>
         </div>
-
         <div className="sable-hero-right">
           <img 
             src="/images/sable_about_hero.png" 
@@ -45,8 +42,7 @@ export default function AboutPage({ onBack, onOpenShop }) {
           </div>
         </div>
       </div>
-
-      {/* 2. OUR PHILOSOPHY SECTION */}
+      {}
       <div className="sable-philosophy-section">
         <div className="wrap sable-philosophy-grid">
           <div className="sable-craft-img-wrap">
@@ -56,7 +52,6 @@ export default function AboutPage({ onBack, onOpenShop }) {
               className="sable-craft-img"
             />
           </div>
-
           <div className="sable-philosophy-content">
             <span className="sable-eyebrow">OUR PHILOSOPHY</span>
             <h2 className="sable-section-heading">
@@ -65,20 +60,17 @@ export default function AboutPage({ onBack, onOpenShop }) {
             <p className="sable-philosophy-desc">
               We design essential pieces for people who understand quiet confidence &mdash; those who prefer substance over hype and craft over compromise.
             </p>
-
             <div className="sable-philosophy-pillars">
               <div className="sable-pillar-col">
                 <span className="sable-pillar-num">01</span>
                 <h3>Timeless Design</h3>
                 <p>Pieces made to last, season after season.</p>
               </div>
-
               <div className="sable-pillar-col">
                 <span className="sable-pillar-num">02</span>
                 <h3>Exquisite Craftsmanship</h3>
                 <p>Precision in every stitch and structure.</p>
               </div>
-
               <div className="sable-pillar-col">
                 <span className="sable-pillar-num">03</span>
                 <h3>Conscious Future</h3>
@@ -88,33 +80,28 @@ export default function AboutPage({ onBack, onOpenShop }) {
           </div>
         </div>
       </div>
-
-      {/* 3. STATISTICS BAR */}
+      {}
       <div className="sable-stats-strip">
         <div className="wrap sable-stats-flex">
           <div className="sable-stat-box">
             <span className="sable-stat-tag">ESTD</span>
             <span className="sable-stat-val">2021</span>
           </div>
-
           <div className="sable-stat-box">
             <span className="sable-stat-val">4</span>
             <span className="sable-stat-lbl">Signature<br />Collections</span>
           </div>
-
           <div className="sable-stat-box">
             <span className="sable-stat-val">50K+</span>
             <span className="sable-stat-lbl">Global<br />Community</span>
           </div>
-
           <div className="sable-stat-box">
             <span className="sable-stat-val">12</span>
             <span className="sable-stat-lbl">Countries<br />Worldwide</span>
           </div>
         </div>
       </div>
-
-      {/* 4. CATEGORIES FEATURE GRID */}
+      {}
       <div className="sable-categories-showcase">
         <div className="wrap sable-cat-grid">
           <div className="sable-cat-card" onClick={onOpenShop}>
@@ -126,7 +113,6 @@ export default function AboutPage({ onBack, onOpenShop }) {
               </div>
             </div>
           </div>
-
           <div className="sable-cat-card" onClick={onOpenShop}>
             <img src="/images/sable_grid_tailoring.png" alt="Tailoring" />
             <div className="sable-cat-card-overlay">
@@ -136,7 +122,6 @@ export default function AboutPage({ onBack, onOpenShop }) {
               </div>
             </div>
           </div>
-
           <div className="sable-cat-card" onClick={onOpenShop}>
             <img src="/images/sable_grid_knitwear.png" alt="Knitwear" />
             <div className="sable-cat-card-overlay">
@@ -146,7 +131,6 @@ export default function AboutPage({ onBack, onOpenShop }) {
               </div>
             </div>
           </div>
-
           <div className="sable-cat-card" onClick={onOpenShop}>
             <img src="/images/sable_grid_archive.png" alt="Archive" />
             <div className="sable-cat-card-overlay">
@@ -158,14 +142,12 @@ export default function AboutPage({ onBack, onOpenShop }) {
           </div>
         </div>
       </div>
-
-      {/* 5. SUSTAINABILITY SECTION */}
+      {}
       <div className="sable-sustainability-section">
         <div className="wrap sable-sustainability-grid">
           <div className="sable-sust-img-wrap">
             <img src="/images/sable_grid_archive.png" alt="Sustainability" />
           </div>
-
           <div className="sable-sust-content">
             <span className="sable-eyebrow">SUSTAINABILITY</span>
             <h2 className="sable-section-heading">A Smarter Tomorrow.</h2>
@@ -179,8 +161,7 @@ export default function AboutPage({ onBack, onOpenShop }) {
           </div>
         </div>
       </div>
-
-      {/* 6. COMMUNITY FOOTER CTA */}
+      {}
       <div className="sable-community-cta">
         <div className="wrap sable-comm-container">
           <div className="sable-comm-left">
@@ -189,7 +170,6 @@ export default function AboutPage({ onBack, onOpenShop }) {
               More Than a Brand.<br /><i>A Community.</i>
             </h2>
           </div>
-
           <div className="sable-comm-right">
             <p>
               Be part of a global movement that values authenticity, expression and modern elegance.

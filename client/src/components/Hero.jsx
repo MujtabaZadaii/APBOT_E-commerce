@@ -1,5 +1,4 @@
 import React from 'react';
-
 export default function Hero() {
   const handleScrollTo = (e, targetId) => {
     e.preventDefault();
@@ -8,7 +7,6 @@ export default function Hero() {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
   return (
     <header id="hero">
       <div className="wrap" style={{ width: '100%' }}>
@@ -16,7 +14,6 @@ export default function Hero() {
           <p>Fashion<br />that moves<br />with you.</p>
           <div className="rule"></div>
         </div>
-
         <div className="stage">
           <div className="word back" aria-hidden="true"><b id="wb">SABLE</b></div>
           <img
@@ -26,11 +23,9 @@ export default function Hero() {
             alt="A model walking in an oversized charcoal overcoat, wide trousers and white sneakers"
           />
         </div>
-
         <div className="br hv" id="h2">
           <p>Autumn<br />collection<br />2026</p>
         </div>
-
         <div className="acts hv" id="h3">
           <a href="#shop" className="btn" onClick={(e) => handleScrollTo(e, '#shop')}>
             <span>Shop the collection</span>
@@ -42,5 +37,4 @@ export default function Hero() {
       </div>
     </header>
   );
-
 }

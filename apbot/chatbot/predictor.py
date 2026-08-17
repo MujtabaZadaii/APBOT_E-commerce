@@ -4,7 +4,6 @@ import pickle
 import numpy as np
 from tensorflow.keras.models import load_model
 from chatbot.nlp import tokenize, bag_of_words
-
 class ApBotPredictor:
     def __init__(self, model_path='model/chatbot_model.keras', words_path='model/words.pkl', classes_path='model/classes.pkl', intents_path='data/intents.json'):
         self.model_path = model_path
@@ -16,15 +15,12 @@ class ApBotPredictor:
         self.classes = []
         self.intents = {}
         self.load_data()
-
     def load_data(self):
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        
         full_model_path = os.path.join(base_dir, self.model_path)
         full_words_path = os.path.join(base_dir, self.words_path)
         full_classes_path = os.path.join(base_dir, self.classes_path)
         full_intents_path = os.path.join(base_dir, self.intents_path)
-
         if os.path.exists(full_model_path):
             self.model = load_model(full_model_path)
             self.words = pickle.load(open(full_words_path, 'rb'))
@@ -32,38 +28,25 @@ class ApBotPredictor:
             self.intents = json.loads(open(full_intents_path).read())
         else:
             print(f"Warning: Model or data files not found at {full_model_path}. Please train the model first.")
-
     def predict_intent(self, sentence):
         if self.model is None:
             return {"intent": "unknown", "confidence": 0.0, "message": "Model is not trained yet."}
-            
         sentence_words = tokenize(sentence)
         bow = bag_of_words(sentence_words, self.words)
-        
-        # Reshape to match model expected input (1, len(words))
         res = self.model.predict(np.array([bow]))[0]
-        
-        # Set a confidence threshold
         ERROR_THRESHOLD = 0.5
         results = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
-        
         if not results:
             return {"intent": "unknown", "confidence": max(res) if len(res) > 0 else 0.0, "message": "I'm not entirely sure how to help with that. Could you try rephrasing?"}
-            
         results.sort(key=lambda x: x[1], reverse=True)
-        
-        # Get the top intent
         intent_tag = self.classes[results[0][0]]
         confidence = float(results[0][1])
-        
-        # Find a random response for this intent
         import random
         response_text = ""
         for intent in self.intents['intents']:
             if intent['tag'] == intent_tag:
                 response_text = random.choice(intent['responses'])
                 break
-                
         return {
             "intent": intent_tag,
             "confidence": confidence,

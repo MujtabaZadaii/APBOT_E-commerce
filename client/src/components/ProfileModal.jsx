@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { X, MapPin, ArrowRight, Check } from 'lucide-react';
-
 const API_BASE_URL = 'http://localhost:5000/api/user';
-
 export default function ProfileModal({ isOpen, onClose, currentUser, onUpdateAddress }) {
   const [address, setAddress] = useState({
     street: '',
@@ -14,10 +12,8 @@ export default function ProfileModal({ isOpen, onClose, currentUser, onUpdateAdd
   });
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
-
   const backdropRef = useRef(null);
   const modalRef = useRef(null);
-
   useEffect(() => {
     if (currentUser?.address) {
       setAddress({
@@ -37,25 +33,20 @@ export default function ProfileModal({ isOpen, onClose, currentUser, onUpdateAdd
       });
     }
   }, [currentUser, isOpen]);
-
   useEffect(() => {
     if (isOpen && backdropRef.current && modalRef.current) {
       gsap.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2 });
       gsap.fromTo(modalRef.current, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.28, ease: 'power3.out' });
     }
   }, [isOpen]);
-
   if (!isOpen) return null;
-
   const handleChange = (e) => {
     setAddress({ ...address, [e.target.name]: e.target.value });
     setSavedSuccess(false);
   };
-
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
-
     try {
       if (currentUser?.email) {
         await fetch(`${API_BASE_URL}/address`, {
@@ -67,7 +58,6 @@ export default function ProfileModal({ isOpen, onClose, currentUser, onUpdateAdd
     } catch (err) {
       console.warn('API error, saving locally:', err);
     }
-
     setSaving(false);
     setSavedSuccess(true);
     onUpdateAddress(address);
@@ -76,7 +66,6 @@ export default function ProfileModal({ isOpen, onClose, currentUser, onUpdateAdd
       onClose();
     }, 1200);
   };
-
   return (
     <div
       ref={backdropRef}
@@ -111,7 +100,7 @@ export default function ProfileModal({ isOpen, onClose, currentUser, onUpdateAdd
           fontFamily: 'Archivo, system-ui, sans-serif'
         }}
       >
-        {/* Close button */}
+        {}
         <button
           onClick={onClose}
           aria-label="Close modal"
@@ -131,8 +120,7 @@ export default function ProfileModal({ isOpen, onClose, currentUser, onUpdateAdd
         >
           <X size={20} />
         </button>
-
-        {/* Header */}
+        {}
         <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', marginBottom: '36px' }}>
           <div
             style={{
@@ -167,10 +155,9 @@ export default function ProfileModal({ isOpen, onClose, currentUser, onUpdateAdd
             </p>
           </div>
         </div>
-
-        {/* Form */}
+        {}
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-          {/* Street Address */}
+          {}
           <div>
             <label
               style={{
@@ -207,8 +194,7 @@ export default function ProfileModal({ isOpen, onClose, currentUser, onUpdateAdd
               onBlur={(e) => (e.target.style.borderBottomColor = '#C0BCB4')}
             />
           </div>
-
-          {/* City / Town & Postal Code */}
+          {}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
             <div>
               <label
@@ -283,8 +269,7 @@ export default function ProfileModal({ isOpen, onClose, currentUser, onUpdateAdd
               />
             </div>
           </div>
-
-          {/* Country & Phone Number */}
+          {}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
             <div>
               <label
@@ -364,8 +349,7 @@ export default function ProfileModal({ isOpen, onClose, currentUser, onUpdateAdd
               />
             </div>
           </div>
-
-          {/* Submit Button */}
+          {}
           <button
             type="submit"
             disabled={saving}

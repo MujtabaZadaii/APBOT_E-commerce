@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import './ProductDetail.css';
-
 export default function ProductDetail({ productId, onBack, onAddToCart, onToggleFav, favs, onOpenApBot }) {
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -12,22 +11,18 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
   const [isAdded, setIsAdded] = useState(false);
   const [activeTab, setActiveTab] = useState('details');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  
   const containerRef = useRef(null);
   const mainImgRef = useRef(null);
   const contentRefs = useRef([]);
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     setLoading(true);
-
     fetch(`http://localhost:5000/api/products/${productId}`)
       .then(res => res.json())
       .then(data => {
         setProduct(data);
         if (data.sizes && data.sizes.length > 0) setSelectedSize(data.sizes[0]);
         if (data.colour) setSelectedColor(data.colour);
-        
         if (data.relatedProducts && data.relatedProducts.length > 0) {
           Promise.all(data.relatedProducts.slice(0, 3).map(id => 
             fetch(`http://localhost:5000/api/products/${id}`).then(r => r.json()).catch(() => null)
@@ -49,7 +44,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
         setLoading(false);
       });
   }, [productId]);
-
   useEffect(() => {
     if (!loading && product && containerRef.current) {
       const tl = gsap.timeline();
@@ -64,7 +58,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
       );
     }
   }, [loading, product, productId]);
-
   useEffect(() => {
     if (mainImgRef.current) {
       gsap.fromTo(mainImgRef.current,
@@ -73,7 +66,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
       );
     }
   }, [activeImageIndex]);
-
   const handleAddToCart = () => {
     if (product) {
       for (let i = 0; i < quantity; i++) {
@@ -90,7 +82,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
       setTimeout(() => setIsAdded(false), 2000);
     }
   };
-
   if (loading) {
     return (
       <div className="pd-loading">
@@ -98,7 +89,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
       </div>
     );
   }
-
   if (!product) {
     return (
       <div className="pd-error">
@@ -107,18 +97,15 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
       </div>
     );
   }
-
   const isFav = favs && favs[product._id];
   const images = Array.isArray(product.images) && product.images.length > 0 
     ? product.images 
     : [product.img].filter(Boolean);
-
   return (
     <div ref={containerRef} className="pd-wrap">
-      {/* Top Split Section */}
+      {}
       <div className="pd-top">
-        
-        {/* Left Gallery Section */}
+        {}
         <div className="pd-gallery-area">
           {images.length > 1 && (
             <div className="pd-thumbnails">
@@ -133,14 +120,12 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
               ))}
             </div>
           )}
-          
           <div className="pd-hero">
             <img 
               ref={mainImgRef}
               src={images[activeImageIndex] || product.img} 
               alt={product.nm}
             />
-
             <div className="pd-zoom-btn">
                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
             </div>
@@ -161,20 +146,16 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
             )}
           </div>
         </div>
-
-        {/* Right Details Section */}
+        {}
         <div className="pd-info">
-          
           <div ref={el => contentRefs.current[0] = el}>
             <div className="pd-breadcrumbs">
               <span onClick={onBack}>HOME</span> / <span>{product.ct}</span> / <span>{product.nm.toUpperCase()}</span>
             </div>
             <div className="pd-tag">BEST SELLER</div>
-            
             <h1 className="pd-title">
               {product.nm}
             </h1>
-            
             <div className="pd-price-row">
               <div className="pd-price">£{product.pr.toFixed(2)}</div>
               <div className="pd-stock">
@@ -182,12 +163,10 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
                 {product.inStock ? 'IN STOCK' : 'SOLD OUT'}
               </div>
             </div>
-
             <p className="pd-desc">
               {product.desc || "A modern interpretation of a timeless silhouette. Crafted from premium materials with a refined finish for everyday elegance."}
             </p>
           </div>
-
           <div ref={el => contentRefs.current[1] = el}>
             <div className="pd-section-title">
               <span>COLOR:</span>
@@ -209,7 +188,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
               ))}
             </div>
           </div>
-
           <div ref={el => contentRefs.current[2] = el}>
             <div className="pd-size-header">
               <span className="pd-section-title" style={{ margin: 0 }}>SIZE:</span>
@@ -230,7 +208,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
               ))}
             </div>
           </div>
-
           <div ref={el => contentRefs.current[3] = el}>
             <div className="pd-qty-row">
               <span className="pd-section-title" style={{ margin: 0 }}>QTY:</span>
@@ -245,7 +222,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
               </div>
             </div>
           </div>
-
           <div className="pd-actions" ref={el => contentRefs.current[4] = el}>
             <button
               onClick={handleAddToCart}
@@ -264,7 +240,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
               {isFav ? 'SAVED' : 'ADD TO WISHLIST'}
             </button>
           </div>
-
           <div className="pd-features-strip" ref={el => contentRefs.current[5] = el}>
             <div className="pd-feature-item">
               <svg className="pd-feature-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
@@ -290,8 +265,7 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
           </div>
         </div>
       </div>
-
-      {/* Bottom Section: Tabs + You May Also Like */}
+      {}
       <div className="pd-bottom">
         <div className="pd-tabs-area">
           <div className="pd-tabs-nav">
@@ -353,7 +327,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
             )}
           </div>
         </div>
-
         <div className="pd-cross-sell">
           <div className="pd-cs-header">
             <h3 className="pd-cs-title">YOU MAY ALSO LIKE</h3>
@@ -366,7 +339,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
               </button>
             </div>
           </div>
-          
           <div className="pd-cs-grid">
             {relatedProducts.map(p => (
               <div key={p._id} className="pd-cs-card" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
@@ -383,7 +355,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
           </div>
         </div>
       </div>
-
       <div className="pd-trust-footer">
         <div className="pd-trust-grid">
           <div className="pd-trust-item">
@@ -416,7 +387,6 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onToggle
           </div>
         </div>
       </div>
-      
     </div>
   );
 }

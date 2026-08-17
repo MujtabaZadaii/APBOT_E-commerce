@@ -1,9 +1,6 @@
 import express from 'express';
 import Product from '../models/Product.js';
-
 const router = express.Router();
-
-// GET all products
 router.get('/', async (req, res) => {
   try {
     const products = await Product.find({});
@@ -12,8 +9,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
-// GET single product
 router.get('/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -23,8 +18,6 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
-// POST create product
 router.post('/', async (req, res) => {
   try {
     const newProduct = new Product(req.body);
@@ -34,5 +27,4 @@ router.post('/', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-
 export default router;

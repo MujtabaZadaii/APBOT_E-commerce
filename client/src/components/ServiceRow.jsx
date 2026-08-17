@@ -1,5 +1,4 @@
 import React from 'react';
-
 export default function ServiceRow() {
   return (
     <section id="svc">
@@ -24,4 +23,3 @@ export default function ServiceRow() {
     </section>
   );
 }
-

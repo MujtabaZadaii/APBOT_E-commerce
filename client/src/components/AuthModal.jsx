@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Mail, Lock, User, Eye, EyeOff, ShieldCheck, Truck, CheckCircle2 } from 'lucide-react';
-
 const API_BASE_URL = 'http://localhost:5000/api/auth';
-
 export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode = 'register' }) {
-  const [mode, setMode] = useState(initialMode); // 'register' | 'login'
+  const [mode, setMode] = useState(initialMode); 
   const [showPassword, setShowPassword] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [formData, setFormData] = useState({
@@ -15,22 +13,17 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
   const backdropRef = useRef(null);
   const cardRef = useRef(null);
   const formPanelRef = useRef(null);
-
   const slides = [
     { title: 'Modern Essentials. Timeless Style.', sub: 'Curated pieces. Exceptional quality. Built for every season.' },
     { title: 'Considered Craftsmanship.', sub: 'Limited production runs made with uncompromised attention.' },
     { title: 'Monochrome Architecture.', sub: 'Minimalist silhouettes designed for everyday movement.' }
   ];
-
   useEffect(() => {
     setMode(initialMode);
   }, [initialMode]);
-
-  // Auto-slide quote carousel
   useEffect(() => {
     if (!isOpen) return;
     const timer = setInterval(() => {
@@ -38,8 +31,6 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
     }, 4000);
     return () => clearInterval(timer);
   }, [isOpen, slides.length]);
-
-  // Smooth entrance animation on open
   useEffect(() => {
     if (isOpen && backdropRef.current && cardRef.current) {
       const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
@@ -55,8 +46,6 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
       );
     }
   }, [isOpen]);
-
-  // Fast smooth transition when toggling mode
   const handleModeSwitch = (newMode) => {
     if (newMode === mode) return;
     setError('');
@@ -79,18 +68,14 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
       setMode(newMode);
     }
   };
-
   if (!isOpen) return null;
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError('');
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
     if (!formData.email || !formData.password) {
       setError('Please fill in all required fields');
       return;
@@ -99,9 +84,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
       setError('Please enter your full name');
       return;
     }
-
     setLoading(true);
-
     try {
       const endpoint = mode === 'register' ? `${API_BASE_URL}/register` : `${API_BASE_URL}/login`;
       const res = await fetch(endpoint, {
@@ -113,18 +96,14 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
           password: formData.password
         })
       });
-
       const data = await res.json();
-
       if (!res.ok) {
         throw new Error(data.message || 'Authentication failed');
       }
-
       setLoading(false);
       onLoginSuccess(data.user);
       onClose();
     } catch (err) {
-      // Fallback for demo session if backend server is connecting
       if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
         console.warn('Backend server connecting. Fallback to local session verification.');
         setLoading(false);
@@ -139,7 +118,6 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
       }
     }
   };
-
   return (
     <div
       ref={backdropRef}
@@ -178,7 +156,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.08)'
         }}
       >
-        {/* LEFT COLUMN - Editorial Visual Showcase */}
+        {}
         <div
           style={{
             position: 'relative',
@@ -191,7 +169,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
             overflow: 'hidden'
           }}
         >
-          {/* Gradient Overlay */}
+          {}
           <div
             style={{
               position: 'absolute',
@@ -200,16 +178,14 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
               pointerEvents: 'none'
             }}
           />
-
-          {/* Top Brand Header */}
+          {}
           <div style={{ position: 'relative', zIndex: 2 }}>
             <div style={{ fontWeight: '800', fontSize: '20px', letterSpacing: '0.24em' }}>SABLE</div>
             <div style={{ fontSize: '8.5px', letterSpacing: '0.2em', opacity: 0.55, marginTop: '2px', textTransform: 'uppercase' }}>
               TIMELESS SIMPLICITY
             </div>
           </div>
-
-          {/* Bottom Quote & Carousel Dots */}
+          {}
           <div style={{ position: 'relative', zIndex: 2, marginTop: 'auto' }}>
             <h3 style={{ fontSize: 'clamp(16px, 1.8vw, 21px)', fontWeight: '700', lineHeight: 1.2, letterSpacing: '-0.02em', marginBottom: '6px' }}>
               {slides[activeSlide].title}
@@ -217,7 +193,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
             <p style={{ fontSize: '11.5px', opacity: 0.65, maxWidth: '30ch', lineHeight: 1.4, marginBottom: '14px' }}>
               {slides[activeSlide].sub}
             </p>
-            {/* Slider Dots */}
+            {}
             <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
               {slides.map((_, idx) => (
                 <button
@@ -237,8 +213,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
             </div>
           </div>
         </div>
-
-        {/* RIGHT COLUMN - Ultra-Compact Form & Controls */}
+        {}
         <div
           ref={formPanelRef}
           style={{
@@ -251,7 +226,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
           }}
         >
           <div>
-            {/* Header Switch */}
+            {}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '14px', fontSize: '11px' }}>
               <span style={{ opacity: 0.55, marginRight: '5px' }}>
                 {mode === 'register' ? 'Already registered?' : 'New here?'}
@@ -271,20 +246,17 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
                 {mode === 'register' ? 'Sign in' : 'Create an account'}
               </button>
             </div>
-
             <h2 style={{ fontSize: 'clamp(18px, 2vw, 23px)', fontWeight: '700', letterSpacing: '-0.02em', marginBottom: '3px' }}>
               {mode === 'register' ? 'Create account' : 'Welcome back'}
             </h2>
             <p style={{ fontSize: '11.5px', opacity: 0.5, marginBottom: '16px' }}>
               {mode === 'register' ? 'Join SABLE for exclusive access & updates' : 'Sign in to your SABLE account'}
             </p>
-
             {error && (
               <div style={{ padding: '7px 10px', borderRadius: '6px', background: 'rgba(255, 80, 80, 0.12)', border: '1px solid rgba(255, 80, 80, 0.28)', color: '#ff7070', fontSize: '11px', marginBottom: '12px' }}>
                 {error}
               </div>
             )}
-
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '11px' }}>
               {mode === 'register' && (
                 <div>
@@ -318,7 +290,6 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
                   </div>
                 </div>
               )}
-
               <div>
                 <label style={{ display: 'block', fontSize: '9.5px', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.7, marginBottom: '4px' }}>
                   Email address
@@ -349,7 +320,6 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
                   />
                 </div>
               </div>
-
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                   <label style={{ fontSize: '9.5px', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.7 }}>
@@ -410,8 +380,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
                   </button>
                 </div>
               </div>
-
-              {/* Submit CTA Button */}
+              {}
               <button
                 type="submit"
                 disabled={loading}
@@ -435,15 +404,13 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
                 {loading ? 'AUTHENTICATING...' : mode === 'register' ? 'CREATE ACCOUNT' : 'SIGN IN'}
               </button>
             </form>
-
-            {/* Divider */}
+            {}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '14px 0 12px' }}>
               <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.08)' }} />
               <span style={{ fontSize: '9px', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.35 }}>OR CONTINUE WITH</span>
               <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.08)' }} />
             </div>
-
-            {/* Social Sign-In Buttons */}
+            {}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '7px' }}>
               <button
                 type="button"
@@ -473,7 +440,6 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
                 </svg>
                 Google
               </button>
-
               <button
                 type="button"
                 onClick={() => alert('Apple sign-in service ready.')}
@@ -499,7 +465,6 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
                 </svg>
                 Apple
               </button>
-
               <button
                 type="button"
                 onClick={() => alert('Facebook sign-in service ready.')}
@@ -527,8 +492,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
               </button>
             </div>
           </div>
-
-          {/* Bottom Trust Badges */}
+          {}
           <div
             style={{
               display: 'grid',
@@ -546,7 +510,6 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
                 <div style={{ fontSize: '8.5px', opacity: 0.45, lineHeight: 1.25 }}>Data safe with us</div>
               </div>
             </div>
-
             <div style={{ display: 'flex', gap: '5px', alignItems: 'flex-start' }}>
               <Truck size={12} color="#EFEDE8" style={{ opacity: 0.8, flexShrink: 0, marginTop: '2px' }} />
               <div>
@@ -554,7 +517,6 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
                 <div style={{ fontSize: '8.5px', opacity: 0.45, lineHeight: 1.25 }}>Track orders</div>
               </div>
             </div>
-
             <div style={{ display: 'flex', gap: '5px', alignItems: 'flex-start' }}>
               <CheckCircle2 size={12} color="#EFEDE8" style={{ opacity: 0.8, flexShrink: 0, marginTop: '2px' }} />
               <div>
@@ -563,8 +525,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode
               </div>
             </div>
           </div>
-
-          {/* Legal Footer Links */}
+          {}
           <div style={{ marginTop: '10px', fontSize: '9px', opacity: 0.35, textAlign: 'center' }}>
             © 2026 SABLE. All rights reserved. &nbsp; | &nbsp;
             <a href="#" style={{ color: 'inherit', textDecoration: 'underline' }}>Privacy Policy</a> &nbsp; | &nbsp;

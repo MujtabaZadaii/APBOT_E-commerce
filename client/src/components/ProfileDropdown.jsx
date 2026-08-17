@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, ChevronDown, ChevronRight, Package, Heart, Truck, LogOut, LayoutDashboard } from 'lucide-react';
-
+import { User, ChevronDown, ChevronRight, Package, Heart, Truck, LogOut } from 'lucide-react';
 export default function ProfileDropdown({
   currentUser,
   favCount = 0,
@@ -8,16 +7,12 @@ export default function ProfileDropdown({
   onOpenWishlist,
   onOpenTracking,
   onOpenOrders,
-  onOpenAdminDashboard,
   onSignOut
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
-
   const defaultAvatar = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLzg71mkC9h8hkEEmJPzML1MOXvRDYpO2543Jlyc-moLlVV4kUtMmfdf8&s=10';
   const userAvatar = currentUser?.avatar || defaultAvatar;
-  const isAdmin = currentUser?.role === 'admin' || currentUser?.email === 'mujtaba.d3v@gmail.com';
-
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -27,14 +22,7 @@ export default function ProfileDropdown({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
   const menuItems = [
-    ...(isAdmin ? [{
-      label: 'ADMIN DASHBOARD',
-      icon: LayoutDashboard,
-      action: () => (onOpenAdminDashboard ? onOpenAdminDashboard() : null),
-      showChevron: true
-    }] : []),
     {
       label: 'MY PROFILE',
       icon: User,
@@ -67,10 +55,9 @@ export default function ProfileDropdown({
       showChevron: false
     }
   ];
-
   return (
     <div ref={menuRef} style={{ position: 'relative', display: 'inline-block' }}>
-      {/* Navbar User Toggle */}
+      {}
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-label="User account menu"
@@ -106,8 +93,7 @@ export default function ProfileDropdown({
           }}
         />
       </button>
-
-      {/* Luxury Editorial Dropdown Menu */}
+      {}
       {isOpen && (
         <div
           style={{
@@ -126,7 +112,7 @@ export default function ProfileDropdown({
             animation: 'fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
-          {/* Header Section: Avatar + Name + Email + View Profile */}
+          {}
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             <img
               src={userAvatar}
@@ -194,11 +180,9 @@ export default function ProfileDropdown({
               </button>
             </div>
           </div>
-
-          {/* Divider */}
+          {}
           <div style={{ height: '1px', background: 'rgba(16, 16, 16, 0.08)', margin: '18px 0 10px 0' }} />
-
-          {/* Navigation Links */}
+          {}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {menuItems.map((item, index) => {
               const IconComponent = item.icon;
@@ -233,7 +217,6 @@ export default function ProfileDropdown({
                       <IconComponent size={18} style={{ opacity: 0.85, strokeWidth: 1.6 }} />
                       <span>{item.label}</span>
                     </div>
-
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       {item.badge && (
                         <span

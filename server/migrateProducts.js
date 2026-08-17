@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Product from './models/Product.js';
-
 dotenv.config();
-
 const migrations = {
   'Rift Overshirt': {
     colour: 'Ink Black',
@@ -26,18 +24,15 @@ const migrations = {
     tags: ['sweater', 'crew', 'knit', 'merino']
   }
 };
-
 mongoose.connect('mongodb://127.0.0.1:27017/sable', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(async () => {
   const products = await Product.find({});
-  
   for (const p of products) {
     const data = migrations[p.nm];
     if (data) {
       const related = products.filter(rp => rp._id.toString() !== p._id.toString()).map(rp => rp._id);
-      
       await Product.updateOne({ _id: p._id }, {
         $set: {
           colour: data.colour,
@@ -49,7 +44,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/sable', {
       console.log(`Migrated: ${p.nm}`);
     }
   }
-  
   console.log("Migration complete!");
   process.exit(0);
 }).catch(err => {

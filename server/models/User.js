@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true, lowercase: true },
@@ -17,8 +16,6 @@ const userSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
-
-// Pre-save hook to hash password if modified
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   try {
@@ -29,13 +26,10 @@ userSchema.pre('save', async function(next) {
     next(err);
   }
 });
-
-// Helper method to compare password safely
 userSchema.methods.comparePassword = async function(candidatePassword) {
   if (this.password.startsWith('$2a$') || this.password.startsWith('$2b$')) {
     return await bcrypt.compare(candidatePassword, this.password);
   }
   return candidatePassword === this.password;
 };
-
 export default mongoose.model('User', userSchema);

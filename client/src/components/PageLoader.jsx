@@ -1,29 +1,23 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-
 export default function PageLoader({ onComplete }) {
   const containerRef = useRef(null);
   const progressRef = useRef(null);
   const lettersRef = useRef([]);
-
   useEffect(() => {
     const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (isReduced) {
       if (onComplete) onComplete();
       return;
     }
-
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         onComplete: () => {
           if (onComplete) onComplete();
         }
       });
-
-      // Initial Setup
       gsap.set(lettersRef.current, { opacity: 0, y: 24, letterSpacing: '0.6em' });
       gsap.set(progressRef.current, { scaleX: 0, transformOrigin: 'left center' });
-
       tl.to(lettersRef.current, {
         opacity: 1,
         y: 0,
@@ -50,10 +44,8 @@ export default function PageLoader({ onComplete }) {
         ease: 'power4.inOut'
       }, '-=0.15');
     }, containerRef);
-
     return () => ctx.revert();
   }, [onComplete]);
-
   return (
     <div
       ref={containerRef}
@@ -95,8 +87,7 @@ export default function PageLoader({ onComplete }) {
             </span>
           ))}
         </div>
-
-        {/* Thin horizontal progress bar */}
+        {}
         <div
           style={{
             width: '100%',

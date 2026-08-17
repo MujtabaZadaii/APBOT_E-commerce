@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { X, Heart, ShoppingBag, Trash2, Truck, RefreshCw, Lock, Headphones, ChevronDown } from 'lucide-react';
-
 export default function WishlistDrawer({
   isOpen,
   onClose,
@@ -14,16 +13,12 @@ export default function WishlistDrawer({
 }) {
   const backdropRef = useRef(null);
   const drawerRef = useRef(null);
-
-  // Filter products by favs map
   const favoritedProducts = products.filter((p) => favs[p._id || p.id]);
-
   useEffect(() => {
     if (isOpen && backdropRef.current && drawerRef.current) {
       const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
       tl.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.25 })
         .fromTo(drawerRef.current, { x: '100%' }, { x: '0%', duration: 0.38, ease: 'power3.out' }, '-=0.1');
-
       const items = drawerRef.current.querySelectorAll('.sable-wishlist-item');
       if (items.length > 0) {
         tl.fromTo(items,
@@ -34,8 +29,6 @@ export default function WishlistDrawer({
       }
     }
   }, [isOpen]);
-
-
   const handleAnimatedClose = () => {
     if (backdropRef.current && drawerRef.current) {
       const tl = gsap.timeline({
@@ -48,9 +41,7 @@ export default function WishlistDrawer({
       onClose();
     }
   };
-
   if (!isOpen) return null;
-
   return (
     <div
       ref={backdropRef}
@@ -85,7 +76,7 @@ export default function WishlistDrawer({
           fontFamily: 'Archivo, system-ui, sans-serif'
         }}
       >
-        {/* Drawer Header */}
+        {}
         <div
           style={{
             padding: '24px 28px 20px',
@@ -128,8 +119,7 @@ export default function WishlistDrawer({
             <X size={20} />
           </button>
         </div>
-
-        {/* Sub-Header Banner */}
+        {}
         <div
           style={{
             padding: '16px 28px',
@@ -168,7 +158,6 @@ export default function WishlistDrawer({
               OPTIONS <ChevronDown size={12} />
             </button>
           </div>
-
           <div
             style={{
               display: 'flex',
@@ -184,8 +173,7 @@ export default function WishlistDrawer({
               Complimentary shipping available on all orders over <strong style={{ color: '#101010' }}>£150</strong>
             </span>
           </div>
-
-          {/* Progress Bar Track */}
+          {}
           <div
             style={{
               width: '100%',
@@ -205,8 +193,7 @@ export default function WishlistDrawer({
             />
           </div>
         </div>
-
-        {/* Content Body */}
+        {}
         <div
           className="no-scrollbar"
           style={{
@@ -217,7 +204,6 @@ export default function WishlistDrawer({
           }}
         >
           {favoritedProducts.length === 0 ? (
-            /* EMPTY STATE MATCHING SCREENSHOT */
             <div
               style={{
                 flex: 1,
@@ -230,7 +216,6 @@ export default function WishlistDrawer({
               }}
             >
               <Heart size={72} strokeWidth={1} style={{ marginBottom: '24px', opacity: 0.85 }} />
-
               <h4
                 style={{
                   fontFamily: '"Bodoni MT", "Didot", "Times New Roman", serif',
@@ -244,7 +229,6 @@ export default function WishlistDrawer({
               >
                 YOUR WISHLIST IS CURRENTLY EMPTY
               </h4>
-
               <p
                 style={{
                   fontSize: '13px',
@@ -256,7 +240,6 @@ export default function WishlistDrawer({
               >
                 Explore our new collection and add pieces to your wishlist.
               </p>
-
               <button
                 onClick={handleAnimatedClose}
                 style={{
@@ -279,7 +262,6 @@ export default function WishlistDrawer({
               </button>
             </div>
           ) : (
-            /* WISHLIST ITEMS LIST */
             <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {favoritedProducts.map((product) => {
                 const id = product._id || product.id;
@@ -287,7 +269,6 @@ export default function WishlistDrawer({
                 const price = product.pr || product.price;
                 const image = product.img || (product.images && product.images[0]);
                 const category = product.ct || product.category;
-
                 return (
                   <div
                     key={id}
@@ -315,7 +296,6 @@ export default function WishlistDrawer({
                         handleAnimatedClose();
                       }}
                     />
-
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                       <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -343,7 +323,6 @@ export default function WishlistDrawer({
                               £{Number(price).toFixed(2)}
                             </div>
                           </div>
-
                           <button
                             onClick={() => onToggleFav(id)}
                             aria-label="Remove item"
@@ -362,7 +341,6 @@ export default function WishlistDrawer({
                           </button>
                         </div>
                       </div>
-
                       <div style={{ marginTop: '12px' }}>
                         <button
                           onClick={() => {
@@ -405,8 +383,7 @@ export default function WishlistDrawer({
             </div>
           )}
         </div>
-
-        {/* Bottom Trust Strip (Matching screenshot) */}
+        {}
         <div
           style={{
             padding: '18px 20px',
@@ -429,7 +406,6 @@ export default function WishlistDrawer({
               <div style={{ fontSize: '9px', color: '#666666' }}>14-day return policy</div>
             </div>
           </div>
-
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <div style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid rgba(16,16,16,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Lock size={12} strokeWidth={1.5} />
@@ -441,7 +417,6 @@ export default function WishlistDrawer({
               <div style={{ fontSize: '9px', color: '#666666' }}>100% protected</div>
             </div>
           </div>
-
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <div style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid rgba(16,16,16,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Headphones size={12} strokeWidth={1.5} />

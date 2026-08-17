@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-
 export default function Signup() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!email || !e.target.checkValidity()) {
@@ -12,7 +10,6 @@ export default function Signup() {
     setSubscribed(true);
     setEmail('');
   };
-
   return (
     <section id="signup">
       <div className="wrap">
@@ -41,4 +38,3 @@ export default function Signup() {
     </section>
   );
 }
-
