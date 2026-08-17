@@ -140,7 +140,21 @@ router.post('/message', async (req, res) => {
                 }
             }
             if (activeIntent !== 'add_to_cart') {
-                if (lowerMsg.includes('report') || lowerMsg.includes('doc') || lowerMsg.includes('srs')) {
+                if (lowerMsg.includes('return') || lowerMsg.includes('refund') || lowerMsg.includes('wapas') || lowerMsg.includes('wapsi') || lowerMsg.includes('exchange')) {
+                    activeIntent = 'return_product';
+                } else if (lowerMsg.includes('not receive') || lowerMsg.includes('no receive') || lowerMsg.includes('no receved') || lowerMsg.includes('not received') || lowerMsg.includes('parcel') || lowerMsg.includes('package') || lowerMsg.includes('missing') || lowerMsg.includes('where is my') || lowerMsg.includes('track') || lowerMsg.includes('delivery')) {
+                    activeIntent = 'order_tracking';
+                } else if (lowerMsg.includes('shipping') || lowerMsg.includes('ship') || lowerMsg.includes('duty') || lowerMsg.includes('duties') || lowerMsg.includes('tax') || lowerMsg.includes('courier')) {
+                    activeIntent = 'shipping_info';
+                } else if (lowerMsg.includes('payment') || lowerMsg.includes('pay') || lowerMsg.includes('klarna') || lowerMsg.includes('paypal') || lowerMsg.includes('card') || lowerMsg.includes('cod')) {
+                    activeIntent = 'payment_info';
+                } else if (lowerMsg.includes('authentic') || lowerMsg.includes('original') || lowerMsg.includes('limited') || lowerMsg.includes('restock')) {
+                    activeIntent = 'authenticity_info';
+                } else if (lowerMsg.includes('care') || lowerMsg.includes('wash') || lowerMsg.includes('dry clean') || lowerMsg.includes('fabric')) {
+                    activeIntent = 'care_info';
+                } else if (lowerMsg.includes('contact') || lowerMsg.includes('support') || lowerMsg.includes('phone') || lowerMsg.includes('email') || lowerMsg.includes('address') || lowerMsg.includes('store') || lowerMsg.includes('boutique') || lowerMsg.includes('mayfair') || lowerMsg.includes('complaint') || lowerMsg.includes('help')) {
+                    activeIntent = 'contact_support';
+                } else if (lowerMsg.includes('report') || lowerMsg.includes('doc') || lowerMsg.includes('srs')) {
                     activeIntent = 'report_info';
                 } else if (lowerMsg.includes('outfit') || lowerMsg.includes('complete look') || lowerMsg.includes('pair with') || lowerMsg.includes('style with') || lowerMsg.includes('bundle')) {
                     activeIntent = 'ai_outfit';
@@ -153,19 +167,17 @@ router.post('/message', async (req, res) => {
                 } else if (lowerMsg.includes('new arrival') || lowerMsg.includes('latest arrival') || (lowerMsg.includes('new') && !lowerMsg.includes('york') && !lowerMsg.includes('jersey') && !lowerMsg.includes('delhi'))) {
                     activeIntent = 'product_search';
                     responseData.message = "Here are our latest new arrivals:";
-                } else if (lowerMsg.includes('checkout') || lowerMsg.includes('pay')) {
+                } else if (lowerMsg.includes('checkout')) {
                     activeIntent = 'checkout';
                 } else if ((lowerMsg.includes('view') || lowerMsg.includes('open') || lowerMsg.includes('check') || lowerMsg.trim() === 'cart' || lowerMsg.trim() === 'bag') && (lowerMsg.includes('bag') || lowerMsg.includes('cart'))) {
                     activeIntent = 'view_cart';
-                } else if (lowerMsg.includes('track') || lowerMsg.includes('delivery') || lowerMsg.includes('received') || lowerMsg.includes('receive')) {
-                    activeIntent = 'order_tracking';
                 } else if (lowerMsg.includes('show') || lowerMsg.includes('find') || lowerMsg.includes('search') || lowerMsg.includes('outerwear') || lowerMsg.includes('knitwear') || lowerMsg.includes('tailoring') || lowerMsg.includes('jacket') || lowerMsg.includes('jaket') || lowerMsg.includes('dikhao') || lowerMsg.includes('dikao') || lowerMsg.includes('batao') || lowerMsg.includes('btao') || lowerMsg.includes('chahiye') || lowerMsg.includes('all') || lowerMsg.includes('sare') || lowerMsg.includes('sab') || lowerMsg.includes('products') || lowerMsg.includes('items')) {
                     activeIntent = 'product_search';
                 }
             }
         }
         if ((confidence < 0.5 || intent === 'unknown') && activeIntent === intent) {
-            responseData.message = "I'm sorry, I didn't quite catch that. Could you please rephrase or let me know what you're looking for?";
+            responseData.message = "I'm here to assist you with SABLE luxury garments, order tracking, returns, shipping, sizing, or checkout. How can I help you today?";
             responseData.intent = 'unknown';
             return res.json(responseData);
         }
@@ -601,7 +613,9 @@ router.post('/message', async (req, res) => {
                 responseData.message = "Checkout has been cancelled. How else can I help you today?";
                 break;
             case 'report_info':
-                responseData.message = "The complete SABLE Project Report and Technical SRS documentation are available in the repository root (SABLE_PROJECT_DOCUMENTATION.md) and submission folder.";
+            case 'report_issue':
+                responseData.message = "I can help you file a priority issue report directly with our Mayfair Client Services team. Please fill out the report form below:";
+                responseData.data = { type: 'contact_form' };
                 break;
             case 'process_address':
                 if (!isValidAddress(message)) {
@@ -828,20 +842,31 @@ router.post('/message', async (req, res) => {
             }
             case 'checkout_help':
             case 'payment_help':
-                responseData.message = "You can securely check out directly in this chat! Just say 'checkout'. We accept all major credit and debit cards.";
+            case 'payment_info':
+                responseData.message = "We accept Visa, Mastercard, American Express, Apple Pay, Google Pay, PayPal, and Klarna 3-part interest-free installment payments. All transactions are protected via 256-bit SSL encryption.";
                 break;
             case 'delivery_address':
-                responseData.message = "During the checkout process, I will ask you for your shipping address. You can provide it directly in the chat.";
+                responseData.message = "During checkout, you can enter your shipping address directly in chat or use our secure checkout page.";
                 break;
-            case 'faq':
-                responseData.message = "Standard shipping takes 3-5 business days. We offer a 14-day return policy for unused items.";
+            case 'shipping_info':
+                responseData.message = "SABLE ships worldwide via DHL Express. Standard delivery takes 2-4 business days (Complimentary over £150). All import duties and taxes are fully calculated and included at checkout.";
+                break;
+            case 'return_product':
+            case 'return_policy':
+                responseData.message = "We operate a 30-day complimentary return policy for unworn items in original condition with security tags attached. You can initiate a return from your account dashboard or by contacting concierge@sable-couture.com to receive a prepaid DHL shipping label.";
+                break;
+            case 'authenticity_info':
+                responseData.message = "Every SABLE piece is 100% authentic, handcrafted in strictly limited runs of 100 individually numbered units at our London Atelier. Sold-out pieces are rarely restocked to preserve exclusivity.";
+                break;
+            case 'care_info':
+                responseData.message = "Our garments are crafted from 100% organic cotton twill, merino wool, and cashmere. We recommend professional dry cleaning or delicate hand washing in cold water with specialized wool detergent.";
                 break;
             case 'complaint':
             case 'contact_support':
-                responseData.message = "I am sorry to hear you need support. You can reach our team at support@sable.com or call 0800 123 4567.";
+                responseData.message = "Our Mayfair Client Services team is here for you. You can reach us via email at concierge@sable-couture.com, telephone at +44 20 7946 0912, or visit our atelier at 14 Bruton Street, Mayfair, London W1J 6LX.";
                 break;
-            case 'return_product':
-                responseData.message = "You can return items within 14 days of receipt. Please contact support@sable.com with your Order ID to initiate a return.";
+            case 'faq':
+                responseData.message = "Here is our SABLE intelligence guide: Standard global shipping takes 2-4 business days (free over £150). We offer 30-day free returns and limited numbered runs of 100 pieces per drop. How else can I assist you?";
                 break;
         }
         res.json(responseData);

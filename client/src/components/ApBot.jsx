@@ -612,6 +612,47 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
         </form>
       );
     }
+    if (data.type === 'contact_form' || data.type === 'report_issue_form') {
+      return (
+        <div className="apbot-contact-card" style={{ background: '#FAF9F6', padding: '14px', borderRadius: '8px', border: '1px solid rgba(16,16,16,0.12)', marginTop: '12px' }}>
+          <h4 style={{ margin: '0 0 6px 0', fontSize: '13px', color: '#101010', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Submit Priority Issue Report</h4>
+          <p style={{ margin: '0 0 10px 0', fontSize: '11px', color: '#666', lineHeight: 1.4 }}>Fill out the report form below to log your inquiry with our Mayfair Concierge.</p>
+          <form 
+            className="apbot-inline-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.target);
+              const name = formData.get('name') || 'Guest';
+              const subject = formData.get('subject') || 'Issue Report';
+              const reportNum = Math.floor(10000 + Math.random() * 90000);
+              triggerActionFeedback(`Priority Issue Report #SBL-REP-${reportNum} Submitted!`);
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `Thank you, ${name}. Your issue report regarding "${subject}" has been registered with priority tracking ID #SBL-REP-${reportNum}. Our Mayfair Concierge team will follow up via email within 24 hours.`
+              }]);
+            }}
+          >
+            <input name="name" placeholder="Your Name" required defaultValue={currentUser?.name || ''} />
+            <input name="email" type="email" placeholder="Email Address" required defaultValue={currentUser?.email || ''} />
+            <input name="subject" placeholder="Issue Subject (e.g. Parcel Delay, Damaged Box)" required />
+            <textarea name="details" placeholder="Describe your issue in detail..." required rows={3} style={{ width: '100%', padding: '8px 10px', fontSize: '11px', borderRadius: '4px', border: '1px solid rgba(16,16,16,0.15)', background: '#FFFFFF', color: '#101010', fontFamily: 'Archivo, sans-serif', resize: 'vertical' }} />
+            <button type="submit" className="apbot-submit-btn" style={{ width: '100%', marginTop: '6px' }}>
+              Submit Priority Report &rarr;
+            </button>
+          </form>
+          <button 
+            type="button"
+            onClick={() => {
+              if (onNavigate) onNavigate('contact');
+              handleClose();
+            }}
+            style={{ width: '100%', marginTop: '8px', background: 'transparent', border: '1px solid #101010', color: '#101010', padding: '8px', borderRadius: '4px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.12em' }}
+          >
+            Open Full Contact Page &rarr;
+          </button>
+        </div>
+      );
+    }
     return null;
   };
   return (
@@ -711,9 +752,7 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           <button type="button" onClick={() => sendMessage("Help me find my size")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
             <Ruler size={13} /> Size Guide
           </button>
-          <button type="button" onClick={() => sendMessage("Give me a VIP discount code")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-            <Tag size={13} /> VIP Perk
-          </button>
+          
           <button type="button" onClick={() => sendMessage("How can I contact customer support?")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
             <Headphones size={13} /> Contact Us
           </button>
