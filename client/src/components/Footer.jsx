@@ -1,52 +1,139 @@
 import React from 'react';
 
-export default function Footer() {
-  const handleScrollToShop = (e) => {
-    e.preventDefault();
-    const el = document.querySelector('#shop');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
-
+export default function Footer({
+  onGoHome,
+  onOpenProducts,
+  onOpenAbout,
+  onOpenFaq,
+  onOpenContact
+}) {
   return (
     <footer>
       <div className="wrap">
         <div className="cols">
           <div>
-            <div className="mk">SABLE</div>
+            <div className="mk" onClick={onGoHome} style={{ cursor: 'pointer' }}>SABLE</div>
             <address>
-              18 Redchurch Street<br />
-              London E2 7DP<br /><br />
-              hello@sable.studio
+              14 Bruton Street, Mayfair<br />
+              London W1J 6LX, UK<br /><br />
+              concierge@sable-couture.com<br />
+              +44 20 7946 0912
             </address>
           </div>
           <div>
-            <h4>Shop</h4>
-            <a href="#shop" onClick={handleScrollToShop}>Outerwear</a>
-            <a href="#shop" onClick={handleScrollToShop}>Knitwear</a>
-            <a href="#shop" onClick={handleScrollToShop}>Tailoring</a>
-            <a href="#shop" onClick={handleScrollToShop}>Archive sale</a>
+            <h4>Collections</h4>
+            <a 
+              href="#shop" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenProducts) onOpenProducts();
+              }}
+            >
+              All Products
+            </a>
+            <a 
+              href="#shop" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenProducts) onOpenProducts();
+              }}
+            >
+              Outerwear
+            </a>
+            <a 
+              href="#shop" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenProducts) onOpenProducts();
+              }}
+            >
+              Tailoring
+            </a>
+            <a 
+              href="#shop" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenProducts) onOpenProducts();
+              }}
+            >
+              Knitwear
+            </a>
           </div>
           <div>
-            <h4>Help</h4>
-            <a href="#" onClick={(e) => e.preventDefault()}>Sizing</a>
-            <a href="#" onClick={(e) => e.preventDefault()}>Shipping</a>
-            <a href="#" onClick={(e) => e.preventDefault()}>Returns</a>
-            <a href="#" onClick={(e) => e.preventDefault()}>Repairs</a>
+            <h4>Maison</h4>
+            <a 
+              href="#home" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (onGoHome) onGoHome();
+              }}
+            >
+              Home
+            </a>
+            <a 
+              href="#about" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenAbout) onOpenAbout();
+              }}
+            >
+              About SABLE
+            </a>
+            <a 
+              href="#faq" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenFaq) onOpenFaq();
+              }}
+            >
+              FAQ Intelligence
+            </a>
+            <a 
+              href="#contact" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenContact) onOpenContact();
+              }}
+            >
+              Contact Concierge
+            </a>
           </div>
           <div>
-            <h4>Studio</h4>
-            <a href="#" onClick={(e) => e.preventDefault()}>Our cloth</a>
-            <a href="#" onClick={(e) => e.preventDefault()}>Stockists</a>
-            <a href="#" onClick={(e) => e.preventDefault()}>Journal</a>
-            <a href="#" onClick={(e) => e.preventDefault()}>Careers</a>
+            <h4>Client Services</h4>
+            <a 
+              href="#faq" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenFaq) onOpenFaq();
+              }}
+            >
+              Order Tracking & FAQ
+            </a>
+            <a 
+              href="#contact" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenContact) onOpenContact();
+              }}
+            >
+              Bespoke Fitting
+            </a>
+            <a 
+              href="#contact" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenContact) onOpenContact();
+              }}
+            >
+              Mayfair Atelier Visit
+            </a>
           </div>
         </div>
         <div className="legal">
-          <span>© 2026 Sable Studio Ltd · Company 11482207</span>
-          <span>Prices include VAT</span>
+          <span>© 2026 SABLE HAUTE COUTURE LTD · LONDON</span>
+          <span>COMPLIMENTARY GLOBAL SHIPPING OVER £150</span>
         </div>
       </div>
     </footer>
   );
 }
-

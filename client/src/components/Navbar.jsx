@@ -210,10 +210,11 @@ export default function Navbar({
                 e.preventDefault();
                 onOpenCart();
               }}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               className={`bag-link ${bagPulse ? 'pulse' : ''}`}
             >
-              Bag (<b id="bagn" style={{ display: 'inline-block', transition: 'transform 0.25s ease' }}>{bagCount}</b>)
+              <ShoppingBag size={16} />
+              <span>Bag (<b id="bagn" style={{ display: 'inline-block', transition: 'transform 0.25s ease' }}>{bagCount}</b>)</span>
             </a>
           </div>
         </div>

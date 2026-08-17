@@ -452,7 +452,13 @@ export default function App() {
         </>
       )}
 
-      <Footer />
+      <Footer 
+        onGoHome={handleBackToHome}
+        onOpenProducts={handleOpenProductsPage}
+        onOpenAbout={handleOpenAboutPage}
+        onOpenFaq={handleOpenFaqPage}
+        onOpenContact={handleOpenContactPage}
+      />
 
       {/* Modals & Drawers */}
       <AboutModal
