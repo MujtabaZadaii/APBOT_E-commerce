@@ -98,8 +98,8 @@ router.post('/message', async (req, res) => {
         }
         let activeIntent = intent;
         
-        const isCancelReq = /\b(cancel|stop|exit|abort|nevermind)\b/i.test(lowerMsg);
-        const isTopicSwitch = /\b(show|find|search|where|what|how|return|policy|shipping|track|tracking|order|jacket|knitwear|tailoring|price|size|discount|outfit|contact|report)\b/i.test(lowerMsg);
+        const isCancelReq = /\b(cancel|stop|exit|abort|nevermind|rehne do)\b/i.test(lowerMsg);
+        const isTopicSwitch = /\b(show|find|search|where|what|how|return|policy|shipping|track|tracking|order|jacket|knitwear|tailoring|price|size|discount|outfit|contact|report|winter|office|date|cheap|sasta|surprise|choose|similar)\b/i.test(lowerMsg);
         
         if (isCancelReq) {
             responseData.context.checkoutState = null;
@@ -121,6 +121,8 @@ router.post('/message', async (req, res) => {
                 activeIntent = 'wishlist_add';
             } else if (/\b(add|buy|cart|bag)\b/i.test(lowerMsg)) {
                 activeIntent = 'add_to_cart';
+            } else if (lowerMsg.includes('similar') || lowerMsg.includes('jaisa') || lowerMsg.includes('like')) {
+                activeIntent = 'similar_products';
             } else {
                 activeIntent = 'product_information';
             }
@@ -132,17 +134,40 @@ router.post('/message', async (req, res) => {
             }
         }
         if (!context?.checkoutState && referencedProductIndex === -1) {
-            if (lowerMsg.includes('wishlist') || lowerMsg.includes('favorite') || lowerMsg.includes('fav') || lowerMsg.includes('save')) {
-                activeIntent = 'wishlist_add';
-            } else if (/\b(add|put|buy|purchase)\b/i.test(lowerMsg) || lowerMsg.includes('get this') || lowerMsg.includes('take this')) {
+            if (lowerMsg.includes('wishlist') || lowerMsg.includes('favorite') || lowerMsg.includes('fav') || lowerMsg.includes('save') || lowerMsg.includes('baad me')) {
+                if (lowerMsg.includes('unsave') || lowerMsg.includes('remove')) {
+                    activeIntent = 'wishlist_remove';
+                } else {
+                    activeIntent = 'wishlist_add';
+                }
+            } else if (/\b(add|put|buy|purchase)\b/i.test(lowerMsg) || lowerMsg.includes('get this') || lowerMsg.includes('take this') || lowerMsg.includes('le leta')) {
                 if (lowerMsg.includes('cart') || lowerMsg.includes('bag') || lowerMsg.includes('this') || lowerMsg.includes('item') || lowerMsg.includes('one') || lowerMsg.includes('product') || lowerMsg.includes('jacket') || lowerMsg.includes('coat') || lowerMsg.includes('wali') || lowerMsg.includes('wala') || getRequestedIndex(lowerMsg) !== null) {
                     activeIntent = 'add_to_cart';
                 }
             }
-            if (activeIntent !== 'add_to_cart') {
-                if (lowerMsg.includes('return') || lowerMsg.includes('refund') || lowerMsg.includes('wapas') || lowerMsg.includes('wapsi') || lowerMsg.includes('exchange')) {
+            if (!['add_to_cart', 'wishlist_add', 'wishlist_remove'].includes(activeIntent)) {
+                // Out-of-scope check
+                if (/\b(weather|president|bitcoin|python|letter|joke|2\+2|netflix|karachi|pakistan)\b/i.test(lowerMsg)) {
+                    activeIntent = 'out_of_scope';
+                } else if (/\b(choose|choose for me|pick for me|mere liye|hisaab se|meri jagah|what should i buy|teeno me se|kaun sa)\b/i.test(lowerMsg)) {
+                    activeIntent = 'curate_recommendation';
+                } else if (/\b(surprise|surprise me|kuch bhi|anything)\b/i.test(lowerMsg)) {
+                    activeIntent = 'surprise_me';
+                } else if (lowerMsg.includes('similar') || lowerMsg.includes('jaisa') || lowerMsg.includes('like 1st') || lowerMsg.includes('like first') || lowerMsg.includes('is ke jaisa')) {
+                    activeIntent = 'similar_products';
+                } else if (lowerMsg.includes('cheap') || lowerMsg.includes('cheapest') || lowerMsg.includes('cheep') || lowerMsg.includes('sasta') || lowerMsg.includes('low price') || lowerMsg.includes('less price')) {
+                    activeIntent = 'cheap_products';
+                } else if (lowerMsg.includes('winter')) {
+                    activeIntent = 'winter_collection';
+                } else if (lowerMsg.includes('office') || lowerMsg.includes('formal') || lowerMsg.includes('work')) {
+                    activeIntent = 'office_collection';
+                } else if (lowerMsg.includes('date') || lowerMsg.includes('party')) {
+                    activeIntent = 'date_collection';
+                } else if (lowerMsg.includes('worth it') || lowerMsg.includes('worth') || lowerMsg.includes('good quality') || lowerMsg.includes('kaisa hai')) {
+                    activeIntent = 'stylist_advice';
+                } else if (lowerMsg.includes('return') || lowerMsg.includes('refund') || lowerMsg.includes('wapas') || lowerMsg.includes('wapsi') || lowerMsg.includes('exchange')) {
                     activeIntent = 'return_product';
-                } else if (lowerMsg.includes('not receive') || lowerMsg.includes('no receive') || lowerMsg.includes('no receved') || lowerMsg.includes('not received') || lowerMsg.includes('parcel') || lowerMsg.includes('package') || lowerMsg.includes('missing') || lowerMsg.includes('where is my') || lowerMsg.includes('track') || lowerMsg.includes('delivery')) {
+                } else if (lowerMsg.includes('not receive') || lowerMsg.includes('no receive') || lowerMsg.includes('no receved') || lowerMsg.includes('not received') || lowerMsg.includes('parcel') || lowerMsg.includes('package') || lowerMsg.includes('missing') || lowerMsg.includes('where is my') || lowerMsg.includes('track') || lowerMsg.includes('delivery') || lowerMsg.includes('kahan hai') || lowerMsg.includes('kab ayega') || lowerMsg.includes('kab hogi') || /\bsbl-\d+/i.test(lowerMsg)) {
                     activeIntent = 'order_tracking';
                 } else if (lowerMsg.includes('shipping') || lowerMsg.includes('ship') || lowerMsg.includes('duty') || lowerMsg.includes('duties') || lowerMsg.includes('tax') || lowerMsg.includes('courier')) {
                     activeIntent = 'shipping_info';
@@ -150,7 +175,7 @@ router.post('/message', async (req, res) => {
                     activeIntent = 'payment_info';
                 } else if (lowerMsg.includes('authentic') || lowerMsg.includes('original') || lowerMsg.includes('limited') || lowerMsg.includes('restock')) {
                     activeIntent = 'authenticity_info';
-                } else if (lowerMsg.includes('care') || lowerMsg.includes('wash') || lowerMsg.includes('dry clean') || lowerMsg.includes('fabric')) {
+                } else if (lowerMsg.includes('care') || lowerMsg.includes('wash') || lowerMsg.includes('dry clean') || lowerMsg.includes('fabric') || lowerMsg.includes('material')) {
                     activeIntent = 'care_info';
                 } else if (lowerMsg.includes('contact') || lowerMsg.includes('support') || lowerMsg.includes('phone') || lowerMsg.includes('email') || lowerMsg.includes('address') || lowerMsg.includes('store') || lowerMsg.includes('boutique') || lowerMsg.includes('mayfair') || lowerMsg.includes('complaint') || lowerMsg.includes('help')) {
                     activeIntent = 'contact_support';
@@ -164,14 +189,22 @@ router.post('/message', async (req, res) => {
                     activeIntent = 'vip_discount';
                 } else if (lowerMsg.includes('photo') || lowerMsg.includes('image search') || lowerMsg.includes('visual search')) {
                     activeIntent = 'visual_search';
-                } else if (lowerMsg.includes('new arrival') || lowerMsg.includes('latest arrival') || (lowerMsg.includes('new') && !lowerMsg.includes('york') && !lowerMsg.includes('jersey') && !lowerMsg.includes('delhi'))) {
+                } else if (lowerMsg.includes('new arrival') || lowerMsg.includes('latest arrival') || lowerMsg.includes('trending') || (lowerMsg.includes('new') && !lowerMsg.includes('york') && !lowerMsg.includes('jersey') && !lowerMsg.includes('delhi'))) {
                     activeIntent = 'product_search';
-                    responseData.message = "Here are our latest new arrivals:";
-                } else if (lowerMsg.includes('checkout')) {
+                    responseData.message = "Here are our latest trending arrivals:";
+                } else if (lowerMsg.includes('checkout') || lowerMsg.includes('check out') || lowerMsg.includes('checkout karwa')) {
                     activeIntent = 'checkout';
+                } else if (lowerMsg.includes('account') || lowerMsg.includes('profile')) {
+                    activeIntent = 'open_profile';
+                } else if (lowerMsg.includes('order') || lowerMsg.includes('orders')) {
+                    activeIntent = 'previous_orders';
+                } else if (lowerMsg.includes('login')) {
+                    activeIntent = 'login';
+                } else if (lowerMsg.includes('logout')) {
+                    activeIntent = 'logout';
                 } else if ((lowerMsg.includes('view') || lowerMsg.includes('open') || lowerMsg.includes('check') || lowerMsg.trim() === 'cart' || lowerMsg.trim() === 'bag') && (lowerMsg.includes('bag') || lowerMsg.includes('cart'))) {
                     activeIntent = 'view_cart';
-                } else if (lowerMsg.includes('show') || lowerMsg.includes('find') || lowerMsg.includes('search') || lowerMsg.includes('outerwear') || lowerMsg.includes('knitwear') || lowerMsg.includes('tailoring') || lowerMsg.includes('jacket') || lowerMsg.includes('jaket') || lowerMsg.includes('dikhao') || lowerMsg.includes('dikao') || lowerMsg.includes('batao') || lowerMsg.includes('btao') || lowerMsg.includes('chahiye') || lowerMsg.includes('all') || lowerMsg.includes('sare') || lowerMsg.includes('sab') || lowerMsg.includes('products') || lowerMsg.includes('items')) {
+                } else if (lowerMsg.includes('show') || lowerMsg.includes('find') || lowerMsg.includes('search') || lowerMsg.includes('outerwear') || lowerMsg.includes('knitwear') || lowerMsg.includes('tailoring') || lowerMsg.includes('jacket') || lowerMsg.includes('jaket') || lowerMsg.includes('dikhao') || lowerMsg.includes('dikao') || lowerMsg.includes('batao') || lowerMsg.includes('btao') || lowerMsg.includes('chahiye') || lowerMsg.includes('all') || lowerMsg.includes('sare') || lowerMsg.includes('sab') || lowerMsg.includes('products') || lowerMsg.includes('items') || lowerMsg.includes('acha')) {
                     activeIntent = 'product_search';
                 }
             }
@@ -398,12 +431,17 @@ router.post('/message', async (req, res) => {
             case 'add_to_cart':
                 let productToAdd = null;
                 const requestedIndex = getRequestedIndex(lowerMsg);
-                if (requestedIndex !== null && responseData.context.lastProducts && responseData.context.lastProducts.length > requestedIndex) {
-                    const targetId = responseData.context.lastProducts[requestedIndex];
-                    productToAdd = await Product.findById(targetId);
+                if (requestedIndex !== null) {
+                    if (responseData.context.lastProducts && responseData.context.lastProducts.length > requestedIndex) {
+                        const targetId = responseData.context.lastProducts[requestedIndex];
+                        productToAdd = await Product.findById(targetId);
+                    } else if (responseData.context.lastProducts && responseData.context.lastProducts.length > 0) {
+                        responseData.message = `I currently have ${responseData.context.lastProducts.length} item(s) in your active view. Did you mean option 1 or 2?`;
+                        break;
+                    }
                 }
                 if (!productToAdd) {
-                    const addStopWords = ['only', 'under', 'less', 'than', 'more', 'over', 'price', 'show', 'me', 'the', 'a', 'an', 'some', 'any', 'please', 'just', 'add', 'in', 'it', 'to', 'my', 'bag', 'cart', 'buy', 'purchase', 'want', 'looking', 'for', 'can', 'you', 'find', 'like', 'this', 'one', 'best', 'wali', 'wala', 'valey', 'item', 'product', 'piece'];
+                    const addStopWords = ['only', 'under', 'less', 'than', 'more', 'over', 'price', 'show', 'me', 'the', 'a', 'an', 'some', 'any', 'please', 'just', 'add', 'in', 'it', 'to', 'my', 'bag', 'cart', 'buy', 'purchase', 'want', 'looking', 'for', 'can', 'you', 'find', 'like', 'this', 'one', 'best', 'wali', 'wala', 'valey', 'item', 'product', 'piece', 'le', 'leta', 'hun', 'dal', 'do'];
                     let potentialNames = lowerMsg.replace(/£?\d+/g, '').split(/[\s,.]+/).filter(w => w.length > 2 && !addStopWords.includes(w));
                     if (potentialNames.length > 0) {
                         const regexP = potentialNames.join('|');
@@ -434,9 +472,9 @@ router.post('/message', async (req, res) => {
                     };
                     responseData.actions.push('add_to_cart');
                     responseData.data = { type: 'cart_action', product: formattedProduct, quantity };
-                    responseData.message = `I've added 1x ${formattedProduct.name} to your bag.`;
+                    responseData.message = `I've added ${quantity}x ${formattedProduct.name} to your bag.`;
                 } else {
-                    responseData.message = "I couldn't find which product to add. Please search for a product first.";
+                    responseData.message = "Which piece would you like me to add to your bag? Please select an item or tell me its name (e.g. 'add Overshirt')!";
                 }
                 break;
             case 'wishlist_add':
@@ -700,9 +738,18 @@ router.post('/message', async (req, res) => {
                     const elapsedMins = Math.floor((new Date() - new Date(orderObj.createdAt)) / (1000 * 60));
                     if (elapsedMins >= 40) return 'Delivered';
                     if (elapsedMins >= 30) return 'Out for Delivery';
-                    if (elapsedMins >= 20) return 'Shipped';
+                    if (elapsedMins >= 20) return 'In Transit';
                     if (elapsedMins >= 10) return 'Processing';
                     return 'Order Placed';
+                };
+                const getArrivalEstimate = (orderObj) => {
+                    if (!orderObj || !orderObj.createdAt) return '3-5 Business Days via DHL Express';
+                    const elapsedMins = Math.floor((new Date() - new Date(orderObj.createdAt)) / (1000 * 60));
+                    if (elapsedMins >= 40) return 'Delivered Today at Mayfair Address';
+                    if (elapsedMins >= 30) return 'Arriving Today (Out for Courier Delivery)';
+                    if (elapsedMins >= 20) return 'Arriving in 1 Business Day (In Transit via DHL)';
+                    if (elapsedMins >= 10) return 'Arriving in 2-3 Business Days (Processing at Atelier)';
+                    return 'Arriving in 3-5 Business Days (Order Placed)';
                 };
                 const trackingMatch = message.match(/SBL-\d+/i);
                 if (trackingMatch) {
@@ -713,9 +760,10 @@ router.post('/message', async (req, res) => {
                     if (order) {
                         const activeId = order.orderId || order.trackingNumber;
                         const dynamicStatus = getDynamicStatus(order);
+                        const arrivalEst = getArrivalEstimate(order);
                         order.trackingStatus = dynamicStatus;
                         responseData.data = { type: 'order', item: order };
-                        responseData.message = `Tracking Order #${activeId}:\n\nStatus: "${dynamicStatus}"\nLocation: SABLE London Fulfillment Centre\nExpected Delivery: 3-5 Business Days.`;
+                        responseData.message = `Live Order Status #${activeId}:\n\n• Current Status: "${dynamicStatus}"\n• Dispatch Hub: SABLE London Fulfillment Centre\n• Estimated Arrival: ${arrivalEst}`;
                     } else {
                         responseData.message = `I couldn't find an order with tracking ID ${tId}. Please check your tracking number and try again.`;
                     }
@@ -725,11 +773,12 @@ router.post('/message', async (req, res) => {
                     if (latestOrder) {
                         const activeId = latestOrder.orderId || latestOrder.trackingNumber;
                         const dynamicStatus = getDynamicStatus(latestOrder);
+                        const arrivalEst = getArrivalEstimate(latestOrder);
                         latestOrder.trackingStatus = dynamicStatus;
                         responseData.data = { type: 'order', item: latestOrder };
-                        responseData.message = `Tracking Latest Order #${activeId}:\n\nStatus: "${dynamicStatus}"\nLocation: SABLE London Fulfillment Centre\nExpected Delivery: 3-5 Business Days.`;
+                        responseData.message = `Live Order Status #${activeId}:\n\n• Current Status: "${dynamicStatus}"\n• Dispatch Hub: SABLE London Fulfillment Centre\n• Estimated Arrival: ${arrivalEst}`;
                     } else {
-                        responseData.message = "Please provide your tracking ID (e.g., SBL-30256) so I can look up your order status.";
+                        responseData.message = "Standard SABLE delivery takes 3-5 business days via DHL Express. You can track your exact parcel anytime by entering your Order ID (e.g., SBL-12345).";
                     }
                 }
                 break;
@@ -838,6 +887,97 @@ router.post('/message', async (req, res) => {
                     };
                     responseData.message = "Visual AI Scan Complete: I analyzed your image, but we do not currently have this exact piece in our SABLE inventory. To ensure 100% accuracy, here are our closest premier recommendations:";
                 }
+                break;
+            }
+            case 'out_of_scope':
+                responseData.message = "As SABLE's AI Concierge, I specialize in luxury fashion, tailoring, order tracking, and client assistance. While I can't write code or forecast weather, I can certainly help you look stunning for any occasion! What fashion pieces can I curate for you today?";
+                break;
+            case 'curate_recommendation': {
+                const curated = await Product.find({}).sort({ _id: -1 }).limit(1);
+                if (curated.length > 0) {
+                    const prod = curated[0];
+                    const formatted = [{
+                        ...prod.toObject(),
+                        _id: prod._id.toString(), id: prod._id.toString(),
+                        name: prod.nm, brand: 'SABLE', price: prod.pr, category: prod.ct, images: [prod.img]
+                    }];
+                    responseData.data = { type: 'products', items: formatted, hint: "Stylist Pick: Handselected by ApBot Concierge." };
+                    responseData.message = `If I were in your place, I would choose the ${prod.nm} (£${prod.pr}). It offers unparalleled versatility, heavy 400gsm organic cotton twill structure, and timeless Mayfair styling:`;
+                } else {
+                    responseData.message = "I would recommend exploring our premier outerwear collection for timeless style.";
+                }
+                break;
+            }
+            case 'surprise_me': {
+                const allProds = await Product.find({});
+                if (allProds.length > 0) {
+                    const randomItem = allProds[Math.floor(Math.random() * allProds.length)];
+                    const formatted = [{
+                        ...randomItem.toObject(),
+                        _id: randomItem._id.toString(), id: randomItem._id.toString(),
+                        name: randomItem.nm, brand: 'SABLE', price: randomItem.pr, category: randomItem.ct, images: [randomItem.img]
+                    }];
+                    responseData.data = { type: 'products', items: formatted, hint: "Surprise Selection from SABLE Mayfair Atelier." };
+                    responseData.message = `Here is a surprise luxury selection curated just for you — the ${randomItem.nm}:`;
+                }
+                break;
+            }
+            case 'cheap_products': {
+                const cheapProds = await Product.find({}).sort({ pr: 1 }).limit(3);
+                const formatted = cheapProds.map(p => ({
+                    ...p.toObject(),
+                    _id: p._id.toString(), id: p._id.toString(),
+                    name: p.nm, brand: 'SABLE', price: p.pr, category: p.ct, images: [p.img]
+                }));
+                responseData.data = { type: 'products', items: formatted, hint: "Sorted by value & accessible pricing." };
+                responseData.message = "Here are our most accessible luxury pieces sorted by exceptional value:";
+                break;
+            }
+            case 'winter_collection': {
+                const winterProds = await Product.find({
+                    $or: [
+                        { ct: /outerwear|knitwear/i },
+                        { nm: /jacket|coat|overshirt|sweater|cardigan/i }
+                    ]
+                }).limit(3);
+                const formatted = winterProds.map(p => ({
+                    ...p.toObject(),
+                    _id: p._id.toString(), id: p._id.toString(),
+                    name: p.nm, brand: 'SABLE', price: p.pr, category: p.ct, images: [p.img]
+                }));
+                responseData.data = { type: 'products', items: formatted, hint: "Winter Essentials: Heavy organic twill & cashmere." };
+                responseData.message = "Here is our Winter Collection featuring heavy 400gsm organic cotton twill outerwear and cashmere knitwear:";
+                break;
+            }
+            case 'office_collection': {
+                const officeProds = await Product.find({
+                    $or: [
+                        { ct: /tailoring|essentials|outerwear/i },
+                        { nm: /blazer|trousers|overshirt|shirt|tailored/i }
+                    ]
+                }).limit(3);
+                const formatted = officeProds.map(p => ({
+                    ...p.toObject(),
+                    _id: p._id.toString(), id: p._id.toString(),
+                    name: p.nm, brand: 'SABLE', price: p.pr, category: p.ct, images: [p.img]
+                }));
+                responseData.data = { type: 'products', items: formatted, hint: "Office & Formal Wear: Precision tailoring." };
+                responseData.message = "Here are our premier tailoring and structured overshirts crafted for office and formal professional wear:";
+                break;
+            }
+            case 'date_collection': {
+                const dateProds = await Product.find({}).sort({ pr: -1 }).limit(2);
+                const formatted = dateProds.map(p => ({
+                    ...p.toObject(),
+                    _id: p._id.toString(), id: p._id.toString(),
+                    name: p.nm, brand: 'SABLE', price: p.pr, category: p.ct, images: [p.img]
+                }));
+                responseData.data = { type: 'products', items: formatted, hint: "Date Night Ensemble: Sleek elegance." };
+                responseData.message = "Here are our sleekest date-night recommendations curated for effortless sophistication:";
+                break;
+            }
+            case 'stylist_advice': {
+                responseData.message = "Every SABLE garment is crafted in strictly limited runs of 100 numbered pieces using 400gsm organic twill and pure cashmere. It is 100% worth the investment for lifetime durability and timeless style.";
                 break;
             }
             case 'checkout_help':
