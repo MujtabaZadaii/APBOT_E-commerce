@@ -134,16 +134,16 @@ router.post('/message', async (req, res) => {
             }
         }
         if (!context?.checkoutState && referencedProductIndex === -1) {
-            if (lowerMsg.includes('wishlist') || lowerMsg.includes('favorite') || lowerMsg.includes('fav') || lowerMsg.includes('save') || lowerMsg.includes('baad me')) {
+            if (lowerMsg.includes('remove all') || lowerMsg.includes('all remove') || lowerMsg.includes('clear cart') || lowerMsg.includes('clear my cart') || lowerMsg.includes('empty my bag') || lowerMsg.includes('empty cart') || lowerMsg.includes('sb remove') || lowerMsg.includes('sare remove') || lowerMsg.includes('hatao sab')) {
+                activeIntent = 'clear_cart';
+            } else if (lowerMsg.includes('wishlist') || lowerMsg.includes('favorite') || lowerMsg.includes('fav') || lowerMsg.includes('save') || lowerMsg.includes('baad me')) {
                 if (lowerMsg.includes('unsave') || lowerMsg.includes('remove')) {
                     activeIntent = 'wishlist_remove';
                 } else {
                     activeIntent = 'wishlist_add';
                 }
-            } else if (/\b(add|put|buy|purchase)\b/i.test(lowerMsg) || lowerMsg.includes('get this') || lowerMsg.includes('take this') || lowerMsg.includes('le leta')) {
-                if (lowerMsg.includes('cart') || lowerMsg.includes('bag') || lowerMsg.includes('this') || lowerMsg.includes('item') || lowerMsg.includes('one') || lowerMsg.includes('product') || lowerMsg.includes('jacket') || lowerMsg.includes('coat') || lowerMsg.includes('wali') || lowerMsg.includes('wala') || getRequestedIndex(lowerMsg) !== null) {
-                    activeIntent = 'add_to_cart';
-                }
+            } else if (/\b(add|put|buy|purchase)\b/i.test(lowerMsg) || lowerMsg.includes('get this') || lowerMsg.includes('take this') || lowerMsg.includes('le leta') || lowerMsg.includes('one more') || lowerMsg.includes('another product') || lowerMsg.includes('add another') || lowerMsg.includes('ek aur')) {
+                activeIntent = 'add_to_cart';
             }
             if (!['add_to_cart', 'wishlist_add', 'wishlist_remove'].includes(activeIntent)) {
                 // Out-of-scope check
@@ -497,6 +497,11 @@ router.post('/message', async (req, res) => {
                 } else {
                     responseData.message = "I couldn't find the item to save to your wishlist.";
                 }
+                break;
+            case 'clear_cart':
+                responseData.actions.push('clear_cart');
+                responseData.data = { type: 'clear_cart_action' };
+                responseData.message = "I have cleared all items from your bag.";
                 break;
             case 'remove_from_cart':
                 if (context?.cartItems?.length > 0) {

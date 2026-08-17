@@ -283,6 +283,13 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           if (action === 'remove_from_cart' && onRemoveFromCart && data.data?.productId) {
             onRemoveFromCart(data.data.productId);
           }
+          if (action === 'clear_cart') {
+            if (onClearCart) {
+              onClearCart();
+            } else if (onRemoveFromCart && cartItems.length > 0) {
+              cartItems.forEach(item => onRemoveFromCart(item.id || item._id));
+            }
+          }
           if (action === 'wishlist_add' && onToggleFav && data.data?.product) {
             onToggleFav(data.data.product._id || data.data.product.id);
             triggerActionFeedback("Item saved to Wishlist!");

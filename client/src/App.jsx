@@ -484,6 +484,7 @@ export default function App() {
         onOrderPlaced={handleOrderPlaced}
         onAddToCart={handleAddToCart}
         onRemoveFromCart={handleRemoveItem}
+        onClearCart={() => setActiveCartItems([])}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenCheckout={() => setIsCheckoutOpen(true)}
         onOpenTracking={handleOpenTrackingPage}
