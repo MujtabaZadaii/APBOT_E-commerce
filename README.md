@@ -1,62 +1,86 @@
-# 🛍️ SABLE & APBOT — FINAL SUBMISSION README
+<p align="center">
+  <img src="assets/readme/hero.svg" alt="SABLE ApBot Hero Banner" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://github.com/MujtabaZadaii/APBOT_E-commerce"><img src="https://img.shields.io/badge/GitHub-APBOT__E--commerce-101010?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo"></a>
+  <a href="https://colab.research.google.com/github/MujtabaZadaii/APBOT_E-commerce/blob/main/apbot/notebooks/ApBot_Training.ipynb"><img src="https://img.shields.io/badge/Google_Colab-Open_Notebook-F97316?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Google Colab"></a>
+  <a href="https://tensorflow.org"><img src="https://img.shields.io/badge/TensorFlow-2.15-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white" alt="TensorFlow"></a>
+  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node.js-v18%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"></a>
+  <a href="https://react.dev"><img src="https://img.shields.io/badge/React-v18-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React"></a>
+</p>
 
 ---
 
-## 📌 PROJECT OVERVIEW
-**SABLE** is a premier luxury fashion e-commerce web application featuring **ApBot** — a state-of-the-art multimodal AI shopping assistant. ApBot is powered by a custom **TensorFlow / Keras Deep Neural Network** (trained over 200 epochs), real-time **MongoDB** integration, **Voice Speech Dictation & Audio Read-Aloud (TTS)**, **Visual AI Photo Search**, and an interactive **AI Outfit Ensemble Builder**.
+## 📌 EXECUTIVE SUMMARY & PROJECT PROOF
+
+**SABLE Haute Couture** is an academic luxury e-commerce web application featuring **ApBot** — a 24/24 multimodal AI shopping concierge powered by a custom **TensorFlow/Keras Deep Learning Neural Network** (trained over 200 epochs).
+
+ApBot combines **Natural Language Processing (NLP)**, **Domain-Aware Typo Correction**, **NLTK Tokenization & Lemmatization**, and **Bag-of-Words Vectorization** with real-time **MongoDB** product queries.
 
 ---
 
-## 🏛️ SYSTEM ARCHITECTURE
+## 🏛️ SYSTEM ARCHITECTURE & DATA FLOW
+
+```text
+[ React 18 Frontend (Port 3000) ]
+            │
+            ▼ (HTTP POST /api/apbot/message)
+[ Node.js / Express Server (Port 5000) ] ── (JWT Verification / Auth / Admin Check)
+            │
+            ├───────────────────────────────────────────┐
+            ▼ (HTTP POST /api/apbot/predict)            ▼
+[ Python Flask AI Microservice (Port 5001) ]   [ MongoDB Database (Port 27017) ]
+  ├── DomainSpellCorrector (Typo Normalization)  ├── Products Collection
+  ├── NLTK Tokenizer & Lemmatizer                ├── Users Collection (JWT Roles)
+  ├── Bag-of-Words Vectorizer                    └── Orders Collection
+  └── Keras Model (chatbot_model.keras - 200 Epochs)
 ```
-[React Frontend (Port 3000)]
-         │
-         ▼ (HTTP POST /api/apbot/message)
-[Node.js Express Server (Port 5000)]
-         │
-         ├──────────────────────────┐
-         ▼ (HTTP POST /predict)     ▼
-[Python Flask AI Service (Port 5001)] [MongoDB Database (Port 27017)]
-  ├── NLTK Tokenizer & Lemmatizer      ├── Products
-  ├── Bag of Words Encoder             ├── Users
-  └── Keras Model (chatbot_model.keras)└── Orders
-```
 
 ---
 
-## 🌟 CORE FEATURES
-- **🧠 200 Epochs Deep Learning NLP Model**: Intent classification across 40+ intent tags with >95% accuracy.
-- **🛍️ Live MongoDB Integration**: Zero hallucinated data — retrieves actual product specs, materials (280gsm cotton), sizes, prices, and stock.
-- **🎨 AI Outfit Builder ("Complete The Look")**: 3-piece curated ensemble generator with single-click bag addition.
-- **📏 AI Size & Fit Recommendation**: Height/weight calculator & interactive in-chat size form.
-- **📸 Visual AI Photo Search**: Plus (`+`) button photo scanner against inventory.
-- **🎙️ Real-Time Voice Mic & Audio TTS**: Speech-to-text live stream dictation + text-to-speech voice read-aloud toggle.
-- **📦 10-Minute Dynamic Order Tracking**: Live tracking timeline (`Order Placed ➔ Processing ➔ Shipped ➔ Delivered`).
-- **💎 VIP Discount Concierge**: Single-click promo code unlock (`SABLE-VIP15`).
-- **🛡️ Bulletproof Fallback**: Graceful boundary handling for unsupported queries and Python service fail-safe proxy.
+## 🌟 KEY TECHNICAL HIGHLIGHTS
+
+- **🧠 200-Epoch Deep Learning Model**: Custom TensorFlow/Keras neural network classifying across 40+ intent tags with >91% validation accuracy.
+- **🔤 Domain-Aware NLP Typo Correction**: `DomainSpellCorrector` normalizes user typos (`blak` ➔ `black`, `shrit` ➔ `shirt`, `whre` ➔ `where`) while preserving prices (`£200`), order IDs (`SBL-12345`), and brand terminology (`SABLE`).
+- **🛍️ Live MongoDB Catalog Queries**: Zero hallucinated products — retrieves real items with actual materials (e.g., 280gsm combed cotton), sizes, stock, and prices.
+- **✨ New Arrivals Engine**: Queries latest luxury releases sorted by `createdAt: -1` with `NEW ARRIVAL` badges.
+- **🛡️ Hardened Security**: `verifyToken` enforces JWT ownership for wishlist queries (`req.user.email`), and admin role verification protects order status mutations (`PUT /update-status`).
+- **💳 Sanitized Demo Checkout**: Complete demo checkout workflow with zero collection or storage of raw card numbers, CVV, or expiry dates.
 
 ---
 
 ## 🎓 ACADEMIC SCOPE & DEMONSTRATION DISCLOSURE
-This project is primarily an academic AI/ML research demonstration focused on NLP intent classification, dialogue management, and custom TensorFlow/Keras + NLTK model architecture:
-- **Payment & Checkout**: Mock/demo checkout flow (no real payment gateway or card processing). No raw card numbers or sensitive financial data are collected.
-- **Visual Search**: Filename & keyword-assisted catalog matching demonstration.
-- **Order Tracking**: Local time-based status simulation (no live courier integration).
+
+This repository is designed as an **Academic AI/ML SRS Demonstration**:
+- **Payment & Checkout**: Mock/demo checkout flow (no real payment gateway processing).
+- **Visual Search**: Catalog filename & keyword-assisted matching demonstration.
+- **Order Tracking**: Local time-based status simulation (`Order Placed ➔ Processing ➔ Shipped ➔ Delivered`).
 - **Size Recommendation**: Heuristic body-measurement mapping calculator.
 - **Outfit Selection**: Rule-based ensemble recommendation engine.
-- **Enterprise Integrations**: Full payment gateways, real-time inventory management, courier APIs, and production e-commerce infrastructure are outside the core AI/ML SRS scope.
 
 ---
 
-## ⚙️ SYSTEM REQUIREMENTS & PREREQUISITES
-- **Node.js**: `v18.0.0` or `v20.0.0+`
-- **Python**: `3.10+`
-- **MongoDB**: Installed locally on `mongodb://localhost:27017` or Atlas URI
-- **Git**: Installed
+## 🧪 COMPREHENSIVE EVALUATION & TESTING SUITE
+
+The repository includes a multi-tiered evaluation and testing suite:
+
+### 1. NLP Typo Correction Unit Test Suite (`python apbot/test_spelling.py`)
+- **Executable Scenarios**: 16
+- **Test Result**: **`16 / 16 PASSED`**
+- **Command**: `python apbot/test_spelling.py`
+
+### 2. Automated TC-13 Python Service Fallback Test (`node server/test_tc13_fallback.js`)
+- **Executable Scenarios**: 1 (Python AI Microservice Fallback Recovery)
+- **Test Result**: **`PASS`** (HTTP `200 OK` fallback response verified when Flask API is offline)
+- **Command**: `npm run test:tc13` / `node server/test_tc13_fallback.js`
+
+### 3. Documented Conversational Matrix (`submission/Test_Cases.md`)
+- **Documented Scenarios**: 24 Functional & Conversational Scenarios (Greetings, product filtering, context indexing, wishlist JWT ownership, order status, and boundary fallbacks).
 
 ---
 
-## 🚀 INSTALLATION & SETUP INSTRUCTIONS
+## ⚡ QUICK START & RUNNING LOCALLY
 
 ### 1. Clone Repository
 ```bash
@@ -64,23 +88,9 @@ git clone https://github.com/MujtabaZadaii/APBOT_E-commerce.git
 cd APBOT_E-commerce
 ```
 
-### 2. Node.js Backend & Frontend Setup
+### 2. Python Flask AI Microservice (Port 5001)
 ```bash
-# Install root & server dependencies
-npm install
-
-# Install client dependencies
-cd client
-npm install
-cd ..
-```
-
-### 3. Python Virtual Environment & ML Setup
-```bash
-# Navigate to apbot directory
 cd apbot
-
-# Create and activate virtual environment
 python -m venv venv
 
 # Windows Activation:
@@ -89,86 +99,39 @@ python -m venv venv
 # macOS/Linux Activation:
 source venv/bin/activate
 
-# Install Python ML requirements
 pip install -r requirements.txt
-cd ..
+python app.py
 ```
 
-### 4. Train TensorFlow Model
+### 3. Node.js Express Backend Server (Port 5000)
 ```bash
-python apbot/train.py
-```
-*Output: Model saved to `apbot/model/chatbot_model.keras` over 200 epochs.*
-
-### 5. Seed MongoDB Database
-```bash
-node server/seed.js
-```
-*Output: Products seeded into local MongoDB database `sable`.*
-
----
-
-## 🏃 RUNNING THE APPLICATION
-
-Start the 3 microservices in 3 separate terminal windows:
-
-#### Terminal 1: Python Flask AI Service (Port 5001)
-```bash
-python apbot/app.py
+# Open a new terminal tab
+cd server
+npm install
+node server.js
 ```
 
-#### Terminal 2: Node.js Express Backend (Port 5000)
+### 4. Vite React Frontend Client (Port 3000)
 ```bash
-node server/server.js
-```
-
-#### Terminal 3: Vite React Frontend (Port 3000)
-```bash
-npm --prefix client run dev
-```
-
-Open browser at `http://localhost:3000` to interact with SABLE & ApBot!
-
----
-
-## 🧪 TESTING & VERIFICATION
-Run the automated conversational test suite against the live services:
-```bash
-node scratch/test_conversations.js
+# Open a new terminal tab
+cd client
+npm install
+npm run dev
 ```
 
 ---
 
-## 📂 PROJECT STRUCTURE
-```text
-.
-├── apbot/                      # Python Flask AI & ML Microservice
-│   ├── app.py                  # Flask REST API (Port 5001)
-│   ├── train.py                # TensorFlow/Keras Model Trainer (200 Epochs)
-│   ├── chatbot/                # NLTK Tokenizer & Predictor
-│   ├── data/intents.json       # Dataset with 40+ intent classes
-│   └── model/                  # chatbot_model.keras & pickled vocabulary
-├── client/                     # Vite React Frontend App
-│   ├── src/components/ApBot.jsx# ApBot Interface & Voice/Visual UI
-│   └── src/App.jsx             # Main Application Routing & State
-├── server/                     # Node.js Express Backend
-│   ├── server.js               # Express Server Port 5000
-│   ├── routes/apbotRoutes.js   # Intent Resolver & MongoDB Query Engine
-│   └── models/                 # Mongoose Product, User, Order Schemas
-├── submission/                 # Academic Submission Documentation Folder
-│   ├── Project_Report.md
-│   ├── Test_Cases.md
-│   ├── System_Architecture.md
-│   ├── ApBot_Dialog_Flow.md
-│   ├── README.md
-│   └── Assumptions.md
-├── LICENSE                     # MIT Open Source License
-└── README.md                   # Root Project README
-```
+## ☁️ GOOGLE COLAB NOTEBOOK ACCESS
+
+Run and retrain the model directly in Google Colab with single-click GitHub synchronization:
+- **Jupyter Notebook File**: [`apbot/notebooks/ApBot_Training.ipynb`](apbot/notebooks/ApBot_Training.ipynb)
+- **Direct Colab Link**: [Open in Google Colab](https://colab.research.google.com/github/MujtabaZadaii/APBOT_E-commerce/blob/main/apbot/notebooks/ApBot_Training.ipynb)
 
 ---
 
-## 🔗 GITHUB INFORMATION
-- **Repository URL**: [https://github.com/MujtabaZadaii/APBOT_E-commerce](https://github.com/MujtabaZadaii/APBOT_E-commerce)
-- **Author**: Mujtaba Zadaii
-- **License**: MIT License
+## 📄 SUBMISSION DOCUMENTATION PACK
+
+- **Implementation Audit**: [`submission/doc/final_documentation/IMPLEMENTATION_AUDIT.md`](submission/doc/final_documentation/IMPLEMENTATION_AUDIT.md)
+- **SRS Traceability Matrix**: [`submission/doc/final_documentation/SRS_TRACEABILITY_MATRIX.md`](submission/doc/final_documentation/SRS_TRACEABILITY_MATRIX.md)
+- **Complete Master Report**: [`submission/doc/final_documentation/APBOT_COMPLETE_PROJECT_DOCUMENTATION.md`](submission/doc/final_documentation/APBOT_COMPLETE_PROJECT_DOCUMENTATION.md)
+- **Dialog Flow Specification**: [`submission/ApBot_Dialog_Flow.md`](submission/ApBot_Dialog_Flow.md)

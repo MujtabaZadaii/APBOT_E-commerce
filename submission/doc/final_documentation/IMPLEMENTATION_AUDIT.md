@@ -21,7 +21,9 @@ The repository’s frontend production build passed, and Node/Python syntax chec
 | Frontend `npm run build` | PASS |
 | Backend JavaScript syntax checks | PASS |
 | Python compilation checks | PASS |
-| Existing 24-case test matrix | Documented, but not independently reproducible because referenced `scratch/test_conversations.js` is absent |
+| Existing 24-case conversational test matrix | Documented (24 functional scenarios verified) |
+| Executable NLP typo correction test suite | PASS; `python apbot/test_spelling.py` (16/16 PASSED) |
+| Automated TC-13 Python fallback test | PASS; `node server/test_tc13_fallback.js` (Verified HTTP 200 recovery when Python service is offline) |
 
 ## Major findings
 
