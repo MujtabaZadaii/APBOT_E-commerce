@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import Product from '../models/Product.js';
 import Order from '../models/Order.js';
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'sable_super_secret_key_123';
+const JWT_SECRET = process.env.JWT_SECRET || 'dev_only_jwt_secret_change_in_prod';
 const APBOT_API_URL = process.env.APBOT_API_URL || 'http://localhost:5001/api/apbot/predict';
 function getRequestedIndex(text) {
     if (!text) return null;

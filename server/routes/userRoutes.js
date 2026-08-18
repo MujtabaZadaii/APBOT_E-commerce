@@ -19,15 +19,10 @@ router.post('/address', verifyToken, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-router.get('/wishlist', optionalToken, async (req, res) => {
+router.get('/wishlist', verifyToken, async (req, res) => {
   try {
-    const { email } = req.query;
-    const targetEmail = req.user ? req.user.email : (email ? email.toLowerCase().trim() : null);
-    if (!targetEmail) return res.status(400).json({ message: 'Email required' });
-    if (req.user && email && req.user.email.toLowerCase().trim() !== email.toLowerCase().trim()) {
-      return res.status(403).json({ message: 'Unauthorized access to user wishlist' });
-    }
-    const user = await User.findOne({ email: targetEmail });
+    const userEmail = req.user.email.toLowerCase().trim();
+    const user = await User.findOne({ email: userEmail });
     res.json({ wishlist: user?.wishlist || [] });
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -37,6 +37,17 @@
 
 ---
 
+## 🎓 ACADEMIC SCOPE & DEMONSTRATION DISCLOSURE
+This project is primarily an academic AI/ML research demonstration focused on NLP intent classification, dialogue management, and custom TensorFlow/Keras + NLTK model architecture:
+- **Payment & Checkout**: Mock/demo checkout flow (no real payment gateway or card processing). No raw card numbers or sensitive financial data are collected.
+- **Visual Search**: Filename & keyword-assisted catalog matching demonstration.
+- **Order Tracking**: Local time-based status simulation (no live courier integration).
+- **Size Recommendation**: Heuristic body-measurement mapping calculator.
+- **Outfit Selection**: Rule-based ensemble recommendation engine.
+- **Enterprise Integrations**: Full payment gateways, real-time inventory management, courier APIs, and production e-commerce infrastructure are outside the core AI/ML SRS scope.
+
+---
+
 ## ⚙️ SYSTEM REQUIREMENTS & PREREQUISITES
 - **Node.js**: `v18.0.0` or `v20.0.0+`
 - **Python**: `3.10+`

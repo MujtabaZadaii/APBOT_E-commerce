@@ -56,8 +56,11 @@ router.get('/track/:code', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-router.put('/update-status', async (req, res) => {
+router.put('/update-status', verifyToken, async (req, res) => {
   try {
+    if (req.user?.role !== 'admin') {
+      return res.status(403).json({ message: 'Forbidden: Admin access required to update order status' });
+    }
     const { orderId, trackingStatus } = req.body;
     if (!orderId || !trackingStatus) {
       return res.status(400).json({ message: 'orderId and trackingStatus required' });
@@ -67,6 +70,9 @@ router.put('/update-status', async (req, res) => {
       { trackingStatus },
       { new: true }
     );
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
     res.json({ message: 'Status updated successfully', order });
   } catch (err) {
     res.status(500).json({ message: err.message });

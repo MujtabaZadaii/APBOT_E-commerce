@@ -7,7 +7,7 @@ const INITIAL_MESSAGES = [
     content: "Welcome to SABLE Haute Couture. I am ApBot, your 24/7 personal AI Concierge. How may I assist you with our luxury collection, order tracking, sizing, or checkout today?"
   }
 ];
-const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onOpenCart, onOpenCheckout, onOpenTracking, onOrderPlaced, favs = {}, onToggleFav, onOpenWishlist, onOpenAuth, onSignOut, onOpenProfile, onNavigate, onOpenSearch }) => {
+const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onClearCart, onOpenCart, onOpenCheckout, onOpenTracking, onOrderPlaced, favs = {}, onToggleFav, onOpenWishlist, onOpenAuth, onSignOut, onOpenProfile, onOpenOrders, onNavigate, onOpenSearch }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState(() => {
     try {
@@ -604,18 +604,13 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onO
           className="apbot-inline-form" 
           onSubmit={(e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
-            const cardVal = formData.get('card') || '4242';
-            const paymentStr = `Card ending in ${cardVal.slice(-4)}`;
-            handlePaymentSubmit(paymentStr);
+            handlePaymentSubmit("Demo Payment (Card ending in 4242)");
           }}
         >
-          <input name="card" placeholder="Card Number" required minLength="16" maxLength="16" />
-          <div style={{display:'flex', gap:'8px'}}>
-            <input name="expiry" placeholder="MM/YY" required />
-            <input name="cvv" placeholder="CVV" required />
-          </div>
-          <button type="submit" className="apbot-submit-btn">Place Order</button>
+          <p style={{ fontSize: '11px', color: '#666', margin: '0 0 8px 0', lineHeight: 1.4 }}>
+            Demo Checkout Flow — No real card processing or sensitive data required.
+          </p>
+          <button type="submit" className="apbot-submit-btn" style={{ width: '100%' }}>Confirm Demo Order &rarr;</button>
         </form>
       );
     }

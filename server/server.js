@@ -29,8 +29,7 @@ connectDB().then(() => {
     console.log(`SABLE backend server listening on port ${PORT}`);
   });
 }).catch(err => {
-  console.log(`Running in disconnected mode: ${err.message}`);
-  app.listen(PORT, () => {
-    console.log(`SABLE backend server listening on port ${PORT}`);
-  });
+  console.error(`MongoDB Connection Error: ${err.message}`);
+  console.error('Failed to start server. MongoDB must be running on mongodb://localhost:27017/sable');
+  process.exit(1);
 });

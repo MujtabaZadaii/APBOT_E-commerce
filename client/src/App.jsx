@@ -161,7 +161,11 @@ export default function App() {
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem('sable_user', JSON.stringify(currentUser));
-      fetch(`http://localhost:5000/api/user/wishlist?email=${encodeURIComponent(currentUser.email)}`)
+      const headers = {};
+      if (currentUser.token) {
+        headers['Authorization'] = `Bearer ${currentUser.token}`;
+      }
+      fetch('http://localhost:5000/api/user/wishlist', { headers })
         .then(res => res.json())
         .then(data => {
           if (data.wishlist && Array.isArray(data.wishlist)) {
@@ -211,6 +215,16 @@ export default function App() {
     : guestCart;
   const totalBagCount = activeCartItems.reduce((acc, item) => acc + item.quantity, 0);
   const favCount = Object.keys(favs).filter((id) => favs[id]).length;
+  const handleClearActiveCart = () => {
+    if (currentUser) {
+      setUserCarts((prev) => ({
+        ...prev,
+        [currentUser.email]: []
+      }));
+    } else {
+      setGuestCart([]);
+    }
+  };
   const handleLoginSuccess = (user) => {
     setCurrentUser(user);
     localStorage.setItem('sable_user', JSON.stringify(user));
@@ -284,10 +298,14 @@ export default function App() {
       [id]: !prev[id]
     }));
     if (currentUser) {
+      const headers = { 'Content-Type': 'application/json' };
+      if (currentUser.token) {
+        headers['Authorization'] = `Bearer ${currentUser.token}`;
+      }
       fetch('http://localhost:5000/api/user/wishlist/toggle', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: currentUser.email, productId: id })
+        headers,
+        body: JSON.stringify({ productId: id })
       }).catch(err => console.error("Failed to sync wishlist to DB", err));
     }
   };
@@ -484,7 +502,7 @@ export default function App() {
         onOrderPlaced={handleOrderPlaced}
         onAddToCart={handleAddToCart}
         onRemoveFromCart={handleRemoveItem}
-        onClearCart={() => setActiveCartItems([])}
+        onClearCart={handleClearActiveCart}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenCheckout={() => setIsCheckoutOpen(true)}
         onOpenTracking={handleOpenTrackingPage}

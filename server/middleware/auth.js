@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-const JWT_SECRET = process.env.JWT_SECRET || 'sable_super_secret_key_123';
+const JWT_SECRET = process.env.JWT_SECRET || 'dev_only_jwt_secret_change_in_prod';
 export const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
