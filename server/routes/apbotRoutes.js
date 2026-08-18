@@ -66,16 +66,19 @@ router.post('/message', async (req, res) => {
         } catch (fetchErr) {
             console.warn("Python AI Service offline, falling back to Node NLP engine.");
         }
-        const { intent = 'unknown', confidence = 0, message: botMessage = '', context: updatedPythonContext } = aiData;
+        const { intent = 'unknown', confidence = 0, message: botMessage = '', correctedMessage = message, context: updatedPythonContext } = aiData;
         let responseData = {
             intent,
             confidence,
             message: botMessage,
+            originalMessage: message,
+            correctedMessage: correctedMessage || message,
             data: null,
             actions: [],
             context: updatedPythonContext || context || {}
         };
-        const lowerMsg = message.toLowerCase();
+        const effectiveMessage = correctedMessage || message;
+        const lowerMsg = effectiveMessage.toLowerCase();
         const priceMatch = lowerMsg.match(/under\s*£?(\d+)/) || lowerMsg.match(/less than\s*£?(\d+)/) || lowerMsg.match(/below\s*£?(\d+)/) || lowerMsg.match(/within\s*£?(\d+)/);
         if (priceMatch) {
             responseData.context.priceFilter = parseInt(priceMatch[1]);

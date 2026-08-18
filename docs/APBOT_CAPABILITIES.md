@@ -38,6 +38,18 @@ Users can check the status of their purchases seamlessly through the chat.
 
 ## 6. 💬 Conversational Small Talk
 ApBot is designed with a luxury, polite persona.
+
+## 7. 🔤 Domain-Aware Lightweight NLP Text & Typo Correction
+ApBot features a dedicated, high-speed Domain-Aware Text Correction layer prior to vectorization & classification:
+- **Why Added**: Enables natural fault-tolerant dialogue when users make spelling typos (e.g. `blak`, `jaket`, `shrit`, `whre`).
+- **Pipeline Position**: `User Raw Message ➔ Domain Typo Normalization ➔ Tokenization ➔ Lemmatization ➔ Bag of Words ➔ Keras Classifier`.
+- **Protection**: Numbers, prices (`£200`), order IDs (`SBL-12345`), emails, and valid brand terms (`SABLE`, `ApBot`) are strictly protected from modification.
+- **Confidence Threshold**: High confidence (0.80 cutoff) matching against fashion domain vocabulary ensures zero unintended word alterations.
+- **Example Inputs & Outputs**:
+  - `show me blak jacket` ➔ `show me black jacket`
+  - `i want a red shrit` ➔ `i want a red shirt`
+  - `show me men jackt under 200` ➔ `show me men jacket under 200` (preserves `200`)
+  - `whre is my order SBL-12345` ➔ `where is my order SBL-12345` (preserves `SBL-12345`)
 - **Example Prompts:**
   - *"Hi / Hello"* → Greeted with a personalized welcome message.
   - *"Thank you"* → Responds gracefully.

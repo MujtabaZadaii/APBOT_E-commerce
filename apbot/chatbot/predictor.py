@@ -30,14 +30,22 @@ class ApBotPredictor:
             print(f"Warning: Model or data files not found at {full_model_path}. Please train the model first.")
     def predict_intent(self, sentence):
         if self.model is None:
-            return {"intent": "unknown", "confidence": 0.0, "message": "Model is not trained yet."}
-        sentence_words = tokenize(sentence)
+            return {"intent": "unknown", "confidence": 0.0, "message": "Model is not trained yet.", "originalMessage": sentence, "correctedMessage": sentence}
+        from chatbot.nlp import correct_sentence
+        corrected_text, _ = correct_sentence(sentence)
+        sentence_words = tokenize(corrected_text)
         bow = bag_of_words(sentence_words, self.words)
         res = self.model.predict(np.array([bow]))[0]
         ERROR_THRESHOLD = 0.5
         results = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
         if not results:
-            return {"intent": "unknown", "confidence": max(res) if len(res) > 0 else 0.0, "message": "I'm not entirely sure how to help with that. Could you try rephrasing?"}
+            return {
+                "intent": "unknown",
+                "confidence": max(res) if len(res) > 0 else 0.0,
+                "message": "I'm not entirely sure how to help with that. Could you try rephrasing?",
+                "originalMessage": sentence,
+                "correctedMessage": corrected_text
+            }
         results.sort(key=lambda x: x[1], reverse=True)
         intent_tag = self.classes[results[0][0]]
         confidence = float(results[0][1])
@@ -50,5 +58,7 @@ class ApBotPredictor:
         return {
             "intent": intent_tag,
             "confidence": confidence,
-            "message": response_text
+            "message": response_text,
+            "originalMessage": sentence,
+            "correctedMessage": corrected_text
         }

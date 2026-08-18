@@ -1,923 +1,366 @@
-# FINAL IMPLEMENTATION — SABLE + ApBot
+# ApBot Text Correction & NLP Improvement — Local Project Task
 
-You have already created the implementation plan, architecture, README, and SRS compliance matrix for SABLE + ApBot.
+You are working directly on my **local ApBot E-Commerce project**.
 
-Now STOP planning and **perform the actual implementation and verification**.
+I am the **project owner and authorized developer**. You have permission to inspect, modify, create, and test files inside this local project.
 
-Your objective is to finish the project completely without breaking any existing SABLE e-commerce functionality.
+## Project Goal
+
+Improve the existing ApBot NLP pipeline so that when a user makes spelling mistakes, typos, or minor grammatical mistakes, the system can understand the intended meaning and produce the correct response.
+
+### Examples
+
+```text
+User: show me blak jacket
+Corrected: show me black jacket
+
+User: i want a red shrit
+Corrected: i want a red shirt
+
+User: show me men jackt under 200
+Corrected: show me men jacket under 200
+
+User: whre is my order
+Corrected: where is my order
+```
+
+The corrected text should then continue through the existing ApBot intent-classification pipeline.
 
 ---
 
-## 1. FIRST — AUDIT THE CURRENT IMPLEMENTATION
+# IMPORTANT: First Inspect Everything
 
-Before changing anything, inspect the actual repository.
+Before changing anything:
 
-Verify:
+1. Inspect the complete project structure.
+2. Inspect the existing ApBot implementation.
+3. Inspect:
+   - `apbot/`
+   - `apbot/data/intents.json`
+   - `apbot/train.py`
+   - `apbot/chatbot/`
+   - Flask API
+   - Express ApBot routes
+   - React `ApBot.jsx`
+   - relevant package/requirements files
+   - existing model files
+   - existing documentation
 
-- `client/`
-- `server/`
-- `apbot/`
-- MongoDB models
-- authentication
-- sessions
-- product APIs
-- cart APIs
-- wishlist
-- checkout
-- orders
-- tracking
-- existing UI
-- ApBot files
-- current environment configuration
-- current API routes
-
-Do NOT trust the README or SRS compliance matrix blindly.
-
-The actual source code and runtime behavior are the source of truth.
-
-Create an internal checklist of:
-
-- Already working
-- Partially working
-- Missing
-- Broken
-- Security issues
-- SRS gaps
-
-Then implement only what is necessary.
+4. Understand the current NLP flow.
+5. Do NOT replace the existing TensorFlow/Keras intent-classification model.
+6. Do NOT remove existing functionality.
+7. Do NOT redesign the application.
+8. Do NOT add unnecessary large LLMs.
 
 ---
 
-# 2. DO NOT BREAK SABLE
+# Recommended Approach
 
-This is NON-NEGOTIABLE.
+Use a **lightweight spelling/text-correction layer** before the existing intent classifier.
 
-Do not:
+Prefer:
 
-- rebuild the existing e-commerce system
-- replace working components unnecessarily
-- remove existing features
-- change the existing luxury design without reason
-- break authentication
-- break cart
-- break checkout
-- break orders
-- break tracking
-- break wishlist
-- break search
+### Option 1 — SymSpell
 
-ApBot must be an ADDITION to SABLE.
+Use SymSpell or another lightweight spell-correction library if it can reliably work with the existing project.
 
-After every major change, verify that existing functionality still works.
-
----
-
-# 3. VERIFY THE PYTHON AI SERVICE
-
-Make sure:
+The architecture should become:
 
 ```text
-apbot/
-├── app.py
-├── train.py
-├── requirements.txt
-├── data/
-│   └── intents.json
-├── chatbot/
-│   ├── nlp.py
-│   └── predictor.py
-├── model/
-└── notebooks/
-    └── ApBot_Training.ipynb
-```
-
-actually works.
-
-Verify:
-
-- Python environment
-- dependencies
-- NLTK resources
-- TensorFlow
-- Keras
-- model loading
-- vocabulary loading
-- class loading
-- prediction
-- confidence score
-- Flask API
-
-Test:
-
-```text
-POST /api/apbot/predict
-```
-
-with real messages.
-
----
-
-# 4. VERIFY THE ML PIPELINE
-
-The SRS requirements MUST actually be implemented.
-
-Verify:
-
-### NLP
-
-- tokenization
-- lemmatization
-- text preprocessing
-
-### Vectorization
-
-- Bag of Words
-
-### Machine Learning
-
-- TensorFlow
-- Keras
-- neural-network classifier
-
-### Dataset
-
-- `intents.json`
-
-### Training
-
-- training script
-- Jupyter notebook
-- evaluation
-- saved model
-
-Do not replace the required SRS ML pipeline with an unrelated LLM.
-
----
-
-# 5. AUDIT INTENTS.JSON
-
-Make sure the dataset is genuinely comprehensive.
-
-At minimum verify:
-
-### General
-
-- greeting
-- goodbye
-- thanks
-- bot_identity
-- help
-
-### Products
-
-- product_search
-- product_information
-- product_price
-- product_availability
-- product_recommendation
-- similar_products
-- category_search
-- offers
-
-### Cart
-
-- add_to_cart
-- remove_from_cart
-- update_cart
-- view_cart
-
-### Wishlist
-
-- wishlist_add
-- wishlist_remove
-- view_wishlist
-
-### Checkout
-
-- checkout
-- checkout_help
-- payment_help
-- delivery_address
-
-### Orders
-
-- order_tracking
-- order_status
-- delivery_date
-- previous_orders
-- order_details
-
-### Support
-
-- faq
-- complaint
-- return_product
-- contact_support
-
-### Fallback
-
-- unknown
-
-Each intent must contain enough realistic language variations for useful classification.
-
-Avoid duplicate or meaningless training examples.
-
----
-
-# 6. FIX CONVERSATION CONTEXT
-
-This is a HIGH PRIORITY requirement.
-
-The bot must understand previous conversation.
-
-Test this exact flow:
-
-```text
-User:
-Show me black jackets.
-
-Bot:
-returns black jackets.
-
-User:
-Only under £200.
-
-Bot:
-filters the previous search.
-
-User:
-Show me the first one.
-
-Bot:
-understands the first previous product.
-
-User:
-Add it to my bag.
-
-Bot:
-adds that exact product to the authenticated user's cart.
-```
-
-The bot must maintain a lightweight conversation context.
-
-Do NOT rely only on `userId`.
-
-Context should include relevant information such as:
-
-- previous intent
-- previous products
-- selected product
-- active category
-- price constraint
-- colour constraint
-- tracking context where appropriate
-
-Keep this deterministic and lightweight.
-
----
-
-# 7. SECURITY AUDIT
-
-This is CRITICAL.
-
-Never trust:
-
-```text
-userId
-```
-
-sent directly from the frontend.
-
-The backend must determine the authenticated user from the actual authentication/session mechanism already used by SABLE.
-
-Verify authorization for:
-
-- cart
-- wishlist
-- profile
-- order history
-- order tracking
-- checkout
-
-A user must NEVER be able to use ApBot to retrieve another user's private information.
-
-Test unauthorized requests.
-
----
-
-# 8. PRODUCT SEARCH
-
-ApBot must use the REAL SABLE MongoDB product catalogue.
-
-Test:
-
-```text
-Show me black jackets.
-```
-
-```text
-Show me jackets under £200.
-```
-
-```text
-Show me black outerwear under £200.
-```
-
-```text
-Do you have this in stock?
-```
-
-Return real products.
-
-Do NOT hardcode fake products.
-
-Render product cards in the chat containing:
-
-- image
-- name
-- price
-- availability
-- View Product
-- Add to Bag
-
----
-
-# 9. PRODUCT RECOMMENDATION
-
-Improve recommendation logic beyond simple keyword matching where practical.
-
-Use available product information such as:
-
-- category
-- price
-- colour
-- availability
-- related products
-- previous selection/context
-
-Test:
-
-```text
-Show me something similar.
-```
-
-```text
-Something cheaper.
-```
-
-```text
-Something like this but black.
-```
-
-```text
-I want something under £150.
-```
-
----
-
-# 10. CART ACTIONS
-
-ApBot must work with the EXISTING SABLE cart system.
-
-Test:
-
-```text
-Add this to my bag.
-```
-
-```text
-Add two of these.
-```
-
-```text
-Remove this from my bag.
-```
-
-```text
-What's in my bag?
-```
-
-```text
-How much is my bag?
-```
-
-The backend must use the authenticated user's existing cart.
-
-Do not create a second independent chatbot cart.
-
----
-
-# 11. WISHLIST
-
-If the existing wishlist is functional, integrate ApBot with it.
-
-Test:
-
-```text
-Add this to my wishlist.
-```
-
-```text
-Remove this from my wishlist.
-```
-
-```text
-Show my wishlist.
-```
-
-Reuse the existing wishlist system.
-
----
-
-# 12. CHECKOUT
-
-Reuse the existing `CheckoutModal.jsx` and existing checkout logic.
-
-ApBot should support:
-
-```text
-Take me to checkout.
-```
-
-```text
-I want to buy this.
-```
-
-```text
-Proceed to checkout.
-```
-
-The chatbot should trigger the existing checkout flow instead of implementing a duplicate checkout system.
-
-Do NOT expose sensitive payment information to the AI service.
-
----
-
-# 13. ORDER TRACKING
-
-Reuse the existing order/tracking system.
-
-Test:
-
-```text
-Track SBL-12345.
-```
-
-```text
-Where is my order?
-```
-
-```text
-When will my order arrive?
-```
-
-```text
-What is my latest order?
-```
-
-The assistant must retrieve real MongoDB-backed information.
-
-Never fabricate:
-
-- tracking IDs
-- delivery dates
-- order status
-- products
-- courier information
-
----
-
-# 14. PUBLIC TRACKING PAGE
-
-Keep the existing tracking page as a simple public tracking experience.
-
-Do NOT create a dashboard.
-
-The user should be able to:
-
-```text
-Enter Tracking ID
-        ↓
-Track
-        ↓
-Order details
-        ↓
-Delivery timeline
-        ↓
-Expected delivery
-```
-
-Verify it works independently of ApBot.
-
----
-
-# 15. APBOT UI
-
-Inspect the existing SABLE visual system and make ApBot look native to SABLE.
-
-It must feel:
-
-- luxury
-- editorial
-- minimal
-- premium
-- responsive
-- modern
-
-Avoid generic chatbot styling.
-
-The floating assistant should support:
-
-- open/close
-- message history
-- typing indicator
-- loading state
-- error state
-- retry
-- clear conversation
-- product cards
-- order cards
-- cart summaries
-- CTA buttons
-- mobile layout
-- keyboard accessibility
-
-Use existing SABLE typography, spacing, colors, borders, GSAP conventions, and design language.
-
----
-
-# 16. STRUCTURED CHAT RESPONSES
-
-Do not return only text.
-
-Where appropriate, return structured UI data.
-
-Examples:
-
-Product search:
-
-```text
-message
-+
-products[]
-```
-
-Cart:
-
-```text
-message
-+
-cart[]
-+
-subtotal
-+
-actions[]
-```
-
-Order:
-
-```text
-message
-+
-order
-+
-tracking
-+
-status
-```
-
-Checkout:
-
-```text
-message
-+
-action: open_checkout
-```
-
-The frontend should render the correct UI based on the response type.
-
----
-
-# 17. UNKNOWN / LOW CONFIDENCE
-
-Implement a safe confidence threshold.
-
-If confidence is too low:
-
-Do NOT guess.
-
-Return something such as:
-
-> I'm here to help with SABLE products, shopping, orders, and support. Could you rephrase that?
-
-Also handle:
-
-- product not found
-- order not found
-- invalid tracking ID
-- out of stock
-- unauthenticated action
-- backend failure
-- AI service unavailable
-
-Never expose stack traces or database errors.
-
----
-
-# 18. API ARCHITECTURE
-
-Maintain:
-
-```text
-React
- ↓
-Express
- ↓
-Python AI Service
- ↓
-Intent
- ↓
-Express Action Layer
- ↓
-Existing SABLE Services
- ↓
+User Message
+      ↓
+Text Normalization
+      ↓
+Spelling / Typo Correction
+      ↓
+Existing NLTK Processing
+      ↓
+Bag-of-Words
+      ↓
+Existing TensorFlow/Keras Model
+      ↓
+Intent Classification
+      ↓
+Existing Express Business Logic
+      ↓
 MongoDB
+      ↓
+ApBot Response
 ```
 
-Do NOT allow Python AI service to directly mutate MongoDB.
-
-Business actions should be controlled by the Express backend.
+Do NOT replace the current TensorFlow/Keras model.
 
 ---
 
-# 19. TESTING
+# Critical Requirement
 
-Create real tests.
+The correction layer must **NOT blindly change valid product names, fashion terms, colors, categories, or user-specific words**.
 
-At minimum test:
+For example:
 
-### ML
+```text
+black
+jacket
+shirt
+dress
+sable
+apbot
+gucci
+nike
+men
+women
+luxury
+checkout
+order
+tracking
+```
 
-- greeting
+should not be incorrectly modified.
+
+If possible, maintain a domain vocabulary containing:
+
+- product names
+- categories
+- colors
+- materials
+- sizes
+- fashion terminology
+- ApBot intents
+- important application terminology
+
+The correction system should prioritize this vocabulary.
+
+---
+
+# Confidence-Based Correction
+
+Do not modify every word automatically.
+
+Use confidence/distance thresholds.
+
+Example:
+
+```text
+blak → black
+```
+
+High confidence → correct.
+
+But:
+
+```text
+SABLE → sable
+```
+
+Do not modify if `SABLE` is a valid project/product/domain term.
+
+If correction confidence is low, keep the original user text.
+
+---
+
+# Preserve Meaning
+
+The correction system must preserve:
+
+- numbers
+- prices
+- currency
+- product IDs
+- order IDs
+- tracking IDs
+- email addresses
+- URLs
+- usernames
+- important proper nouns
+
+Example:
+
+```text
+show me blak jacket under £200
+```
+
+should become approximately:
+
+```text
+show me black jacket under £200
+```
+
+NOT:
+
+```text
+show me black jacket under £2
+```
+
+---
+
+# Integration
+
+Integrate the correction layer at the correct point in the existing backend/AI pipeline.
+
+Prefer correcting the message before intent classification:
+
+```text
+raw_message
+    ↓
+correct_text()
+    ↓
+predict_intent(corrected_message)
+```
+
+Keep both values available:
+
+```text
+original_message
+corrected_message
+```
+
+This will make debugging easier.
+
+---
+
+# API Response
+
+If appropriate, expose the corrected text internally or in the API response for debugging.
+
+Example:
+
+```json
+{
+  "message": "show me blak jacket",
+  "correctedMessage": "show me black jacket",
+  "intent": "product_search"
+}
+```
+
+Do not unnecessarily expose implementation details to normal users.
+
+---
+
+# Do Not Break Existing Features
+
+After implementation verify that these still work:
+
 - product search
-- recommendation
-- cart intent
+- product recommendations
+- FAQs
 - order tracking
-- checkout
-- unknown intent
+- checkout flow
+- cart actions
+- wishlist
+- authentication
+- ApBot context
+- existing TensorFlow/Keras intent classification
+- MongoDB product queries
+- Flask API
+- Express API
+- React chatbot
 
-### Product
+---
 
-- keyword search
-- price filtering
-- category filtering
-- availability
+# Testing
 
-### Cart
+Create or update tests for at least these cases:
 
-- add
-- remove
-- quantity
-- view
-
-### Orders
-
-- valid tracking
-- invalid tracking
-- authenticated order history
-- unauthorized access
-
-### Context
+### Spelling
 
 ```text
-black jackets
-→ under £200
-→ first one
-→ add it
+blak → black
+jaket → jacket
+shrit → shirt
+dres → dress
 ```
 
-### UI
-
-- desktop
-- tablet
-- mobile
-- keyboard
-- error states
-- loading states
-
----
-
-# 20. RUN THE COMPLETE STACK
-
-Verify all three services together:
-
-### Express
-
-```bash
-cd server
-npm start
-```
-
-### React
-
-```bash
-cd client
-npm run dev
-```
-
-### ApBot
-
-```bash
-cd apbot
-venv\Scripts\activate
-python app.py
-```
-
-Verify there are no:
-
-- console errors
-- failed API requests
-- CORS problems
-- model loading errors
-- missing NLTK resources
-- broken imports
-- broken routes
-
----
-
-# 21. PRODUCTION BUILD
-
-Run:
-
-```bash
-cd client
-npm run build
-```
-
-The production build must succeed.
-
-Also verify the backend and Python service start cleanly.
-
----
-
-# 22. SRS COMPLIANCE AUDIT
-
-After implementation, compare the actual project against every SRS requirement.
-
-Update:
+### Sentence correction
 
 ```text
-docs/SRS_COMPLIANCE.md
+show me blak jacket
+i want a red shrit
+show me men jaket
 ```
 
-Do NOT mark something as implemented unless it has been verified.
+### Existing valid words
 
-For every requirement provide:
+Verify that valid product/domain terms are NOT changed.
 
-- Requirement
-- Implementation
-- File/component
-- Verification/test
-
----
-
-# 23. README
-
-Update README with accurate instructions.
-
-Include:
-
-- architecture
-- prerequisites
-- installation
-- Node server
-- React server
-- Python service
-- model training
-- notebook
-- environment variables
-- API
-- testing
-- demo flow
-- limitations
-- SRS compliance
-
-Do not document commands that do not actually work.
-
----
-
-# 24. DEMO FLOW
-
-The final demo MUST support:
+### Numbers and prices
 
 ```text
-Open SABLE
-↓
-Login
-↓
-Open ApBot
-↓
-"Show me black jackets under £200."
-↓
-Real product cards
-↓
-"Show me something similar."
-↓
-Recommendation
-↓
-"Add the first one to my bag."
-↓
-Real cart update
-↓
-"What's in my bag?"
-↓
-Cart summary
-↓
-"Take me to checkout."
-↓
-Existing checkout
-↓
-Place order
-↓
-Tracking ID generated
-↓
-Open public tracking page
-↓
-Track order
-↓
-Return to ApBot
-↓
-"Where is my order?"
-↓
-Real order status
+show me blak jacket under £200
 ```
 
-This entire flow must work without manual developer intervention.
+must preserve `£200`.
+
+### Order IDs
+
+Verify order/tracking identifiers remain unchanged.
+
+### Correct sentences
+
+```text
+show me black jackets
+```
+
+should remain effectively unchanged.
+
+### Unknown/low-confidence words
+
+Do not force an incorrect correction.
 
 ---
 
-# 25. FINAL QUALITY CHECK
+# Performance
 
-Before saying "complete", verify:
+Keep this lightweight.
 
-- Existing SABLE works.
-- Authentication works.
-- Products work.
-- Search works.
-- Cart works.
-- Wishlist works.
-- Checkout works.
-- Orders work.
-- Tracking works.
-- ApBot works.
-- ML model works.
-- NLTK works.
-- TensorFlow/Keras works.
-- REST API works.
-- Product search works.
-- Recommendations work.
-- Cart actions work.
-- Checkout action works.
-- Order tracking works.
-- Conversation context works.
-- Security works.
-- Mobile UI works.
-- Production build works.
-- Notebook works.
-- Tests work.
-- Documentation is accurate.
-- SRS compliance matrix is accurate.
+Do NOT install or introduce:
+
+- GPT
+- large LLMs
+- huge transformer models
+- external paid APIs
+
+unless absolutely necessary.
+
+The purpose is simply to improve the existing academic AI/ML chatbot.
 
 ---
 
-# FINAL INSTRUCTION
+# Documentation
 
-Do not stop after creating files.
+After implementation, update the project documentation to explain:
 
-Do not stop after compiling.
+1. Why spelling correction was added.
+2. Which library/model is being used.
+3. Where it sits in the NLP pipeline.
+4. How typo correction works.
+5. Confidence threshold.
+6. Domain vocabulary.
+7. Example inputs and corrected outputs.
+8. Testing results.
 
-Do not stop after the chatbot opens.
+Describe it accurately as a **lightweight NLP preprocessing/correction layer**, not as a generative AI model.
 
-**Actually test the complete user journey.**
+---
 
-If something is broken, diagnose it and fix it.
+# Final Verification
 
-If an existing SABLE feature breaks, restore it before continuing.
+After making changes:
 
-If an SRS requirement is missing, implement it.
+1. Run all relevant tests.
+2. Run Python syntax checks.
+3. Run backend checks.
+4. Run frontend build.
+5. Test the Flask AI service.
+6. Test the Express ApBot endpoint.
+7. Test the React chatbot.
+8. Verify existing functionality was not broken.
+9. Report every changed file.
+10. Report every dependency added.
+11. Report the exact correction pipeline.
+12. Clearly report any remaining issues.
 
-If a requirement cannot be implemented without changing an existing architecture, choose the smallest safe architectural change.
+Do not stop after editing files.
 
-Do not ask unnecessary questions when the repository already contains the answer.
+**Actually test the implementation and fix any errors you encounter.**
 
-Inspect first.
-
-Implement second.
-
-Test third.
-
-Fix fourth.
-
-Document last.
-
-Only report completion after the complete system has been verified.
+The final result should be production-quality for an academic AI/ML project while remaining lightweight and compatible with the existing ApBot architecture.
