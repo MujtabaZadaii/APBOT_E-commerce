@@ -1,56 +1,57 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="auto">
-  <defs>
-    <!-- Web Theme Color Tokens: --bone: #EFEDE8, --ink: #101010, --mid: #8A8781, --line: rgba(16,16,16,0.14) -->
-    <pattern id="boneGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#101010" stroke-opacity="0.05" stroke-width="1"/>
-    </pattern>
-  </defs>
+  <!-- Background Canvas: Deep Obsidian Velvet (#101010) -->
+  <rect width="1200" height="420" fill="#101010" rx="16"/>
 
-  <!-- Background Canvas: Website --bone (#EFEDE8) -->
-  <rect width="1200" height="420" fill="#EFEDE8" rx="16"/>
-  <rect width="1200" height="420" fill="url(#boneGrid)" rx="16"/>
+  <!-- Luxury Gold Inner Border Frame -->
+  <rect x="18" y="18" width="1164" height="384" fill="none" stroke="#C5A059" stroke-width="1.5" stroke-opacity="0.6" rx="12"/>
+  <rect x="26" y="26" width="1148" height="368" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.08" rx="10"/>
 
-  <!-- Outer Border Frame: --line (rgba(16,16,16,0.14)) -->
-  <rect x="20" y="20" width="1160" height="380" fill="none" stroke="#101010" stroke-opacity="0.14" stroke-width="1.5" rx="12"/>
-  <rect x="28" y="28" width="1144" height="364" fill="none" stroke="#8A8781" stroke-opacity="0.1" stroke-width="1" rx="10"/>
-
-  <!-- Top Badge / Header Tag -->
-  <g transform="translate(60, 58)">
-    <rect width="210" height="28" fill="#101010" rx="14"/>
-    <circle cx="16" cy="14" r="4" fill="#10B981"/>
-    <text x="32" y="18" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2">ACADEMIC AI/ML SRS</text>
+  <!-- Top Left Badge Tag -->
+  <g transform="translate(60, 55)">
+    <rect width="210" height="30" fill="#1A1A1A" stroke="#C5A059" stroke-width="1" rx="15"/>
+    <circle cx="16" cy="15" r="4.5" fill="#10B981"/>
+    <text x="32" y="19" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">ACADEMIC AI/ML SRS</text>
   </g>
 
-  <!-- Main Hero Title in Luxury Serif Typography -->
-  <text x="60" y="142" fill="#101010" font-family="'Times New Roman', Georgia, serif" font-size="54" font-weight="700" letter-spacing="6">S A B L E</text>
-  <text x="325" y="142" fill="#8A8781" font-family="Georgia, 'Times New Roman', serif" font-size="32" font-weight="400" letter-spacing="2">| ApBot AI Concierge</text>
+  <!-- Main Luxury Title: S A B L E | ApBot AI Concierge -->
+  <text x="60" y="145" fill="#EFEDE8" font-family="Georgia, 'Times New Roman', serif" font-size="56" font-weight="700" letter-spacing="8">S A B L E</text>
+  <text x="345" y="145" fill="#C5A059" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="300" letter-spacing="2">| ApBot AI Concierge</text>
 
-  <!-- Subtitle in Website Sans-Serif & --mid (#8A8781) Color -->
-  <text x="60" y="182" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="400" letter-spacing="0.3">
+  <!-- Subtitle Line -->
+  <text x="60" y="188" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="400" letter-spacing="0.5">
     200-Epoch TensorFlow/Keras Neural Network and Domain NLP Assistant for SABLE Haute Couture
   </text>
 
-  <!-- Key Technical Highlight Cards: --ink (#101010) Cards with --bone (#EFEDE8) Text -->
-  <g transform="translate(60, 230)">
-    <!-- Card 1 -->
-    <rect x="0" y="0" width="340" height="115" fill="#101010" rx="8"/>
-    <rect x="0" y="0" width="340" height="115" fill="none" stroke="#101010" stroke-opacity="0.14" stroke-width="1" rx="8"/>
-    <text x="20" y="32" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">TENSORFLOW AND KERAS MODEL</text>
-    <text x="20" y="62" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="700">91.58% Accuracy</text>
-    <text x="20" y="88" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">40+ Intent Tags • Bag of Words • Lemmatization</text>
+  <!-- Divider Gold Line -->
+  <line x1="60" y1="210" x2="1140" y2="210" stroke="#C5A059" stroke-opacity="0.3" stroke-width="1"/>
 
-    <!-- Card 2 -->
-    <rect x="370" y="0" width="340" height="115" fill="#101010" rx="8"/>
-    <rect x="370" y="0" width="340" height="115" fill="none" stroke="#101010" stroke-opacity="0.14" stroke-width="1" rx="8"/>
-    <text x="390" y="32" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">DOMAIN SPELL CORRECTOR</text>
-    <text x="390" y="62" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="700">16/16 Unit Tests Passed</text>
-    <text x="390" y="88" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">Normalizes typos • Preserves prices and IDs</text>
+  <!-- Technical Highlight Metrics Cards (3 Cards) -->
+  <g transform="translate(60, 235)">
+    <!-- Card 1: TensorFlow Model -->
+    <g transform="translate(0, 0)">
+      <rect width="340" height="120" fill="#181818" stroke="#282828" stroke-width="1" rx="10"/>
+      <rect width="340" height="120" fill="none" stroke="#C5A059" stroke-width="1" stroke-opacity="0.2" rx="10"/>
+      <text x="24" y="34" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">TENSORFLOW &amp; KERAS MODEL</text>
+      <text x="24" y="66" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">91.58% Validation Accuracy</text>
+      <text x="24" y="93" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">40+ Intent Tags • Bag of Words • Lemmatizer</text>
+    </g>
 
-    <!-- Card 3 -->
-    <rect x="740" y="0" width="340" height="115" fill="#101010" rx="8"/>
-    <rect x="740" y="0" width="340" height="115" fill="none" stroke="#101010" stroke-opacity="0.14" stroke-width="1" rx="8"/>
-    <text x="760" y="32" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">MERN AND FLASK STACK</text>
-    <text x="760" y="62" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="700">&lt; 150ms Latency</text>
-    <text x="760" y="88" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">MongoDB • Express • React • Flask Port 5001</text>
+    <!-- Card 2: NLP Typo Corrector -->
+    <g transform="translate(370, 0)">
+      <rect width="340" height="120" fill="#181818" stroke="#282828" stroke-width="1" rx="10"/>
+      <rect width="340" height="120" fill="none" stroke="#C5A059" stroke-width="1" stroke-opacity="0.2" rx="10"/>
+      <text x="24" y="34" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">DOMAIN SPELL CORRECTOR</text>
+      <text x="24" y="66" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">16/16 Unit Tests Passed</text>
+      <text x="24" y="93" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">Normalizes typos • Preserves prices &amp; IDs</text>
+    </g>
+
+    <!-- Card 3: Architecture Stack -->
+    <g transform="translate(740, 0)">
+      <rect width="340" height="120" fill="#181818" stroke="#282828" stroke-width="1" rx="10"/>
+      <rect width="340" height="120" fill="none" stroke="#C5A059" stroke-width="1" stroke-opacity="0.2" rx="10"/>
+      <text x="24" y="34" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">MERN + FLASK STACK</text>
+      <text x="24" y="66" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">&lt; 150ms Response Time</text>
+      <text x="24" y="93" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">MongoDB • Express • React • Flask Port 5001</text>
+    </g>
   </g>
 </svg>
