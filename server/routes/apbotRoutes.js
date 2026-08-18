@@ -149,8 +149,10 @@ router.post('/message', async (req, res) => {
                 activeIntent = 'add_to_cart';
             }
             if (!['add_to_cart', 'wishlist_add', 'wishlist_remove'].includes(activeIntent)) {
-                // Out-of-scope check
-                if (/\b(weather|president|bitcoin|python|letter|joke|2\+2|netflix|karachi|pakistan)\b/i.test(lowerMsg)) {
+                // High-priority explicit intent checks
+                if (lowerMsg.includes('new arrival') || lowerMsg.includes('new arrivals') || lowerMsg.includes('latest arrival') || lowerMsg.includes('latest collection') || lowerMsg.includes('newest') || lowerMsg.includes('new in') || lowerMsg.includes('fresh') || (lowerMsg.includes('new') && !lowerMsg.includes('york') && !lowerMsg.includes('jersey') && !lowerMsg.includes('delhi'))) {
+                    activeIntent = 'new_arrivals';
+                } else if (/\b(weather|president|bitcoin|python|letter|joke|2\+2|netflix|karachi|pakistan)\b/i.test(lowerMsg)) {
                     activeIntent = 'out_of_scope';
                 } else if (/\b(choose|choose for me|pick for me|mere liye|hisaab se|meri jagah|what should i buy|teeno me se|kaun sa)\b/i.test(lowerMsg)) {
                     activeIntent = 'curate_recommendation';
@@ -192,9 +194,6 @@ router.post('/message', async (req, res) => {
                     activeIntent = 'vip_discount';
                 } else if (lowerMsg.includes('photo') || lowerMsg.includes('image search') || lowerMsg.includes('visual search')) {
                     activeIntent = 'visual_search';
-                } else if (lowerMsg.includes('new arrival') || lowerMsg.includes('latest arrival') || lowerMsg.includes('trending') || (lowerMsg.includes('new') && !lowerMsg.includes('york') && !lowerMsg.includes('jersey') && !lowerMsg.includes('delhi'))) {
-                    activeIntent = 'product_search';
-                    responseData.message = "Here are our latest trending arrivals:";
                 } else if (lowerMsg.includes('checkout') || lowerMsg.includes('check out') || lowerMsg.includes('checkout karwa')) {
                     activeIntent = 'checkout';
                 } else if (lowerMsg.includes('account') || lowerMsg.includes('profile')) {
@@ -218,6 +217,42 @@ router.post('/message', async (req, res) => {
             return res.json(responseData);
         }
         switch (activeIntent) {
+            case 'new_arrivals': {
+                let andConditions = [];
+                if (responseData.context.priceFilter) {
+                    andConditions.push({ pr: { $lte: responseData.context.priceFilter } });
+                }
+                if (responseData.context.colorFilter) {
+                    const rawColor = responseData.context.colorFilter.toLowerCase();
+                    const cRegex = new RegExp(rawColor, 'i');
+                    andConditions.push({
+                        $or: [{ nm: cRegex }, { desc: cRegex }, { ct: cRegex }, { colour: cRegex }, { tags: cRegex }]
+                    });
+                }
+                let query = andConditions.length > 0 ? { $and: andConditions } : {};
+                let products = await Product.find(query).sort({ createdAt: -1, _id: -1 }).limit(6);
+                if (products.length === 0) {
+                    products = await Product.find({}).sort({ createdAt: -1, _id: -1 }).limit(6);
+                }
+                const mappedProducts = products.map(p => ({
+                    id: p._id.toString(),
+                    name: p.nm,
+                    price: p.pr,
+                    category: p.ct,
+                    badge: p.badge || 'NEW ARRIVAL',
+                    img: p.imgs && p.imgs.length > 0 ? p.imgs[0] : ''
+                }));
+                responseData.message = "Here are our newest & latest arrivals from the SABLE collection:";
+                responseData.data = {
+                    type: 'product_list',
+                    products: mappedProducts
+                };
+                responseData.context.lastProducts = mappedProducts.map(p => p.id);
+                if (mappedProducts.length > 0) {
+                    responseData.context.lastCategory = mappedProducts[0].category;
+                }
+                break;
+            }
             case 'product_search':
             case 'similar_products':
             case 'category_search':

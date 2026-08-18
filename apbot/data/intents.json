@@ -25,6 +25,27 @@
       "context_set": ""
     },
     {
+      "tag": "new_arrivals",
+      "patterns": [
+        "New Arrivals",
+        "show me new arrivals",
+        "what is new",
+        "latest collection",
+        "new in",
+        "newest items",
+        "show me latest products",
+        "nayi cheez",
+        "nayi collection",
+        "nayi items",
+        "best new",
+        "fresh arrivals"
+      ],
+      "responses": [
+        "Here are our newest & latest arrivals from the SABLE collection:"
+      ],
+      "context_set": ""
+    },
+    {
       "tag": "goodbye",
       "patterns": [
         "Bye",
