@@ -1,57 +1,116 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="auto">
-  <!-- Background Canvas: Deep Obsidian Velvet (#101010) -->
-  <rect width="1200" height="420" fill="#101010" rx="16"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" width="100%" height="auto">
+  <defs>
+    <!-- Luxury Dark Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A0A0B"/>
+      <stop offset="50%" stop-color="#121214"/>
+      <stop offset="100%" stop-color="#1A1A1D"/>
+    </linearGradient>
 
-  <!-- Luxury Gold Inner Border Frame -->
-  <rect x="18" y="18" width="1164" height="384" fill="none" stroke="#C5A059" stroke-width="1.5" stroke-opacity="0.6" rx="12"/>
-  <rect x="26" y="26" width="1148" height="368" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.08" rx="10"/>
+    <radialGradient id="goldGlow" cx="20%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#D4AF37" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#D4AF37" stop-opacity="0"/>
+    </radialGradient>
 
-  <!-- Top Left Badge Tag -->
-  <g transform="translate(60, 55)">
-    <rect width="210" height="30" fill="#1A1A1A" stroke="#C5A059" stroke-width="1" rx="15"/>
-    <circle cx="16" cy="15" r="4.5" fill="#10B981"/>
-    <text x="32" y="19" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">ACADEMIC AI/ML SRS</text>
+    <!-- Gold Metallic Gradient -->
+    <linearGradient id="goldMetallic" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C5A059"/>
+      <stop offset="35%" stop-color="#F3E5AB"/>
+      <stop offset="70%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#996515"/>
+    </linearGradient>
+
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#17171A"/>
+      <stop offset="100%" stop-color="#111113"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Base Canvas -->
+  <rect width="1200" height="440" fill="url(#bgGrad)" rx="16"/>
+  <rect width="1200" height="440" fill="url(#goldGlow)" rx="16"/>
+
+  <!-- Luxury Outer Gold & Platinum Double Frame -->
+  <rect x="16" y="16" width="1168" height="408" fill="none" stroke="url(#goldMetallic)" stroke-width="1.5" stroke-opacity="0.7" rx="12"/>
+  <rect x="24" y="24" width="1152" height="392" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.06" rx="10"/>
+
+  <!-- Corner Gold Accents -->
+  <path d="M 16 36 L 16 16 L 36 16" fill="none" stroke="url(#goldMetallic)" stroke-width="3"/>
+  <path d="M 1184 36 L 1184 16 L 1164 16" fill="none" stroke="url(#goldMetallic)" stroke-width="3"/>
+  <path d="M 16 404 L 16 424 L 36 424" fill="none" stroke="url(#goldMetallic)" stroke-width="3"/>
+  <path d="M 1184 404 L 1184 424 L 1164 424" fill="none" stroke="url(#goldMetallic)" stroke-width="3"/>
+
+  <!-- Top Header Bar / Monogram & Status -->
+  <g transform="translate(60, 52)">
+    <!-- Brand Shield Logo -->
+    <rect width="36" height="36" fill="#18181B" stroke="url(#goldMetallic)" stroke-width="1.5" rx="8"/>
+    <text x="18" y="25" fill="url(#goldMetallic)" font-family="Georgia, serif" font-size="20" font-weight="700" text-anchor="middle">S</text>
+
+    <!-- Category Pill -->
+    <g transform="translate(50, 3)">
+      <rect width="210" height="30" fill="#141416" stroke="url(#goldMetallic)" stroke-width="1" stroke-opacity="0.5" rx="15"/>
+      <circle cx="16" cy="15" r="4.5" fill="#10B981"/>
+      <text x="32" y="19" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">ACADEMIC AI/ML SRS</text>
+    </g>
+
+    <!-- Top Right Version Badge -->
+    <g transform="translate(930, 3)">
+      <rect width="150" height="30" fill="#141416" stroke="#2D2D32" stroke-width="1" rx="15"/>
+      <text x="75" y="19" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" letter-spacing="1" text-anchor="middle">v2.4 MASTER BUILD</text>
+    </g>
   </g>
 
-  <!-- Main Luxury Title: S A B L E | ApBot AI Concierge -->
-  <text x="60" y="145" fill="#EFEDE8" font-family="Georgia, 'Times New Roman', serif" font-size="56" font-weight="700" letter-spacing="8">S A B L E</text>
-  <text x="345" y="145" fill="#C5A059" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="300" letter-spacing="2">| ApBot AI Concierge</text>
+  <!-- Main Hero Brand Title -->
+  <g transform="translate(60, 145)">
+    <text x="0" y="0" fill="url(#goldMetallic)" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="700" letter-spacing="10">S A B L E</text>
+    <text x="360" y="0" fill="#EFEDE8" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="300" letter-spacing="3">| ApBot AI Concierge</text>
+  </g>
 
-  <!-- Subtitle Line -->
-  <text x="60" y="188" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="400" letter-spacing="0.5">
-    200-Epoch TensorFlow/Keras Neural Network and Domain NLP Assistant for SABLE Haute Couture
+  <!-- Tagline & Subtitle -->
+  <text x="60" y="185" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" letter-spacing="2">HAUTE COUTURE  •  AI SHOPPING ASSISTANT</text>
+  <text x="60" y="210" fill="#9CA3AF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="400" letter-spacing="0.4">
+    200-Epoch TensorFlow/Keras Neural Network, Domain-Aware NLP Typo Correction &amp; Decoupled MERN Microservices
   </text>
 
-  <!-- Divider Gold Line -->
-  <line x1="60" y1="210" x2="1140" y2="210" stroke="#C5A059" stroke-opacity="0.3" stroke-width="1"/>
+  <!-- Separator Line -->
+  <line x1="60" y1="230" x2="1140" y2="230" stroke="url(#goldMetallic)" stroke-opacity="0.25" stroke-width="1"/>
 
-  <!-- Technical Highlight Metrics Cards (3 Cards) -->
-  <g transform="translate(60, 235)">
-    <!-- Card 1: TensorFlow Model -->
+  <!-- Technical Metric Showcase (4 Cards) -->
+  <g transform="translate(60, 252)">
+    <!-- Card 1: Keras ML Model -->
     <g transform="translate(0, 0)">
-      <rect width="340" height="120" fill="#181818" stroke="#282828" stroke-width="1" rx="10"/>
-      <rect width="340" height="120" fill="none" stroke="#C5A059" stroke-width="1" stroke-opacity="0.2" rx="10"/>
-      <text x="24" y="34" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">TENSORFLOW &amp; KERAS MODEL</text>
-      <text x="24" y="66" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">91.58% Validation Accuracy</text>
-      <text x="24" y="93" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">40+ Intent Tags • Bag of Words • Lemmatizer</text>
+      <rect width="255" height="125" fill="url(#cardGrad)" stroke="#26262B" stroke-width="1" rx="10"/>
+      <rect width="255" height="125" fill="none" stroke="url(#goldMetallic)" stroke-width="1" stroke-opacity="0.3" rx="10"/>
+      <text x="18" y="32" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2">🧠 KERAS DEEP LEARNING</text>
+      <text x="18" y="65" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">91.58% Acc</text>
+      <text x="18" y="92" fill="#9CA3AF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11">200 Epochs • 40+ Intents</text>
     </g>
 
-    <!-- Card 2: NLP Typo Corrector -->
-    <g transform="translate(370, 0)">
-      <rect width="340" height="120" fill="#181818" stroke="#282828" stroke-width="1" rx="10"/>
-      <rect width="340" height="120" fill="none" stroke="#C5A059" stroke-width="1" stroke-opacity="0.2" rx="10"/>
-      <text x="24" y="34" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">DOMAIN SPELL CORRECTOR</text>
-      <text x="24" y="66" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">16/16 Unit Tests Passed</text>
-      <text x="24" y="93" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">Normalizes typos • Preserves prices &amp; IDs</text>
+    <!-- Card 2: Domain Spell Corrector -->
+    <g transform="translate(275, 0)">
+      <rect width="255" height="125" fill="url(#cardGrad)" stroke="#26262B" stroke-width="1" rx="10"/>
+      <rect width="255" height="125" fill="none" stroke="url(#goldMetallic)" stroke-width="1" stroke-opacity="0.3" rx="10"/>
+      <text x="18" y="32" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2">🔤 NLP SPELL CORRECTOR</text>
+      <text x="18" y="65" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">16/16 Passed</text>
+      <text x="18" y="92" fill="#9CA3AF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11">Normalizes Typos • Safe Prices</text>
     </g>
 
-    <!-- Card 3: Architecture Stack -->
-    <g transform="translate(740, 0)">
-      <rect width="340" height="120" fill="#181818" stroke="#282828" stroke-width="1" rx="10"/>
-      <rect width="340" height="120" fill="none" stroke="#C5A059" stroke-width="1" stroke-opacity="0.2" rx="10"/>
-      <text x="24" y="34" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">MERN + FLASK STACK</text>
-      <text x="24" y="66" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">&lt; 150ms Response Time</text>
-      <text x="24" y="93" fill="#8A8781" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">MongoDB • Express • React • Flask Port 5001</text>
+    <!-- Card 3: MongoDB Live Catalog -->
+    <g transform="translate(550, 0)">
+      <rect width="255" height="125" fill="url(#cardGrad)" stroke="#26262B" stroke-width="1" rx="10"/>
+      <rect width="255" height="125" fill="none" stroke="url(#goldMetallic)" stroke-width="1" stroke-opacity="0.3" rx="10"/>
+      <text x="18" y="32" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2">🛍️ MONGODB CATALOG</text>
+      <text x="18" y="65" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">12 Products</text>
+      <text x="18" y="92" fill="#9CA3AF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11">Zero Hallucination • Live DB</text>
+    </g>
+
+    <!-- Card 4: Microservices Latency -->
+    <g transform="translate(825, 0)">
+      <rect width="255" height="125" fill="url(#cardGrad)" stroke="#26262B" stroke-width="1" rx="10"/>
+      <rect width="255" height="125" fill="none" stroke="url(#goldMetallic)" stroke-width="1" stroke-opacity="0.3" rx="10"/>
+      <text x="18" y="32" fill="#C5A059" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2">⚡ MERN + FLASK STACK</text>
+      <text x="18" y="65" fill="#EFEDE8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">&lt; 150ms</text>
+      <text x="18" y="92" fill="#9CA3AF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11">Ports 3000 / 5000 / 5001</text>
     </g>
   </g>
 </svg>
