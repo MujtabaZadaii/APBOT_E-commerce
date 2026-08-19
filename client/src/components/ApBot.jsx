@@ -326,28 +326,34 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onC
   };
   const renderData = (data) => {
     if (!data) return null;
-    if (data.type === 'products') {
+    if (data.type === 'products' || data.type === 'product_list') {
+      const itemsList = data.items || data.products || [];
       return (
         <>
           <div className="apbot-products">
-            {data.items.map(product => (
-              <div key={product._id} className="apbot-product-card" onClick={() => {
-                if (onNavigate) {
-                  onNavigate('product', { id: product._id });
-                  handleClose();
-                } else if (onAddToCart) {
-                  onAddToCart({ ...product, id: product._id }, false);
-                }
-              }}>
-                <div className="apbot-product-img-wrap">
-                  <img src={product.images[0] || 'https://via.placeholder.com/150'} alt={product.name} />
+            {itemsList.map(product => {
+              const prodId = product._id || product.id;
+              const prodImg = product.images?.[0] || product.img || 'https://via.placeholder.com/150';
+              const prodPrice = typeof product.price === 'number' ? product.price.toFixed(2) : product.price;
+              return (
+                <div key={prodId} className="apbot-product-card" onClick={() => {
+                  if (onNavigate) {
+                    onNavigate('product', { id: prodId });
+                    handleClose();
+                  } else if (onAddToCart) {
+                    onAddToCart({ ...product, id: prodId }, false);
+                  }
+                }}>
+                  <div className="apbot-product-img-wrap">
+                    <img src={prodImg} alt={product.name} />
+                  </div>
+                  <div className="apbot-product-info">
+                    <span className="apbot-product-name">{product.name}</span>
+                    <span className="apbot-product-price">£{prodPrice}</span>
+                  </div>
                 </div>
-                <div className="apbot-product-info">
-                  <span className="apbot-product-name">{product.name}</span>
-                  <span className="apbot-product-price">£{product.price.toFixed(2)}</span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <p className="apbot-product-hint">
             {data.hint || "Click any item to view full details, or let me know which piece you'd like me to add to your bag."}

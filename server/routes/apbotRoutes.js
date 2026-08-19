@@ -182,14 +182,14 @@ router.post('/message', async (req, res) => {
                     activeIntent = 'authenticity_info';
                 } else if (lowerMsg.includes('care') || lowerMsg.includes('wash') || lowerMsg.includes('dry clean') || lowerMsg.includes('fabric') || lowerMsg.includes('material')) {
                     activeIntent = 'care_info';
-                } else if (lowerMsg.includes('contact') || lowerMsg.includes('support') || lowerMsg.includes('phone') || lowerMsg.includes('email') || lowerMsg.includes('address') || lowerMsg.includes('store') || lowerMsg.includes('boutique') || lowerMsg.includes('mayfair') || lowerMsg.includes('complaint') || lowerMsg.includes('help')) {
+                } else if (lowerMsg.includes('size') || /\bfit\b/.test(lowerMsg) || lowerMsg.includes('height') || lowerMsg.includes('weight') || lowerMsg.includes('kg') || lowerMsg.includes('cm') || lowerMsg.includes('ft')) {
+                    activeIntent = 'ai_size_fit';
+                } else if (lowerMsg.includes('contact') || lowerMsg.includes('support') || lowerMsg.includes('phone') || lowerMsg.includes('email') || lowerMsg.includes('address') || lowerMsg.includes('store') || lowerMsg.includes('boutique') || lowerMsg.includes('mayfair') || lowerMsg.includes('complaint') || lowerMsg.includes('human') || lowerMsg.includes('representative')) {
                     activeIntent = 'contact_support';
                 } else if (lowerMsg.includes('report') || lowerMsg.includes('doc') || lowerMsg.includes('srs')) {
                     activeIntent = 'report_info';
                 } else if (lowerMsg.includes('outfit') || lowerMsg.includes('complete look') || lowerMsg.includes('pair with') || lowerMsg.includes('style with') || lowerMsg.includes('bundle')) {
                     activeIntent = 'ai_outfit';
-                } else if (lowerMsg.includes('size') || /\bfit\b/.test(lowerMsg) || lowerMsg.includes('height') || lowerMsg.includes('weight') || lowerMsg.includes('kg') || lowerMsg.includes('cm') || lowerMsg.includes('ft')) {
-                    activeIntent = 'ai_size_fit';
                 } else if (lowerMsg.includes('discount') || lowerMsg.includes('promo') || lowerMsg.includes('coupon') || lowerMsg.includes('vip') || lowerMsg.includes('perk') || lowerMsg.includes('offer') || lowerMsg.includes('code')) {
                     activeIntent = 'vip_discount';
                 } else if (lowerMsg.includes('photo') || lowerMsg.includes('image search') || lowerMsg.includes('visual search')) {
@@ -236,16 +236,20 @@ router.post('/message', async (req, res) => {
                 }
                 const mappedProducts = products.map(p => ({
                     id: p._id.toString(),
+                    _id: p._id.toString(),
                     name: p.nm,
+                    brand: 'SABLE',
                     price: p.pr,
                     category: p.ct,
                     badge: p.badge || 'NEW ARRIVAL',
-                    img: p.imgs && p.imgs.length > 0 ? p.imgs[0] : ''
+                    img: p.imgs && p.imgs.length > 0 ? p.imgs[0] : (p.img || ''),
+                    images: p.imgs && p.imgs.length > 0 ? p.imgs : [(p.img || '')]
                 }));
                 responseData.message = "Here are our newest & latest arrivals from the SABLE collection:";
                 responseData.data = {
-                    type: 'product_list',
-                    products: mappedProducts
+                    type: 'products',
+                    items: mappedProducts,
+                    hint: "These are our latest SABLE arrivals click any item for full details, or let me know which piece to add to your bag."
                 };
                 responseData.context.lastProducts = mappedProducts.map(p => p.id);
                 if (mappedProducts.length > 0) {

@@ -14,7 +14,9 @@ async function importCompleteDatabase() {
 
     const rootDbPath = path.join(process.cwd(), 'database.json');
     const serverDbPath = path.join(process.cwd(), 'server', 'database.json');
-    let dbFilePath = fs.existsSync(rootDbPath) ? rootDbPath : (fs.existsSync(serverDbPath) ? serverDbPath : null);
+    const dbDirDbPath = path.join(process.cwd(), '..', 'db', 'database.json');
+    const dbDirRootPath = path.join(process.cwd(), 'db', 'database.json');
+    let dbFilePath = [rootDbPath, serverDbPath, dbDirDbPath, dbDirRootPath].find(p => fs.existsSync(p));
 
     if (!dbFilePath) {
       throw new Error("❌ database.json file not found in root or server directory!");
