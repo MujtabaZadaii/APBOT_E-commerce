@@ -627,8 +627,8 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onC
             <span style={{ background: '#101010', color: '#EFEDE8', padding: '4px 10px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em' }}>
               REPORT #{data.reportId}
             </span>
-            <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700 }}>
-              ● {data.status || 'Under Review'}
+            <span style={{ fontSize: '10px', color: '#555', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              {data.status || 'Under Review'}
             </span>
           </div>
           <p style={{ margin: '6px 0 0 0', fontSize: '11px', color: '#555', lineHeight: 1.4 }}>
