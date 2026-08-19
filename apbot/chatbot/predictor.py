@@ -41,7 +41,7 @@ class ApBotPredictor:
         if not results:
             return {
                 "intent": "unknown",
-                "confidence": max(res) if len(res) > 0 else 0.0,
+                "confidence": float(max(res)) if len(res) > 0 else 0.0,
                 "message": "I'm not entirely sure how to help with that. Could you try rephrasing?",
                 "originalMessage": sentence,
                 "correctedMessage": corrected_text
