@@ -620,6 +620,23 @@ const ApBot = ({ currentUser, cartItems = [], onAddToCart, onRemoveFromCart, onC
         </form>
       );
     }
+    if (data.type === 'report_status') {
+      return (
+        <div style={{ background: '#FAF9F6', padding: '14px', borderRadius: '8px', border: '1px solid rgba(16,16,16,0.12)', marginTop: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <span style={{ background: '#101010', color: '#EFEDE8', padding: '4px 10px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em' }}>
+              REPORT #{data.reportId}
+            </span>
+            <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700 }}>
+              ● {data.status || 'Under Review'}
+            </span>
+          </div>
+          <p style={{ margin: '6px 0 0 0', fontSize: '11px', color: '#555', lineHeight: 1.4 }}>
+            Priority Issue Ticket is active. Our Mayfair Concierge is reviewing your logged details and will email you within 24 hours.
+          </p>
+        </div>
+      );
+    }
     if (data.type === 'contact_form' || data.type === 'report_issue_form') {
       return (
         <div className="apbot-contact-card" style={{ background: '#FAF9F6', padding: '14px', borderRadius: '8px', border: '1px solid rgba(16,16,16,0.12)', marginTop: '12px' }}>

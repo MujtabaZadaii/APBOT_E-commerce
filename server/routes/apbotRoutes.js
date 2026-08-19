@@ -172,6 +172,8 @@ router.post('/message', async (req, res) => {
                     activeIntent = 'stylist_advice';
                 } else if (lowerMsg.includes('return') || lowerMsg.includes('refund') || lowerMsg.includes('wapas') || lowerMsg.includes('wapsi') || lowerMsg.includes('exchange')) {
                     activeIntent = 'return_product';
+                } else if (lowerMsg.includes('sbl-rep-') || (lowerMsg.includes('report') && (lowerMsg.includes('track') || lowerMsg.includes('status') || lowerMsg.includes('check') || lowerMsg.includes('info')))) {
+                    activeIntent = 'report_info';
                 } else if (lowerMsg.includes('not receive') || lowerMsg.includes('no receive') || lowerMsg.includes('no receved') || lowerMsg.includes('not received') || lowerMsg.includes('parcel') || lowerMsg.includes('package') || lowerMsg.includes('missing') || lowerMsg.includes('where is my') || lowerMsg.includes('track') || lowerMsg.includes('delivery') || lowerMsg.includes('kahan hai') || lowerMsg.includes('kab ayega') || lowerMsg.includes('kab hogi') || /\bsbl-\d+/i.test(lowerMsg)) {
                     activeIntent = 'order_tracking';
                 } else if (lowerMsg.includes('shipping') || lowerMsg.includes('ship') || lowerMsg.includes('duty') || lowerMsg.includes('duties') || lowerMsg.includes('tax') || lowerMsg.includes('courier')) {
@@ -698,88 +700,37 @@ router.post('/message', async (req, res) => {
                 responseData.message = "Checkout has been cancelled. How else can I help you today?";
                 break;
             case 'report_info':
-            case 'report_issue':
-                responseData.message = "I can help you file a priority issue report directly with our Mayfair Client Services team. Please fill out the report form below:";
-                responseData.data = { type: 'contact_form' };
-                break;
-            case 'process_address':
-                if (!isValidAddress(message)) {
-                    responseData.context.checkoutState = 'awaiting_address';
-                    responseData.message = "Please provide a complete shipping address with house/street number, area, and city (e.g. '14 Bruton Street, Mayfair, London W1J 6LX'). Say 'cancel' to exit checkout.";
-                    responseData.data = { type: 'address_form' };
+            case 'report_issue': {
+                const repMatch = message.match(/SBL-REP-\d+/i);
+                if (repMatch) {
+                    const repId = repMatch[0].toUpperCase();
+                    responseData.data = {
+                        type: 'report_status',
+                        reportId: repId,
+                        status: 'Under Review by Mayfair Concierge'
+                    };
+                    responseData.message = `Priority Issue Report #${repId}:\n\n• Status: "Under Review by Mayfair Concierge"\n• Priority: High\n• Follow-up: Within 24 hours via email.\n\nOur concierge team has received your report and is actively investigating your request.`;
                 } else {
-                    responseData.context.checkoutState = 'awaiting_payment';
-                    responseData.context.shippingAddress = message;
-                    responseData.message = "Got it! Your delivery address is saved. Now, please enter your payment method (Credit/Debit Card, Apple Pay, PayPal, or Cash on Delivery).";
-                    responseData.data = { type: 'payment_form' };
-                }
-                break;
-            case 'process_payment':
-                if (!isValidPayment(message)) {
-                    responseData.context.checkoutState = 'awaiting_payment';
-                    responseData.message = "Please specify a valid payment method: Credit/Debit Card, Apple Pay, PayPal, or Cash on Delivery (COD). Say 'cancel' to exit checkout.";
-                    responseData.data = { type: 'payment_form' };
-                } else {
-                    const finalRawCart = context?.cartItems || [];
-                let itemsToSave = [];
-                if (finalRawCart.length > 0) {
-                    itemsToSave = finalRawCart.map(item => ({
-                        productId: item.id || item._id,
-                        name: item.name || item.nm || 'SABLE Piece',
-                        price: item.price !== undefined ? item.price : (item.pr !== undefined ? item.pr : 185),
-                        quantity: item.quantity || 1,
-                        image: item.image || item.img || (item.images && item.images[0]) || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800'
-                    }));
-                } else if (context?.lastProducts && context.lastProducts.length > 0) {
-                    const lastP = context.lastProducts[0];
-                    itemsToSave = [{
-                        productId: lastP._id || lastP.id || '650000000000000000000001',
-                        name: lastP.name || lastP.nm || 'Suede Utility Overshirt',
-                        price: lastP.price || lastP.pr || 410,
-                        quantity: 1,
-                        image: lastP.image || lastP.img || (lastP.images && lastP.images[0]) || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800'
-                    }];
-                } else {
-                    itemsToSave = [{
-                        productId: '650000000000000000000001',
-                        name: 'Suede Utility Overshirt',
-                        price: 410,
-                        quantity: 1,
-                        image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800'
-                    }];
-                }
-                const orderTotal = itemsToSave.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                const trackingId = `SBL-${Math.floor(10000 + Math.random() * 90000)}`;
-                let userEmail = authenticatedUser?.email || 'guest@sable.com';
-                let userName = authenticatedUser?.name || 'Guest Customer';
-                let shippingAddrStr = context?.shippingAddress || '';
-                if (typeof shippingAddrStr === 'string' && shippingAddrStr.includes(',')) {
-                    const parts = shippingAddrStr.split(',').map(s => s.trim());
-                    if (parts[0]) userName = parts[0];
-                    if (parts[1] && parts[1].includes('@')) userEmail = parts[1];
-                }
-                const newOrder = new Order({
-                    orderId: trackingId,
-                    userId: userEmail,
-                    userName: userName,
-                    items: itemsToSave,
-                    totalAmount: orderTotal,
-                    trackingStatus: 'Order Placed',
-                    trackingNumber: trackingId,
-                    shippingAddress: shippingAddrStr || 'Standard Priority Delivery'
-                });
-                await newOrder.save();
-                responseData.context.checkoutState = null;
-                responseData.context.shippingAddress = null;
-                responseData.actions.push('place_order');
-                responseData.data = { type: 'order', item: newOrder };
-                responseData.message = "Payment Successful! Your order has been confirmed.";
+                    responseData.data = { type: 'report_issue_form' };
+                    responseData.message = "To check an existing issue report, please enter your report tracking ID (e.g. SBL-REP-57071). Or fill out the form below to submit a new issue report to our Mayfair Concierge:";
                 }
                 break;
+            }
             case 'order_tracking':
             case 'order_status':
             case 'delivery_date':
             case 'order_details':
+                const repMatchInTracking = message.match(/SBL-REP-\d+/i);
+                if (repMatchInTracking || (lowerMsg.includes('report') && !message.match(/\bSBL-\d+/i))) {
+                    const repId = repMatchInTracking ? repMatchInTracking[0].toUpperCase() : 'SBL-REP-EXISTS';
+                    responseData.data = {
+                        type: 'report_status',
+                        reportId: repId,
+                        status: 'Under Review by Mayfair Concierge'
+                    };
+                    responseData.message = `Priority Issue Report #${repId}:\n\n• Status: "Under Review by Mayfair Concierge"\n• Priority: High\n• Follow-up: Within 24 hours via email.\n\nOur concierge team has received your report and is actively investigating your request.`;
+                    break;
+                }
                 const getDynamicStatus = (orderObj) => {
                     if (!orderObj || !orderObj.createdAt) return orderObj?.trackingStatus || 'Order Placed';
                     const elapsedMins = Math.floor((new Date() - new Date(orderObj.createdAt)) / (1000 * 60));
@@ -798,7 +749,7 @@ router.post('/message', async (req, res) => {
                     if (elapsedMins >= 10) return 'Arriving in 2-3 Business Days (Processing at Atelier)';
                     return 'Arriving in 3-5 Business Days (Order Placed)';
                 };
-                const trackingMatch = message.match(/SBL-\d+/i);
+                const trackingMatch = message.match(/\bSBL-\d+/i);
                 if (trackingMatch) {
                     const tId = trackingMatch[0].toUpperCase();
                     const order = await Order.findOne({
