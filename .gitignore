@@ -23,3 +23,8 @@ client/dist/
 client/dist-ssr/
 *.log
 scratch/
+
+# Large Video Files (>100MB)
+video/*.MOV
+video/*.mov
+

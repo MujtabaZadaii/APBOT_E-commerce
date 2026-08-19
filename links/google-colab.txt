@@ -1,0 +1,1 @@
+https://colab.research.google.com/github/MujtabaZadaii/APBOT_E-commerce/blob/main/apbot/notebooks/ApBot_Training.ipynb
